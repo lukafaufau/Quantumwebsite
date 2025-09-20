@@ -2,24 +2,12 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Gérer les routes API pour Netlify
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const response = NextResponse.next()
-    
-    // Ajouter les headers CORS
-    response.headers.set('Access-Control-Allow-Origin', '*')
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-    
-    return response
-  }
-  
+  // Pour les builds statiques, on laisse passer toutes les requêtes
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    '/api/:path*',
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

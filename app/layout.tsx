@@ -48,8 +48,15 @@ export const metadata: Metadata = {
     description: "Plateforme communautaire esport française",
     creator: "@quantum_esports",
   },
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
-  themeColor: "#d97706",
+}
+
+export function generateViewport() {
+  return {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    themeColor: "#000000",
+  }
 }
 
 export default function RootLayout({

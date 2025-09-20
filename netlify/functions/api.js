@@ -1,10 +1,5 @@
 // Fonction Netlify pour gérer toutes les routes API
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
 exports.handler = async (event, context) => {
-  // Pour les déploiements Netlify, nous utilisons une approche simplifiée
-  // Les routes API seront gérées côté client avec des données mockées
-  
   const path = event.path.replace('/.netlify/functions/api', '');
   const method = event.httpMethod;
   
@@ -34,7 +29,8 @@ exports.handler = async (event, context) => {
         email: "wayzze@quantum.gg",
         role: "admin",
         discord_id: "Wayzze#0001",
-        status: "active"
+        status: "active",
+        created_at: "2024-01-01T00:00:00.000Z"
       },
       {
         id: 2,
@@ -42,7 +38,8 @@ exports.handler = async (event, context) => {
         email: "16k@quantum.gg",
         role: "developer",
         discord_id: "16k#0002",
-        status: "active"
+        status: "active",
+        created_at: "2024-01-01T00:00:00.000Z"
       }
     ],
     teams: [],
@@ -115,10 +112,80 @@ exports.handler = async (event, context) => {
     }
     
     if (path === '/admin/users') {
+      if (method === 'GET') {
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(mockData.users),
+        };
+      }
+      
+      if (method === 'POST') {
+        const userData = JSON.parse(event.body || '{}');
+        const newUser = {
+          id: mockData.users.length + 1,
+          ...userData,
+          status: 'active',
+          created_at: new Date().toISOString()
+        };
+        mockData.users.push(newUser);
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(newUser),
+        };
+      }
+    }
+    
+    // Gestion des routes avec paramètres
+    const userIdMatch = path.match(/^\/admin\/users\/(\d+)$/);
+    if (userIdMatch && method === 'PUT') {
+      const userId = parseInt(userIdMatch[1]);
+      const updates = JSON.parse(event.body || '{}');
+      const userIndex = mockData.users.findIndex(u => u.id === userId);
+      
+      if (userIndex !== -1) {
+        mockData.users[userIndex] = { ...mockData.users[userIndex], ...updates };
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, user: mockData.users[userIndex] }),
+        };
+      }
+      
       return {
-        statusCode: 200,
+        statusCode: 404,
         headers,
-        body: JSON.stringify(mockData.users),
+        body: JSON.stringify({ error: 'User not found' }),
+      };
+    }
+    
+    const banMatch = path.match(/^\/admin\/users\/(\d+)\/ban$/);
+    if (banMatch && method === 'POST') {
+      const userId = parseInt(banMatch[1]);
+      const { reason } = JSON.parse(event.body || '{}');
+      const userIndex = mockData.users.findIndex(u => u.id === userId);
+      
+      if (userIndex !== -1) {
+        mockData.users[userIndex] = {
+          ...mockData.users[userIndex],
+          status: 'banned',
+          ban_reason: reason,
+          banned_at: new Date().toISOString()
+        };
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, user: mockData.users[userIndex] }),
+        };
+      }
+      
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({ error: 'User not found' }),
       };
     }
     
@@ -126,14 +193,15 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 404,
       headers,
-      body: JSON.stringify({ error: 'Route not found' }),
+      body: JSON.stringify({ error: 'Route not found', path, method }),
     };
     
   } catch (error) {
+    console.error('API Error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error' }),
+      body: JSON.stringify({ error: 'Internal server error', details: error.message }),
     };
   }
 };
