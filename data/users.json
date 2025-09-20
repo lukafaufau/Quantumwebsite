@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "Wayzze",
+      "email": "wayzze@quantum.gg",
+      "password": "hashed_password",
+      "role": "admin",
+      "discord_id": "Wayzze#0001"
+    },
+    {
+      "id": 2,
+      "username": "16k",
+      "email": "16k@quantum.gg",
+      "password": "hashed_password",
+      "role": "developer",
+      "discord_id": "16k#0002"
+    }
+  ]
+}

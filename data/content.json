@@ -1,0 +1,73 @@
+{
+  "pages": {
+    "home": {
+      "hero": {
+        "title": "Bienvenue sur Quantum",
+        "subtitle": "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
+        "cta_primary": "Rejoindre Quantum",
+        "cta_secondary": "Voir les équipes"
+      },
+      "features": {
+        "title": "Pourquoi choisir Quantum ?",
+        "subtitle": "Découvrez tous les avantages de notre plateforme esport",
+        "items": [
+          {
+            "title": "Équipes Pro",
+            "description": "Rejoignez des équipes compétitives et participez aux tournois esport de haut niveau."
+          },
+          {
+            "title": "Communauté",
+            "description": "Connectez-vous avec d'autres joueurs passionnés d'esport français."
+          },
+          {
+            "title": "Recrutement",
+            "description": "Trouvez votre équipe idéale grâce à notre système de recrutement avancé."
+          },
+          {
+            "title": "Performance",
+            "description": "Suivez vos statistiques et améliorez vos performances en continu."
+          }
+        ]
+      },
+      "stats": [
+        { "value": "3+", "label": "Équipes actives" },
+        { "value": "15+", "label": "Joueurs inscrits" },
+        { "value": "6", "label": "Jeux supportés" },
+        { "value": "24/7", "label": "Support communauté" }
+      ],
+      "cta_final": {
+        "title": "Prêt à rejoindre l'élite esport ?",
+        "subtitle": "Inscrivez-vous dès maintenant et commencez votre parcours dans l'esport compétitif français.",
+        "button": "Créer mon compte"
+      }
+    },
+    "explorer": {
+      "title": "Explorer Quantum",
+      "subtitle": "Découvrez les dernières actualités et statistiques de la communauté"
+    },
+    "equipes": {
+      "title": "Nos Équipes",
+      "subtitle": "Découvrez toutes les équipes esport de Quantum"
+    },
+    "joueurs": {
+      "title": "Joueurs",
+      "subtitle": "Parcourez les profils des joueurs de la communauté"
+    },
+    "recrutement": {
+      "title": "Recrutement",
+      "subtitle": "Rejoignez une équipe ou recrutez de nouveaux talents"
+    },
+    "profil": {
+      "title": "Mon Profil",
+      "subtitle": "Gérez vos informations et suivez vos statistiques"
+    },
+    "admin": {
+      "title": "Administration",
+      "subtitle": "Panneau d'administration Quantum"
+    },
+    "credits": {
+      "title": "Crédits",
+      "subtitle": "L'équipe derrière Quantum"
+    }
+  }
+}
