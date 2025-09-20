@@ -18,10 +18,14 @@ export const useAuth = create<AuthStore>()(
       user: null,
       isAuthenticated: false,
       login: async (username: string, password: string) => {
-        const user = authenticateUser(username, password)
-        if (user) {
-          set({ user, isAuthenticated: true })
-          return true
+        try {
+          const user = await authenticateUser(username, password)
+          if (user) {
+            set({ user, isAuthenticated: true })
+            return true
+          }
+        } catch (error) {
+          console.error('Erreur lors de la connexion:', error)
         }
         return false
       },
@@ -29,7 +33,33 @@ export const useAuth = create<AuthStore>()(
         set({ user: null, isAuthenticated: false })
       },
       signup: async (userData) => {
-        // In real app, this would create user in database
+        try {
+          // Essayer d'abord l'API
+          const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+          })
+          
+          if (response.ok) {
+            const result = await response.json()
+            if (result.success) {
+              const newUser: User = {
+                id: Date.now(),
+                username: userData.username,
+                email: userData.email,
+                role: userData.role,
+                discord_id: userData.discord_id,
+              }
+              set({ user: newUser, isAuthenticated: true })
+              return true
+            }
+          }
+        } catch (error) {
+          console.log('API non disponible, création locale')
+        }
+        
+        // Fallback vers création locale
         const newUser: User = {
           id: Date.now(),
           username: userData.username,

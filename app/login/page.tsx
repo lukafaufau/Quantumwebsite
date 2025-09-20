@@ -28,12 +28,17 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    const success = await login(username, password)
+    try {
+      const success = await login(username, password)
 
-    if (success) {
-      router.push("/")
-    } else {
-      setError("Nom d'utilisateur ou mot de passe incorrect")
+      if (success) {
+        router.push("/")
+      } else {
+        setError("Nom d'utilisateur ou mot de passe incorrect")
+      }
+    } catch (error) {
+      console.error('Erreur de connexion:', error)
+      setError("Erreur de connexion. Veuillez réessayer.")
     }
 
     setIsLoading(false)

@@ -47,18 +47,23 @@ export default function SignupPage() {
       return
     }
 
-    const success = await signup({
-      username: formData.username,
-      email: formData.email,
-      role: formData.role,
-      discord_id: formData.discord_id,
-      password: formData.password,
-    })
+    try {
+      const success = await signup({
+        username: formData.username,
+        email: formData.email,
+        role: formData.role,
+        discord_id: formData.discord_id,
+        password: formData.password,
+      })
 
-    if (success) {
-      router.push("/")
-    } else {
-      setError("Erreur lors de la création du compte")
+      if (success) {
+        router.push("/")
+      } else {
+        setError("Erreur lors de la création du compte")
+      }
+    } catch (error) {
+      console.error('Erreur d\'inscription:', error)
+      setError("Erreur lors de la création du compte. Veuillez réessayer.")
     }
 
     setIsLoading(false)
