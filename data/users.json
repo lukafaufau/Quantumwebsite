@@ -19,6 +19,14 @@
       "bio": "Je suis gay",
       "games": [],
       "updated_at": "2025-09-20T17:48:11.268Z"
+    },
+    {
+      "username": "qsdqsdsdq",
+      "email": "16k@gmail.com",
+      "password": "hashed_password",
+      "role": "player",
+      "discord_id": "qsdqdq",
+      "id": 3
     }
   ]
 }
