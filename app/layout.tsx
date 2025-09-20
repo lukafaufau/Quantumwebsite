@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: process.env.NODE_ENV === 'production' ? "https://your-netlify-url.netlify.app" : "http://localhost:3000",
+    url: "https://quantum-esports.netlify.app",
     title: "Quantum - Esports Community",
     description: "Plateforme communautaire esport française",
     siteName: "Quantum",

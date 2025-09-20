@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  distDir: 'out',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -12,13 +9,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ]
+  // Suppression de output: 'export' pour permettre les routes API dynamiques
+  experimental: {
+    serverComponentsExternalPackages: ['fs'],
   },
 }
 

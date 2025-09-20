@@ -14,7 +14,7 @@ export interface AuthState {
 export async function authenticateUser(username: string, password: string): Promise<User | null> {
   try {
     // Essayer l'API d'authentification
-    const response = await fetch('/api/auth', {
+    const response = await fetch('/.netlify/functions/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

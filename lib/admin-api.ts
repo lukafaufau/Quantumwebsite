@@ -69,7 +69,7 @@ export class AdminAPI {
   static async getUsers(): Promise<User[]> {
     try {
       console.log("[v0] AdminAPI: Fetching users")
-      const response = await fetch("/api/admin/users")
+      const response = await fetch("/.netlify/functions/api/admin/users")
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -232,7 +232,7 @@ export class AdminAPI {
   static async getStats() {
     try {
       console.log("[v0] AdminAPI: Fetching stats")
-      const response = await fetch("/api/admin/stats")
+      const response = await fetch("/.netlify/functions/api/admin/stats")
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
