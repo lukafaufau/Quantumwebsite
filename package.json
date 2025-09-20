@@ -65,10 +65,10 @@
     "use-sync-external-store": "latest",
     "vaul": "^0.9.9",
     "zod": "3.25.67",
-    "zustand": "latest",
-    "@netlify/plugin-nextjs": "^5.7.2"
+    "zustand": "latest"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.7.2",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^18",

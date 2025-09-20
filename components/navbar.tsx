@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { User, LogOut, Settings, Menu, Zap } from "lucide-react"
+import { User, LogOut, Settings, Menu, Zap, Shield } from "lucide-react"
 import { useState } from "react"
 
 export function Navbar() {
@@ -110,13 +110,25 @@ export function Navbar() {
                     <span className="hidden sm:inline text-white">{user?.username}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 bg-black border-white/20 animate-scale-in">
+                <DropdownMenuContent 
+                  align="end" 
+                  className="w-48 bg-black border-white/20 animate-scale-in z-50"
+                  sideOffset={5}
+                >
                   <DropdownMenuItem asChild>
                     <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
                       <Settings className="mr-2 h-4 w-4" />
                       Profil
                     </Link>
                   </DropdownMenuItem>
+                  {(user?.role === "admin" || user?.role === "developer") && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Administration
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
                     onClick={logout}
                     className="flex items-center cursor-pointer text-white hover:bg-white/10"

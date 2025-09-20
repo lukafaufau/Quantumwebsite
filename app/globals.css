@@ -175,6 +175,16 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-white/50;
   }
+
+  /* Fix pour les dropdowns */
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
+
+  .dropdown-menu-content {
+    z-index: 9999;
+    position: relative;
+  }
 }
 
 /* ANIMATIONS AVANCÉES */
