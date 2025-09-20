@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AdvancedUserManagement } from "@/components/admin/advanced-user-management"
+import { TeamManagement } from "@/components/admin/team-management"
+import { ApplicationManagement } from "@/components/admin/application-management"
+import { AnnouncementManagement } from "@/components/admin/announcement-management"
 import {
   Shield,
   Users,
@@ -348,78 +351,15 @@ export default function AdminPage() {
             </TabsContent>
 
             <TabsContent value="teams" className="space-y-6">
-              <Card className="bg-black border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Trophy className="h-5 w-5" />
-                    <span>Gestion des équipes</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">
-                    Administrez toutes les équipes de la plateforme
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Trophy className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Gestion des équipes</h3>
-                    <p className="text-white/60 mb-6">Module de gestion avancée des équipes en développement</p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <Trophy className="h-4 w-4 mr-2" />
-                      Bientôt disponible
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <TeamManagement />
             </TabsContent>
 
             <TabsContent value="applications" className="space-y-6">
-              <Card className="bg-black/50 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <UserPlus className="h-5 w-5" />
-                    <span>Gestion des candidatures</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">Examinez et gérez toutes les candidatures</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <UserPlus className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Candidatures</h3>
-                    <p className="text-white/60 mb-6">
-                      {stats?.applications?.pending || 0} candidatures en attente de traitement
-                    </p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Traiter les candidatures
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <ApplicationManagement />
             </TabsContent>
 
             <TabsContent value="announcements" className="space-y-6">
-              <Card className="bg-black/50 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Megaphone className="h-5 w-5" />
-                    <span>Gestion des annonces</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">
-                    Créez et gérez toutes les annonces de la plateforme
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Megaphone className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Annonces</h3>
-                    <p className="text-white/60 mb-6">{stats?.announcements?.total || 0} annonces publiées</p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <Megaphone className="h-4 w-4 mr-2" />
-                      Nouvelle annonce
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <AnnouncementManagement />
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">

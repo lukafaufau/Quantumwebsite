@@ -1,26 +1,15 @@
 {
   "teams": [
     {
-      "id": 1,
-      "name": "Quantum RL",
-      "captain": "Player1",
-      "members": ["Player1", "Player2", "Player3"],
-      "game": "Rocket League",
-      "description": "Équipe compétitive Rocket League visant le plus haut niveau"
-    },
-    {
-      "id": 2,
-      "name": "Quantum Valorant",
-      "captain": "FragMaster",
-      "members": ["FragMaster", "SniperPro", "TacticalAce", "FlashKing", "SmokeGod"],
-      "game": "Valorant",
-      "description": "Formation tactique Valorant spécialisée dans les stratégies avancées"
-    },
-    {
       "id": 3,
       "name": "Quantum CS2",
       "captain": "HeadshotHero",
-      "members": ["HeadshotHero", "SprayControl", "ClutchMaster", "EntryFragger"],
+      "members": [
+        "HeadshotHero",
+        "SprayControl",
+        "ClutchMaster",
+        "EntryFragger"
+      ],
       "game": "Counter-Strike 2",
       "description": "Équipe CS2 expérimentée avec de nombreuses victoires en tournoi"
     }

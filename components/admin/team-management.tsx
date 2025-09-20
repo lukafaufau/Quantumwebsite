@@ -28,104 +28,110 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Edit, Trash2, Plus } from "lucide-react"
+import { Trophy, Edit, Trash2, Plus, Users, Crown } from "lucide-react"
 
-interface Announcement {
+interface Team {
   id: number
-  title: string
-  description: string
-  type: string
-  game?: string
-  date: string
-  author: string
+  name: string
+  captain: string
+  members: string[]
+  game: string
+  description?: string
+  status?: string
 }
 
-export function AnnouncementManagement() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+const availableGames = [
+  "Rocket League",
+  "Valorant",
+  "Counter-Strike 2",
+  "League of Legends",
+  "Overwatch 2",
+  "Apex Legends",
+]
+
+export function TeamManagement() {
+  const [teams, setTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(true)
-  const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null)
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [newAnnouncement, setNewAnnouncement] = useState<Partial<Announcement>>({
-    title: "",
-    description: "",
-    type: "general",
+  const [newTeam, setNewTeam] = useState<Partial<Team>>({
+    name: "",
+    captain: "",
+    members: [],
     game: "",
+    description: "",
   })
 
   useEffect(() => {
-    fetchAnnouncements()
+    fetchTeams()
   }, [])
 
-  const fetchAnnouncements = async () => {
+  const fetchTeams = async () => {
     try {
-      const response = await fetch("/api/announcements")
+      const response = await fetch("/api/teams")
       const data = await response.json()
       if (data.success) {
-        setAnnouncements(data.data || [])
+        setTeams(data.data || [])
       }
     } catch (error) {
-      console.error("Erreur lors du chargement des annonces:", error)
+      console.error("Erreur lors du chargement des équipes:", error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleCreateAnnouncement = async () => {
+  const handleCreateTeam = async () => {
     try {
-      const response = await fetch("/api/announcements", {
+      const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newAnnouncement,
-          date: new Date().toISOString(),
-          author: "Admin",
-        }),
+        body: JSON.stringify(newTeam),
       })
 
       if (response.ok) {
-        await fetchAnnouncements()
+        await fetchTeams()
         setIsCreateDialogOpen(false)
-        setNewAnnouncement({ title: "", description: "", type: "general", game: "" })
+        setNewTeam({ name: "", captain: "", members: [], game: "", description: "" })
       }
     } catch (error) {
       console.error("Erreur lors de la création:", error)
     }
   }
 
-  const handleEditAnnouncement = async (announcement: Announcement) => {
-    setEditingAnnouncement(announcement)
+  const handleEditTeam = async (team: Team) => {
+    setEditingTeam(team)
     setIsEditDialogOpen(true)
   }
 
-  const handleUpdateAnnouncement = async () => {
-    if (!editingAnnouncement) return
+  const handleUpdateTeam = async () => {
+    if (!editingTeam) return
 
     try {
-      const response = await fetch(`/api/announcements/${editingAnnouncement.id}`, {
-        method: "PUT",
+      const response = await fetch("/api/teams", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingAnnouncement),
+        body: JSON.stringify(editingTeam),
       })
 
       if (response.ok) {
-        await fetchAnnouncements()
+        await fetchTeams()
         setIsEditDialogOpen(false)
-        setEditingAnnouncement(null)
+        setEditingTeam(null)
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
     }
   }
 
-  const handleDeleteAnnouncement = async (announcementId: number) => {
+  const handleDeleteTeam = async (teamId: number) => {
     try {
-      const response = await fetch(`/api/announcements/${announcementId}`, {
+      const response = await fetch(`/api/teams?id=${teamId}`, {
         method: "DELETE",
       })
 
       if (response.ok) {
-        await fetchAnnouncements()
+        await fetchTeams()
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)
@@ -133,43 +139,85 @@ export function AnnouncementManagement() {
   }
 
   if (loading) {
-    return <div className="text-center py-8 text-white">Chargement des annonces...</div>
+    return (
+      <div className="text-center py-8 text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+        Chargement des équipes...
+      </div>
+    )
   }
 
   return (
-    <Card className="bg-black/50 border-white/20">
+    <Card className="bg-black border-white/20">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white">Gestion des annonces</CardTitle>
-            <CardDescription className="text-white/60">Créez et modifiez les annonces de la plateforme</CardDescription>
+            <CardTitle className="text-white flex items-center space-x-2">
+              <Trophy className="h-5 w-5" />
+              <span>Gestion des équipes</span>
+            </CardTitle>
+            <CardDescription className="text-white/60">
+              Administrez toutes les équipes de la plateforme
+            </CardDescription>
           </div>
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-white text-black hover:bg-white/90">
                 <Plus className="h-4 w-4 mr-2" />
-                Nouvelle annonce
+                Nouvelle équipe
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-black border-white/20">
               <DialogHeader>
-                <DialogTitle className="text-white">Créer une nouvelle annonce</DialogTitle>
+                <DialogTitle className="text-white">Créer une nouvelle équipe</DialogTitle>
                 <DialogDescription className="text-white/60">
-                  Ajoutez une nouvelle annonce à la plateforme
+                  Ajoutez une nouvelle équipe à la plateforme
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="title" className="text-white">
-                    Titre
+                  <Label htmlFor="name" className="text-white">
+                    Nom de l'équipe
                   </Label>
                   <Input
-                    id="title"
-                    value={newAnnouncement.title}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+                    id="name"
+                    value={newTeam.name}
+                    onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
                     className="bg-white/10 border-white/20 text-white"
-                    placeholder="Titre de l'annonce"
+                    placeholder="Nom de l'équipe"
                   />
+                </div>
+                <div>
+                  <Label htmlFor="captain" className="text-white">
+                    Capitaine
+                  </Label>
+                  <Input
+                    id="captain"
+                    value={newTeam.captain}
+                    onChange={(e) => setNewTeam({ ...newTeam, captain: e.target.value })}
+                    className="bg-white/10 border-white/20 text-white"
+                    placeholder="Nom du capitaine"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="game" className="text-white">
+                    Jeu
+                  </Label>
+                  <Select
+                    value={newTeam.game}
+                    onValueChange={(value) => setNewTeam({ ...newTeam, game: value })}
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue placeholder="Sélectionnez un jeu" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black border-white/20">
+                      {availableGames.map((game) => (
+                        <SelectItem key={game} value={game} className="text-white">
+                          {game}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="description" className="text-white">
@@ -177,56 +225,17 @@ export function AnnouncementManagement() {
                   </Label>
                   <Textarea
                     id="description"
-                    value={newAnnouncement.description}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, description: e.target.value })}
+                    value={newTeam.description}
+                    onChange={(e) => setNewTeam({ ...newTeam, description: e.target.value })}
                     className="bg-white/10 border-white/20 text-white"
-                    placeholder="Description de l'annonce"
+                    placeholder="Description de l'équipe"
                     rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="type" className="text-white">
-                    Type
-                  </Label>
-                  <Select
-                    value={newAnnouncement.type}
-                    onValueChange={(value) => setNewAnnouncement({ ...newAnnouncement, type: value })}
-                  >
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-black border-white/20">
-                      <SelectItem value="general" className="text-white">
-                        Général
-                      </SelectItem>
-                      <SelectItem value="tournament" className="text-white">
-                        Tournoi
-                      </SelectItem>
-                      <SelectItem value="recruitment" className="text-white">
-                        Recrutement
-                      </SelectItem>
-                      <SelectItem value="update" className="text-white">
-                        Mise à jour
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="game" className="text-white">
-                    Jeu (optionnel)
-                  </Label>
-                  <Input
-                    id="game"
-                    value={newAnnouncement.game}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, game: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="Nom du jeu"
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleCreateAnnouncement} className="bg-white text-black hover:bg-white/90">
-                  Créer l'annonce
+                <Button onClick={handleCreateTeam} className="bg-white text-black hover:bg-white/90">
+                  Créer l'équipe
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -235,45 +244,51 @@ export function AnnouncementManagement() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {announcements.map((announcement) => (
-            <Card key={announcement.id} className="border-l-4 border-l-white bg-white/5 border-white/20">
+          {teams.map((team) => (
+            <Card key={team.id} className="border-l-4 border-l-white bg-white/5 border-white/20">
               <CardContent className="py-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center space-x-2">
-                      <h4 className="font-medium text-white">{announcement.title}</h4>
-                      <Badge
-                        variant="outline"
-                        className={
-                          announcement.type === "tournament"
-                            ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                            : announcement.type === "recruitment"
-                              ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                              : "bg-green-500/10 text-green-500 border-green-500/20"
-                        }
-                      >
-                        {announcement.type}
+                      <h4 className="font-medium text-white">{team.name}</h4>
+                      <Badge variant="secondary">{team.game}</Badge>
+                      <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                        <Users className="h-3 w-3 mr-1" />
+                        {team.members?.length || 0} membres
                       </Badge>
-                      {announcement.game && <Badge variant="secondary">{announcement.game}</Badge>}
                     </div>
 
-                    <p className="text-sm text-white/60">{announcement.description}</p>
+                    <div className="flex items-center space-x-2 text-sm">
+                      <Crown className="h-4 w-4 text-yellow-400" />
+                      <span className="text-white/60">Capitaine:</span>
+                      <span className="text-white">{team.captain}</span>
+                    </div>
 
-                    <p className="text-xs text-white/40">
-                      Publié le {new Date(announcement.date).toLocaleDateString("fr-FR")} par {announcement.author}
-                    </p>
+                    {team.description && (
+                      <p className="text-sm text-white/60">{team.description}</p>
+                    )}
+
+                    {team.members && team.members.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {team.members.map((member, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {member}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex space-x-2 ml-4">
                     <Dialog
-                      open={isEditDialogOpen && editingAnnouncement?.id === announcement.id}
+                      open={isEditDialogOpen && editingTeam?.id === team.id}
                       onOpenChange={setIsEditDialogOpen}
                     >
                       <DialogTrigger asChild>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleEditAnnouncement(announcement)}
+                          onClick={() => handleEditTeam(team)}
                           className="border-white/20 text-white hover:bg-white/10"
                         >
                           <Edit className="h-4 w-4 mr-1" />
@@ -282,25 +297,60 @@ export function AnnouncementManagement() {
                       </DialogTrigger>
                       <DialogContent className="bg-black border-white/20">
                         <DialogHeader>
-                          <DialogTitle className="text-white">Modifier l'annonce</DialogTitle>
+                          <DialogTitle className="text-white">Modifier l'équipe</DialogTitle>
                           <DialogDescription className="text-white/60">
-                            Modifiez les informations de l'annonce
+                            Modifiez les informations de l'équipe
                           </DialogDescription>
                         </DialogHeader>
-                        {editingAnnouncement && (
+                        {editingTeam && (
                           <div className="space-y-4">
                             <div>
-                              <Label htmlFor="edit-title" className="text-white">
-                                Titre
+                              <Label htmlFor="edit-name" className="text-white">
+                                Nom de l'équipe
                               </Label>
                               <Input
-                                id="edit-title"
-                                value={editingAnnouncement.title}
+                                id="edit-name"
+                                value={editingTeam.name}
                                 onChange={(e) =>
-                                  setEditingAnnouncement({ ...editingAnnouncement, title: e.target.value })
+                                  setEditingTeam({ ...editingTeam, name: e.target.value })
                                 }
                                 className="bg-white/10 border-white/20 text-white"
                               />
+                            </div>
+                            <div>
+                              <Label htmlFor="edit-captain" className="text-white">
+                                Capitaine
+                              </Label>
+                              <Input
+                                id="edit-captain"
+                                value={editingTeam.captain}
+                                onChange={(e) =>
+                                  setEditingTeam({ ...editingTeam, captain: e.target.value })
+                                }
+                                className="bg-white/10 border-white/20 text-white"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="edit-game" className="text-white">
+                                Jeu
+                              </Label>
+                              <Select
+                                value={editingTeam.game}
+                                onValueChange={(value) =>
+                                  setEditingTeam({ ...editingTeam, game: value })
+                                }
+                              >
+                                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-black border-white/20">
+                                  {availableGames.map((game) => (
+                                    <SelectItem key={game} value={game} className="text-white">
+                                      {game}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             </div>
                             <div>
                               <Label htmlFor="edit-description" className="text-white">
@@ -308,60 +358,18 @@ export function AnnouncementManagement() {
                               </Label>
                               <Textarea
                                 id="edit-description"
-                                value={editingAnnouncement.description}
+                                value={editingTeam.description || ""}
                                 onChange={(e) =>
-                                  setEditingAnnouncement({ ...editingAnnouncement, description: e.target.value })
+                                  setEditingTeam({ ...editingTeam, description: e.target.value })
                                 }
                                 className="bg-white/10 border-white/20 text-white"
                                 rows={3}
                               />
                             </div>
-                            <div>
-                              <Label htmlFor="edit-type" className="text-white">
-                                Type
-                              </Label>
-                              <Select
-                                value={editingAnnouncement.type}
-                                onValueChange={(value) =>
-                                  setEditingAnnouncement({ ...editingAnnouncement, type: value })
-                                }
-                              >
-                                <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-black border-white/20">
-                                  <SelectItem value="general" className="text-white">
-                                    Général
-                                  </SelectItem>
-                                  <SelectItem value="tournament" className="text-white">
-                                    Tournoi
-                                  </SelectItem>
-                                  <SelectItem value="recruitment" className="text-white">
-                                    Recrutement
-                                  </SelectItem>
-                                  <SelectItem value="update" className="text-white">
-                                    Mise à jour
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <Label htmlFor="edit-game" className="text-white">
-                                Jeu
-                              </Label>
-                              <Input
-                                id="edit-game"
-                                value={editingAnnouncement.game || ""}
-                                onChange={(e) =>
-                                  setEditingAnnouncement({ ...editingAnnouncement, game: e.target.value })
-                                }
-                                className="bg-white/10 border-white/20 text-white"
-                              />
-                            </div>
                           </div>
                         )}
                         <DialogFooter>
-                          <Button onClick={handleUpdateAnnouncement} className="bg-white text-black hover:bg-white/90">
+                          <Button onClick={handleUpdateTeam} className="bg-white text-black hover:bg-white/90">
                             Sauvegarder
                           </Button>
                         </DialogFooter>
@@ -379,7 +387,7 @@ export function AnnouncementManagement() {
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-white">Confirmer la suppression</AlertDialogTitle>
                           <AlertDialogDescription className="text-white/60">
-                            Êtes-vous sûr de vouloir supprimer l'annonce "{announcement.title}" ? Cette action est
+                            Êtes-vous sûr de vouloir supprimer l'équipe "{team.name}" ? Cette action est
                             irréversible.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -388,7 +396,7 @@ export function AnnouncementManagement() {
                             Annuler
                           </AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleDeleteAnnouncement(announcement.id)}
+                            onClick={() => handleDeleteTeam(team.id)}
                             className="bg-red-600 hover:bg-red-700"
                           >
                             Supprimer
@@ -401,6 +409,13 @@ export function AnnouncementManagement() {
               </CardContent>
             </Card>
           ))}
+
+          {teams.length === 0 && (
+            <div className="text-center py-8">
+              <Trophy className="h-12 w-12 text-white/20 mx-auto mb-4" />
+              <p className="text-white/60">Aucune équipe trouvée</p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

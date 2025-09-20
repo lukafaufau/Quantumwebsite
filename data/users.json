@@ -11,10 +11,14 @@
     {
       "id": 2,
       "username": "16k",
-      "email": "16k@quantum.gg",
+      "email": "16k@dev.s",
       "password": "hashed_password",
       "role": "developer",
-      "discord_id": "16k#0002"
+      "discord_id": "4mns",
+      "status": "active",
+      "bio": "Je suis gay",
+      "games": [],
+      "updated_at": "2025-09-20T17:48:11.268Z"
     }
   ]
 }
