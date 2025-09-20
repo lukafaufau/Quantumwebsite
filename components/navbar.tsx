@@ -86,8 +86,6 @@ export function Navbar() {
           <Link
             href="/"
             className="text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 hover:scale-110 animate-glow flex items-center space-x-2"
-          >
-            <Zap className="h-6 w-6 animate-pulse-slow" />
             <span className="text-glow">QUANTUM</span>
           </Link>
 
