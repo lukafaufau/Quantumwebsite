@@ -1,17 +1,3 @@
 {
-  "teams": [
-    {
-      "id": 3,
-      "name": "Quantum CS2",
-      "captain": "HeadshotHero",
-      "members": [
-        "HeadshotHero",
-        "SprayControl",
-        "ClutchMaster",
-        "EntryFragger"
-      ],
-      "game": "Counter-Strike 2",
-      "description": "Équipe CS2 expérimentée avec de nombreuses victoires en tournoi"
-    }
-  ]
+  "teams": []
 }
