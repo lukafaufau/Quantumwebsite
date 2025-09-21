@@ -62,10 +62,7 @@ export function Footer() {
 
       {/* Bas de page centré */}
       <div className="border-t border-white/20 mt-10 pt-6 text-center text-sm text-gray-400">
-        <p className="mb-1">
-          Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur : <span className="text-white font-medium">16k</span>
-        </p>
-        <p className="mb-1">© 2025 Nemesis Esports. Tous droits réservés.</p>
+        <p>© 2025 Nemesis Esports. Tous droits réservés.</p>
         <p>Version 1.0.0</p>
       </div>
     </footer>
