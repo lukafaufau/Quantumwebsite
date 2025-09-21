@@ -28,12 +28,12 @@ export function Navbar() {
     { href: "/equipes", label: "Teams & Profile" },
     ...(isAuthenticated
       ? [
-          { href: "/recrutement", label: "Recrutement" },
           ...(user?.role === "admin" || user?.role === "developer"
             ? [{ href: "/admin", label: "Administration" }]
             : []),
         ]
       : []),
+              { href: "/recrutement", label: "Recrutement" },
     { href: "/profil", label: "Profil" },
     { href: "/credits", label: "Crédits" },
   ]
