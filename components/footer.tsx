@@ -9,17 +9,17 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row justify-between gap-8">
 
         {/* Brand */}
-        <div className="flex flex-col items-center md:items-start space-y-2">
+        <div className="flex flex-col items-center md:items-start space-y-2 text-center md:text-left">
           <Link href="/" className="text-2xl font-heading font-bold hover:text-white/80 transition-all glow-text">
             Nemesis
           </Link>
-          <p className="text-xs text-gray-400 text-center md:text-left leading-relaxed max-w-xs">
+          <p className="text-xs text-gray-400 leading-relaxed max-w-xs">
             Plateforme communautaire esports française de référence.
           </p>
         </div>
 
         {/* Navigation */}
-        <div className="flex flex-col items-center md:items-start space-y-2">
+        <div className="flex flex-col items-center md:items-start space-y-2 text-center md:text-left">
           <h3 className="font-heading font-semibold text-white text-sm glow-text">Navigation</h3>
           <div className="flex flex-col space-y-1 text-xs">
             <Link href="/explorer" className="hover:text-indigo-400 transition-all duration-200">Explorer</Link>
@@ -30,7 +30,7 @@ export function Footer() {
         </div>
 
         {/* Support */}
-        <div className="flex flex-col items-center md:items-start space-y-2">
+        <div className="flex flex-col items-center md:items-start space-y-2 text-center md:text-left">
           <h3 className="font-heading font-semibold text-white text-sm glow-text">Support</h3>
           <div className="flex flex-col space-y-1 text-xs">
             <Link href="/credits" className="hover:text-indigo-400 transition-all duration-200">Crédits</Link>
@@ -41,9 +41,9 @@ export function Footer() {
         </div>
 
         {/* Réseaux sociaux */}
-        <div className="flex flex-col items-center md:items-start space-y-2">
+        <div className="flex flex-col items-center md:items-start space-y-2 text-center md:text-left">
           <h3 className="font-heading font-semibold text-white text-sm glow-text">Réseaux sociaux</h3>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-center md:justify-start">
             <a
               href="#"
               className="text-gray-400 hover:text-indigo-400 transition-all duration-200"
@@ -56,16 +56,10 @@ export function Footer() {
 
       </div>
 
-      {/* Bottom */}
-      <div className="border-t border-white/20 mt-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 px-4 md:px-0">
-        <div className="text-center md:text-left space-y-1">
-          <p>
-            Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur :{" "}
-            <span className="text-white font-medium">16k</span>
-          </p>
-          <p>© 2024 Nemesis Esports. Tous droits réservés.</p>
-        </div>
-        <div className="mt-1 md:mt-0 text-center md:text-right">Version 1.0.0</div>
+      {/* Bottom centré */}
+      <div className="border-t border-white/20 mt-8 py-4 flex flex-col items-center text-xs text-gray-400 space-y-1">
+        <p>© 2025 Nemesis Esports. Tous droits réservés.</p>
+        <p>Version 1.0.0</p>
       </div>
 
       <style jsx>{`
