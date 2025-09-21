@@ -13,12 +13,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Users, Crown, Search, UserPlus, UserCheck, UserX, MessageCircle } from "lucide-react"
 import { mockTeams, mockPlayers, availableGames, getPlayersByTeam, getFreeAgents } from "@/lib/data"
 
-export default function TeamsAndPlayersPage() {
+export default function ExplorerPage() {
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedStatus, setSelectedStatus] = useState<string>("all")
 
-  /** Filtrage des joueurs selon jeu / recherche / statut */
+  // Joueurs filtrés
   const filteredPlayers = mockPlayers.filter((player) => {
     const matchesGame = selectedGame === "all" || player.game === selectedGame
     const matchesSearch =
@@ -34,7 +34,6 @@ export default function TeamsAndPlayersPage() {
   const freeAgents = getFreeAgents()
   const activePlayers = mockPlayers.filter((p) => p.status === "active")
 
-  /** Icônes et couleurs selon le statut */
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
@@ -74,7 +73,6 @@ export default function TeamsAndPlayersPage() {
     }
   }
 
-  /** Affichage des membres d'une équipe */
   const renderTeamMembers = (team: typeof mockTeams[number]) =>
     team.members.map((member) => {
       const isCaptain = member === team.captain
@@ -82,7 +80,7 @@ export default function TeamsAndPlayersPage() {
         <Badge
           key={member}
           variant={isCaptain ? "secondary" : "outline"}
-          className="flex items-center gap-1 text-xs"
+          className="flex items-center gap-1 text-xs hover:scale-105 transition-transform"
         >
           {isCaptain ? <Crown className="h-3 w-3 text-yellow-400" /> : <Users className="h-3 w-3 text-muted-foreground" />}
           {member}
@@ -96,11 +94,10 @@ export default function TeamsAndPlayersPage() {
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-2">Communauté Nemesis</h1>
+            <h1 className="text-4xl font-heading font-bold mb-2">Explorer la Communauté</h1>
             <p className="text-lg text-muted-foreground">
-              Découvrez nos équipes, leurs membres et profils détaillés.
+              Parcourez nos équipes et joueurs, découvrez leurs profils et statuts.
             </p>
           </div>
 
@@ -109,7 +106,7 @@ export default function TeamsAndPlayersPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Rechercher un joueur ou équipe..."
+                placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -143,12 +140,72 @@ export default function TeamsAndPlayersPage() {
             </Select>
           </div>
 
-          {/* Tabs pour Joueurs */}
-          <Tabs defaultValue="players" className="space-y-6">
+          {/* Tabs : Équipes en premier */}
+          <Tabs defaultValue="teams" className="space-y-6">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="players">Joueurs</TabsTrigger>
               <TabsTrigger value="teams">Équipes</TabsTrigger>
+              <TabsTrigger value="players">Joueurs</TabsTrigger>
             </TabsList>
+
+            {/* Équipes */}
+            <TabsContent value="teams" className="space-y-6">
+              {mockTeams.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <p className="text-muted-foreground">Aucune équipe disponible.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {mockTeams.map((team) => {
+                    const teamPlayers = getPlayersByTeam(team.name)
+                    return (
+                      <Card key={team.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-2">
+                              <CardTitle className="text-xl">{team.name}</CardTitle>
+                              <Badge variant="secondary">{team.game}</Badge>
+                            </div>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Users className="h-4 w-4 mr-1" />
+                              {team.members.length}
+                            </div>
+                          </div>
+                        </CardHeader>
+
+                        <CardContent className="space-y-4">
+                          {team.description && <p className="text-sm text-muted-foreground">{team.description}</p>}
+
+                          <div className="space-y-2">
+                            <span className="text-sm font-medium">Membres:</span>
+                            <div className="flex flex-wrap gap-1">{renderTeamMembers(team)}</div>
+                          </div>
+
+                          <div className="pt-2">
+                            <span className="text-sm font-medium">Joueurs détaillés:</span>
+                            <div className="space-y-1 mt-1">
+                              {teamPlayers.map((player) => (
+                                <Card
+                                  key={player.id}
+                                  className="p-2 border border-muted-foreground/20 hover:shadow-sm flex justify-between items-center"
+                                >
+                                  <span>{player.username}</span>
+                                  <Badge variant="outline" className={getStatusColor(player.status)}>
+                                    {getStatusIcon(player.status)}
+                                    <span className="ml-1 text-xs">{getStatusText(player.status)}</span>
+                                  </Badge>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+            </TabsContent>
 
             {/* Joueurs */}
             <TabsContent value="players" className="space-y-6">
@@ -185,25 +242,18 @@ export default function TeamsAndPlayersPage() {
                             <span className="text-muted-foreground">Équipe:</span>
                             <span className="font-medium">{player.team || "Aucune"}</span>
                           </div>
-                          {player.discord_id && (
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Discord:</span>
-                              <span className="font-mono text-xs">{player.discord_id}</span>
-                            </div>
-                          )}
                         </div>
 
-                        {/* Boutons détails + contacter */}
                         <div className="flex gap-2 pt-2">
                           <Button
                             variant="outline"
                             size="sm"
                             className="flex-1"
-                            onClick={() => {
+                            onClick={() =>
                               alert(
-                                `Profil: ${player.username}\nRôle: ${player.role}\nJeu: ${player.game || "Non spécifié"}\nÉquipe: ${player.team || "Aucune"}\nStatut: ${getStatusText(player.status)}\nDiscord: ${player.discord_id || "Non renseigné"}`
+                                `Profil: ${player.username}\nRôle: ${player.role}\nJeu: ${player.game || "Non spécifié"}\nÉquipe: ${player.team || "Aucune"}\nStatut: ${getStatusText(player.status)}`
                               )
-                            }}
+                            }
                           >
                             <Users className="h-4 w-4 mr-1" /> Détails
                           </Button>
@@ -211,9 +261,9 @@ export default function TeamsAndPlayersPage() {
                             variant="outline"
                             size="sm"
                             className="flex-1"
-                            onClick={() => {
+                            onClick={() =>
                               alert(player.discord_id ? `Contactez ${player.username}: ${player.discord_id}` : "Aucun Discord renseigné")
-                            }}
+                            }
                           >
                             <MessageCircle className="h-4 w-4 mr-1" /> Contacter
                           </Button>
@@ -221,83 +271,6 @@ export default function TeamsAndPlayersPage() {
                       </CardContent>
                     </Card>
                   ))}
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Équipes */}
-            <TabsContent value="teams" className="space-y-6">
-              {mockTeams.length === 0 ? (
-                <Card>
-                  <CardContent className="py-8 text-center">
-                    <p className="text-muted-foreground">Aucune équipe disponible.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mockTeams.map((team) => {
-                    const teamPlayers = getPlayersByTeam(team.name)
-                    return (
-                      <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-2">
-                              <CardTitle className="text-xl">{team.name}</CardTitle>
-                              <Badge variant="secondary">{team.game}</Badge>
-                            </div>
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <Users className="h-4 w-4 mr-1" />
-                              {team.members.length}
-                            </div>
-                          </div>
-                        </CardHeader>
-
-                        <CardContent className="space-y-4">
-                          {team.description && <p className="text-sm text-muted-foreground">{team.description}</p>}
-
-                          <div className="space-y-2">
-                            <span className="text-sm font-medium">Membres:</span>
-                            <div className="flex flex-wrap gap-1">
-                              {team.members.map((member) => {
-                                const isCaptain = member === team.captain
-                                return (
-                                  <Badge
-                                    key={member}
-                                    variant={isCaptain ? "secondary" : "outline"}
-                                    className="flex items-center gap-1 text-xs"
-                                  >
-                                    {isCaptain ? (
-                                      <Crown className="h-3 w-3 text-yellow-400" />
-                                    ) : (
-                                      <Users className="h-3 w-3 text-muted-foreground" />
-                                    )}
-                                    {member}
-                                  </Badge>
-                                )
-                              })}
-                            </div>
-                          </div>
-
-                          <div className="pt-2">
-                            <span className="text-sm font-medium">Joueurs détaillés:</span>
-                            <div className="space-y-1 mt-1">
-                              {teamPlayers.map((player) => (
-                                <Card key={player.id} className="p-2 border border-muted-foreground/20 hover:shadow-sm">
-                                  <div className="flex justify-between text-sm">
-                                    <span>{player.username}</span>
-                                    <Badge variant="outline" className={getStatusColor(player.status)}>
-                                      {getStatusIcon(player.status)}
-                                      <span className="ml-1">{getStatusText(player.status)}</span>
-                                    </Badge>
-                                  </div>
-                                </Card>
-                              ))}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )
-                  })}
                 </div>
               )}
             </TabsContent>
