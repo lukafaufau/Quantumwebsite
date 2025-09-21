@@ -1,18 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/database'
+import fs from 'fs/promises'
+import path from 'path'
+
+const ANNOUNCEMENTS_FILE = path.join(process.cwd(), 'data', 'announcements.json')
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = parseInt(params.id)
     const updates = await request.json()
     
-    const updatedAnnouncement = await db.updateAnnouncement(id, updates)
-    if (!updatedAnnouncement) {
+    const data = await fs.readFile(ANNOUNCEMENTS_FILE, 'utf8')
+    const announcements = JSON.parse(data)
+    
+    if (!announcements.announcements) {
+      announcements.announcements = []
+    }
+    
+    const announcementIndex = announcements.announcements.findIndex((a: any) => a.id === id)
+    if (announcementIndex === -1) {
       return NextResponse.json({ success: false, error: 'Announcement not found' }, { status: 404 })
     }
     
-    return NextResponse.json({ success: true, data: updatedAnnouncement })
+    announcements.announcements[announcementIndex] = {
+      ...announcements.announcements[announcementIndex],
+      ...updates
+    }
+    
+    await fs.writeFile(ANNOUNCEMENTS_FILE, JSON.stringify(announcements, null, 2))
+    
+    return NextResponse.json({ success: true, data: announcements.announcements[announcementIndex] })
   } catch (error) {
+    console.error('Error updating announcement:', error)
     return NextResponse.json({ success: false, error: 'Failed to update announcement' }, { status: 500 })
   }
 }
@@ -20,14 +38,26 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = parseInt(params.id)
-    const deleted = await db.deleteAnnouncement(id)
     
-    if (!deleted) {
+    const data = await fs.readFile(ANNOUNCEMENTS_FILE, 'utf8')
+    const announcements = JSON.parse(data)
+    
+    if (!announcements.announcements) {
+      announcements.announcements = []
+    }
+    
+    const initialLength = announcements.announcements.length
+    announcements.announcements = announcements.announcements.filter((a: any) => a.id !== id)
+    
+    if (announcements.announcements.length === initialLength) {
       return NextResponse.json({ success: false, error: 'Announcement not found' }, { status: 404 })
     }
     
+    await fs.writeFile(ANNOUNCEMENTS_FILE, JSON.stringify(announcements, null, 2))
+    
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Error deleting announcement:', error)
     return NextResponse.json({ success: false, error: 'Failed to delete announcement' }, { status: 500 })
   }
 }
