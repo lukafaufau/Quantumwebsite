@@ -1,3 +1,5 @@
+"use client"
+
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,61 +8,57 @@ import { Crown, Code, Heart } from "lucide-react"
 
 export default function CreditsPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
       <main className="flex-1 py-12 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-heading font-bold mb-4">Crédits</h1>
-            <p className="text-lg text-muted-foreground">Les personnes qui ont rendu Nemesis possible</p>
+        <div className="container mx-auto max-w-5xl">
+          {/* Titre */}
+          <div className="text-center mb-10">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2">Crédits</h1>
+            <p className="text-lg md:text-xl text-gray-400">Les personnes qui ont rendu Nemesis possible</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <Card className="text-center">
+          {/* Equipe */}
+          <div className="grid md:grid-cols-2 gap-6 md:gap-10 mb-12">
+            <Card className="text-center bg-gray-900/50 hover:scale-105 transition-transform duration-300">
               <CardHeader>
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                <div className="mx-auto mb-3 p-3 bg-primary/20 rounded-full w-fit">
                   <Crown className="h-8 w-8 text-primary" />
                 </div>
                 <CardTitle className="text-2xl">Wayzze</CardTitle>
-                <CardDescription className="text-lg">Chef de projet</CardDescription>
+                <CardDescription className="text-sm text-gray-400">Chef de projet</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 <div className="flex justify-center">
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                    Project Manager
-                  </Badge>
+                  <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">Project Manager</Badge>
                 </div>
-                <p className="text-muted-foreground">
-                  Visionnaire et leader du projet Nemesis. Responsable de la conception, de la stratégie et de la
-                  coordination de toutes les équipes.
+                <p className="text-gray-300 text-sm">
+                  Visionnaire et leader du projet Nemesis. Responsable de la conception, de la stratégie et de la coordination des équipes.
                 </p>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-gray-400 space-y-1">
                   <p>Discord: Wayzze#0001</p>
                   <p>Email: wayzze@Nemesis.gg</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center bg-gray-900/50 hover:scale-105 transition-transform duration-300">
               <CardHeader>
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                <div className="mx-auto mb-3 p-3 bg-primary/20 rounded-full w-fit">
                   <Code className="h-8 w-8 text-primary" />
                 </div>
                 <CardTitle className="text-2xl">16k</CardTitle>
-                <CardDescription className="text-lg">Développeur</CardDescription>
+                <CardDescription className="text-sm text-gray-400">Développeur</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 <div className="flex justify-center">
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                    Full-Stack Developer
-                  </Badge>
+                  <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30">Full-Stack Developer</Badge>
                 </div>
-                <p className="text-muted-foreground">
-                  Architecte technique et développeur principal de la plateforme Nemesis. Responsable du développement
-                  et de la maintenance de l'infrastructure.
+                <p className="text-gray-300 text-sm">
+                  Architecte technique et développeur principal de la plateforme Nemesis. Responsable du développement et de la maintenance de l'infrastructure.
                 </p>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-gray-400 space-y-1">
                   <p>Discord: 16k#0002</p>
                   <p>Email: 16k@Nemesis.gg</p>
                 </div>
@@ -68,15 +66,15 @@ export default function CreditsPage() {
             </Card>
           </div>
 
-          <Card className="bg-card/50">
+          {/* Communauté */}
+          <Card className="bg-gray-900/40 hover:bg-gray-900/60 transition-colors duration-300">
             <CardContent className="py-8 text-center">
-              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+              <div className="mx-auto mb-3 p-3 bg-primary/20 rounded-full w-fit">
                 <Heart className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-heading font-bold mb-4">Merci à notre communauté</h3>
-              <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-                Nemesis n'existerait pas sans le soutien et la passion de notre communauté esport. Merci à tous les
-                joueurs, équipes et supporters qui font vivre cette plateforme.
+              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3">Merci à notre communauté</h3>
+              <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mb-4">
+                Nemesis n'existerait pas sans le soutien et la passion de notre communauté esport. Merci à tous les joueurs, équipes et supporters.
               </p>
               <div className="flex flex-wrap justify-center gap-2">
                 <Badge variant="secondary">Joueurs</Badge>
@@ -88,9 +86,10 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          <div className="mt-12 text-center text-sm text-muted-foreground">
+          {/* Bas de page */}
+          <div className="mt-10 text-center text-xs text-gray-400 space-y-1">
             <p>© 2025 Team Nemesis. Développé avec passion pour la communauté esport française.</p>
-            <p className="mt-2">Version 1.0.0 - Janvier 2024</p>
+            <p>Version 1.0.0 - Janvier 2025</p>
           </div>
         </div>
       </main>
