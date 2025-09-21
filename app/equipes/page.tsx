@@ -11,30 +11,19 @@ import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
-interface Team {
-  id: number
-  name: string
-  captain: string
-  members: string[]
-  game: string
-  description?: string
-  status: string
-  created_at: string
-}
-
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<Team[]>([])
+  const [teams, setTeams] = useState<any[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Fetch les équipes depuis l'API
+  // Fetch des équipes depuis l'API
   const fetchTeams = async () => {
     try {
       const res = await fetch("/api/teams")
       const data = await res.json()
       if (data.success) setTeams(data.data)
     } catch (err) {
-      console.error("Erreur en récupérant les équipes :", err)
+      console.error("Erreur fetch teams:", err)
     }
   }
 
@@ -42,7 +31,6 @@ export default function TeamsPage() {
     fetchTeams()
   }, [])
 
-  // Filtrage par jeu et recherche
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -83,10 +71,12 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                {/* Remplace cette ligne par tes jeux disponibles */}
-                <SelectItem value="League of Legends">League of Legends</SelectItem>
-                <SelectItem value="Valorant">Valorant</SelectItem>
-                <SelectItem value="CS:GO">CS:GO</SelectItem>
+                {/* Remplace par tes jeux dynamiques si nécessaire */}
+                {Array.from(new Set(teams.map(t => t.game))).map((game) => (
+                  <SelectItem key={game} value={game}>
+                    {game}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -100,71 +90,75 @@ export default function TeamsPage() {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTeams.map((team) => (
-                <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
+              {filteredTeams.map((team) => {
+                const teamPlayers = team.members || []
+
+                return (
+                  <Card key={team.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <CardTitle className="text-xl">{team.name}</CardTitle>
+                          <Badge variant="secondary">{team.game}</Badge>
+                        </div>
+                        <div className="text-right text-sm text-muted-foreground">
+                          <div className="flex items-center">
+                            <Users className="h-4 w-4 mr-1" />
+                            {teamPlayers.length}
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="space-y-4">
+                      {team.description && <CardDescription>{team.description}</CardDescription>}
+
                       <div className="space-y-2">
-                        <CardTitle className="text-xl">{team.name}</CardTitle>
-                        <Badge variant="secondary">{team.game}</Badge>
-                      </div>
-                      <div className="text-right text-sm text-muted-foreground">
-                        <div className="flex items-center">
-                          <Users className="h-4 w-4 mr-1" />
-                          {team.members.length}
+                        <div className="flex items-center space-x-2">
+                          <Crown className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Capitaine:</span>
+                          <span className="text-sm text-muted-foreground">{team.captain}</span>
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium">Membres:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {teamPlayers.map((member) => (
+                              <Badge key={member} variant="outline" className="text-xs">
+                                {member}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    {team.description && <CardDescription>{team.description}</CardDescription>}
-
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Crown className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">Capitaine:</span>
-                        <span className="text-sm text-muted-foreground">{team.captain}</span>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="text-sm font-medium">Membres:</span>
-                        <div className="flex flex-wrap gap-1">
-                          {team.members.map((member) => (
-                            <Badge key={member} variant="outline" className="text-xs">
-                              {member}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 bg-transparent"
-                        onClick={() =>
-                          alert(
-                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${
-                              team.description || "Aucune description"
-                            }`
-                          )
-                        }
-                      >
-                        Voir détails
-                      </Button>
-
-                      <Link href="/recrutement" className="flex-1">
-                        <Button size="sm" className="w-full flex items-center justify-center gap-1">
-                          <UserPlus className="h-4 w-4" />
-                          Rejoindre
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 bg-transparent"
+                          onClick={() => {
+                            alert(
+                              `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${teamPlayers.length}\n\nDescription: ${
+                                team.description || "Aucune description"
+                              }`
+                            )
+                          }}
+                        >
+                          Voir détails
                         </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+
+                        <Link href="/recrutement" className="flex-1">
+                          <Button size="sm" className="w-full flex items-center justify-center gap-1">
+                            <UserPlus className="h-4 w-4" />
+                            Rejoindre
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           )}
         </div>
