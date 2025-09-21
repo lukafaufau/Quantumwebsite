@@ -3,7 +3,12 @@
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { User, LogOut, Settings, Menu, Zap, Shield } from "lucide-react"
 import { useState } from "react"
@@ -87,16 +92,16 @@ export function Navbar() {
             href="/"
             className="text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 hover:scale-110 animate-glow flex items-center space-x-2"
           >
-            <Zap className="" />
+            <Zap className="h-5 w-5" />
             <span className="text-glow">NEMESIS</span>
           </Link>
 
-          {/* Desktop Navigation - Centré */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center justify-center space-x-8">
             <NavLinks />
           </div>
 
-          {/* User Section - Aligné à droite mais dans le conteneur centré */}
+          {/* User Section */}
           <div className="flex items-center space-x-4 ml-auto">
             {isAuthenticated ? (
               <DropdownMenu>
@@ -110,10 +115,10 @@ export function Navbar() {
                     <span className="hidden sm:inline text-white">{user?.username}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="end" 
-                  className="w-48 bg-black border-white/20 animate-scale-in z-50"
+                <DropdownMenuContent
+                  align="end"
                   sideOffset={5}
+                  className="w-48 bg-black border-white/20 animate-scale-in z-50"
                 >
                   <DropdownMenuItem asChild>
                     <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
