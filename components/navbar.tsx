@@ -25,7 +25,7 @@ export function Navbar() {
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/explorer", label: "Explorer" },
-    { href: "/equipes", label: "Équipes" },
+    { href: "/equipes", label: "Teams & Profile" },
     ...(isAuthenticated
       ? [
           { href: "/recrutement", label: "Recrutement" },
