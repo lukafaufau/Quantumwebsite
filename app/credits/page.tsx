@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import Link from "next/link"
-import { Trophy, Users, Target, Zap, ArrowRight, Star } from "lucide-react"
+import { Star } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export default function CreditsPage() {
-  const { user, isAuthenticated } = useAuth()
+  const { user } = useAuth()
   const [content, setContent] = useState<any>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editableContent, setEditableContent] = useState<any>(null)
@@ -31,7 +30,7 @@ export default function CreditsPage() {
           },
           team: [
             { name: "Wayzze", role: "Fondateur" },
-            { name: "16k", role: "Dev" }
+            { name: "16k", role: "Dev" },
           ],
         }
         setContent(defaultContent)
@@ -135,7 +134,7 @@ export default function CreditsPage() {
           <div className="container mx-auto">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-glow">Équipe Nemesis</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {content.team.map((member: any, i: number) => (
+              {content.team?.map((member: any, i: number) => (
                 <Card key={i} className="bg-black/50 border-white/20 text-center hover-lift transition-all duration-500">
                   <CardHeader>
                     <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit">
@@ -155,7 +154,7 @@ export default function CreditsPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              )) || <p className="text-white/50">Aucun membre trouvé.</p>}
             </div>
           </div>
         </section>
