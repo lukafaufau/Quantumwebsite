@@ -78,7 +78,7 @@ export default function PlayersPage() {
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4">Joueurs Nemesis</h1>
+            <h1 className="text-4xl font-heading font-bold mb-4">Joueurs Quantum</h1>
             <p className="text-lg text-muted-foreground">
               Découvrez notre communauté de joueurs talentueux et passionnés.
             </p>
@@ -223,28 +223,11 @@ export default function PlayersPage() {
                         </div>
 
                         <div className="flex gap-2 pt-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="flex-1 bg-transparent"
-                            onClick={() => {
-                              alert(`Joueur: ${player.username}\nRôle: ${player.role}\nJeu: ${player.game || 'Non spécifié'}\nÉquipe: ${player.team || 'Aucune'}\nStatut: ${getStatusText(player.status)}\nDiscord: ${player.discord_id || 'Non renseigné'}`)
-                            }}
-                          >
+                          <Button variant="outline" size="sm" className="flex-1 bg-transparent">
                             <User className="h-4 w-4 mr-1" />
                             Profil
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => {
-                              if (player.discord_id) {
-                                alert(`Pour contacter ${player.username}, ajoutez-le sur Discord: ${player.discord_id}`)
-                              } else {
-                                alert(`Aucun Discord renseigné pour ${player.username}`)
-                              }
-                            }}
-                          >
+                          <Button variant="outline" size="sm">
                             <MessageCircle className="h-4 w-4" />
                           </Button>
                         </div>
@@ -329,10 +312,6 @@ export default function PlayersPage() {
                         )}
                       </div>
 
-                          onClick={() => {
-                            // Open contact modal for free agent
-                            alert(`Contacter ${player.username} - Agent libre`)
-                          }}
                       <Button size="sm" className="w-full">
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Contacter

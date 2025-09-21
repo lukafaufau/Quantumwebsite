@@ -2,32 +2,14 @@
 
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-
-export interface User {
-  id: number
-  username: string
-  email: string
-  role: 'admin' | 'developer' | 'player' | 'staff'
-  discord_id: string
-  status: 'active' | 'banned' | 'pending'
-  created_at: string
-  bio?: string
-  games?: string[]
-}
+import { type User, authenticateUser } from "@/lib/auth"
 
 interface AuthStore {
   user: User | null
   isAuthenticated: boolean
   login: (username: string, password: string) => Promise<boolean>
   logout: () => void
-  signup: (userData: {
-    username: string
-    email: string
-    password: string
-    discord_id: string
-    role?: string
-    invite_code?: string
-  }) => Promise<{ success: boolean; error?: string }>
+  signup: (userData: Omit<User, "id"> & { password: string }) => Promise<boolean>
 }
 
 export const useAuth = create<AuthStore>()(
@@ -35,57 +17,32 @@ export const useAuth = create<AuthStore>()(
     (set, get) => ({
       user: null,
       isAuthenticated: false,
-      
       login: async (username: string, password: string) => {
-        try {
-          const response = await fetch('/api/auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          })
-          
-          const data = await response.json()
-          
-          if (data.success && data.user) {
-            set({ user: data.user, isAuthenticated: true })
-            return true
-          }
-          
-          return false
-        } catch (error) {
-          console.error('Login error:', error)
-          return false
+        const user = authenticateUser(username, password)
+        if (user) {
+          set({ user, isAuthenticated: true })
+          return true
         }
+        return false
       },
-      
       logout: () => {
         set({ user: null, isAuthenticated: false })
       },
-      
       signup: async (userData) => {
-        try {
-          const response = await fetch('/api/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-          })
-          
-          const data = await response.json()
-          
-          if (data.success && data.user) {
-            set({ user: data.user, isAuthenticated: true })
-            return { success: true }
-          }
-          
-          return { success: false, error: data.error || 'Erreur lors de l\'inscription. Vérifiez vos informations.' }
-        } catch (error) {
-          console.error('Signup error:', error)
-          return { success: false, error: 'Erreur de connexion au serveur' }
+        // In real app, this would create user in database
+        const newUser: User = {
+          id: Date.now(),
+          username: userData.username,
+          email: userData.email,
+          role: userData.role,
+          discord_id: userData.discord_id,
         }
-      }
+        set({ user: newUser, isAuthenticated: true })
+        return true
+      },
     }),
     {
-      name: "nemesis-auth",
-    }
-  )
+      name: "quantum-auth",
+    },
+  ),
 )

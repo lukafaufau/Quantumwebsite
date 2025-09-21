@@ -1,46 +1,77 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/database'
+import { type NextRequest, NextResponse } from "next/server"
+import { JsonManager } from "@/lib/json-manager"
 
-// Récupérer toutes les équipes
 export async function GET() {
   try {
-    const teams = await db.getTeams() // Assure-toi que cette fonction retourne bien un tableau
+    const teams = await JsonManager.getTeams()
     return NextResponse.json({ success: true, data: teams })
   } catch (error) {
-    console.error('Error fetching teams:', error)
-    return NextResponse.json({ success: false, error: 'Failed to fetch teams' }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Failed to fetch teams" }, { status: 500 })
   }
 }
 
-// Créer une nouvelle équipe
 export async function POST(request: NextRequest) {
   try {
-    const teamData = await request.json()
+    const body = await request.json()
 
-    // Validation des champs obligatoires
-    if (!teamData.name || !teamData.captain || !teamData.game) {
-      return NextResponse.json(
-        { success: false, error: 'Name, captain and game are required' },
-        { status: 400 }
-      )
-    }
-
-    // Préparer la nouvelle équipe
     const newTeam = {
-      name: teamData.name,
-      captain: teamData.captain,
-      game: teamData.game,
-      members: teamData.members || [],
-      status: teamData.status || 'active',
-      createdAt: new Date().toISOString()
+      name: body.name,
+      captain: body.captain,
+      members: body.members || [],
+      game: body.game,
+      description: body.description || "",
     }
 
-    // Ajouter l'équipe à la base
-    const createdTeam = await db.addTeam(newTeam)
+    const success = await JsonManager.addTeam(newTeam)
 
-    return NextResponse.json({ success: true, data: createdTeam })
+    if (success) {
+      return NextResponse.json({ success: true, message: "Team created successfully" })
+    } else {
+      return NextResponse.json({ success: false, error: "Failed to create team" }, { status: 500 })
+    }
   } catch (error) {
-    console.error('Error creating team:', error)
-    return NextResponse.json({ success: false, error: 'Failed to create team' }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Invalid request data" }, { status: 400 })
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { id, ...updates } = body
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing team ID" }, { status: 400 })
+    }
+
+    const success = await JsonManager.updateTeam(id, updates)
+
+    if (success) {
+      return NextResponse.json({ success: true, message: "Team updated successfully" })
+    } else {
+      return NextResponse.json({ success: false, error: "Failed to update team" }, { status: 500 })
+    }
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Invalid request data" }, { status: 400 })
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get("id")
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing team ID" }, { status: 400 })
+    }
+
+    const success = await JsonManager.deleteTeam(Number.parseInt(id))
+
+    if (success) {
+      return NextResponse.json({ success: true, message: "Team deleted successfully" })
+    } else {
+      return NextResponse.json({ success: false, error: "Failed to delete team" }, { status: 500 })
+    }
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 })
   }
 }

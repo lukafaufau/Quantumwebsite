@@ -23,40 +23,33 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Nemesis - Esports Community",
+  title: "Quantum - Esports Community",
   description: "Plateforme communautaire esport française - Gestion d'équipes, recrutement et tournois",
   generator: "v0.app",
   keywords: ["esport", "gaming", "communauté", "équipes", "tournois", "recrutement", "france"],
   authors: [
-    { name: "Wayzze", url: "https://nemesis.gg" },
-    { name: "16k", url: "https://nemesis.gg" },
+    { name: "Wayzze", url: "https://quantum.gg" },
+    { name: "16k", url: "https://quantum.gg" },
   ],
-  creator: "Nemesis Team",
-  publisher: "Nemesis Esports",
+  creator: "Quantum Team",
+  publisher: "Quantum Esports",
   robots: "index, follow",
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://nemesis-esports.netlify.app",
-    title: "Nemesis - Esports Community",
+    url: "https://quantum.gg",
+    title: "Quantum - Esports Community",
     description: "Plateforme communautaire esport française",
-    siteName: "Nemesis",
+    siteName: "Quantum",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nemesis - Esports Community",
+    title: "Quantum - Esports Community",
     description: "Plateforme communautaire esport française",
-    creator: "@nemesis_esports",
+    creator: "@quantum_esports",
   },
-}
-
-export function generateViewport() {
-  return {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    themeColor: "#000000",
-  }
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  themeColor: "#d97706",
 }
 
 export default function RootLayout({

@@ -1,0 +1,49 @@
+{
+  "players": [
+    {
+      "id": 1,
+      "username": "Player1",
+      "role": "Attaquant",
+      "team": "Quantum RL",
+      "status": "active",
+      "game": "Rocket League",
+      "discord_id": "Player1#1234"
+    },
+    {
+      "id": 2,
+      "username": "Player2",
+      "role": "Défenseur",
+      "team": "Quantum RL",
+      "status": "active",
+      "game": "Rocket League",
+      "discord_id": "Player2#5678"
+    },
+    {
+      "id": 3,
+      "username": "FragMaster",
+      "role": "Duelist",
+      "team": "Quantum Valorant",
+      "status": "active",
+      "game": "Valorant",
+      "discord_id": "FragMaster#9999"
+    },
+    {
+      "id": 4,
+      "username": "FreeAgent",
+      "role": "Support",
+      "team": null,
+      "status": "free",
+      "game": "League of Legends",
+      "discord_id": "FreeAgent#1111"
+    },
+    {
+      "id": 5,
+      "username": "HeadshotHero",
+      "role": "AWPer",
+      "team": "Quantum CS2",
+      "status": "active",
+      "game": "Counter-Strike 2",
+      "discord_id": "HeadshotHero#2222"
+    }
+  ]
+}

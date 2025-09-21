@@ -28,6 +28,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Shield, Edit, Trash2, UserPlus } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 
 interface User {
   id: number
@@ -52,11 +53,13 @@ export function UserManagement() {
     try {
       const response = await fetch("/api/users")
       const data = await response.json()
-      if (data.success) {
-        setUsers(data.data || [])
-      }
+      setUsers(data)
     } catch (error) {
-      console.error("Erreur lors du chargement des utilisateurs:", error)
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les utilisateurs",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
@@ -81,9 +84,17 @@ export function UserManagement() {
         await fetchUsers()
         setIsEditDialogOpen(false)
         setEditingUser(null)
+        toast({
+          title: "Succès",
+          description: "Utilisateur mis à jour avec succès",
+        })
       }
     } catch (error) {
-      console.error("Erreur lors de la mise à jour:", error)
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la mise à jour",
+        variant: "destructive",
+      })
     }
   }
 
@@ -95,9 +106,17 @@ export function UserManagement() {
 
       if (response.ok) {
         await fetchUsers()
+        toast({
+          title: "Succès",
+          description: "Utilisateur supprimé avec succès",
+        })
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression:", error)
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la suppression",
+        variant: "destructive",
+      })
     }
   }
 
