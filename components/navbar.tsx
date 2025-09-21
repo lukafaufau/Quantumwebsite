@@ -22,67 +22,58 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname() || "/"
 
-  const NavLinks = () => {
-    const links = [
-      { href: "/", label: "Accueil" },
-      { href: "/explorer", label: "Explorer" },
-      { href: "/equipes", label: "Équipes" },
-      { href: "/joueurs", label: "Joueurs" },
-      ...(isAuthenticated
-        ? [
-            { href: "/recrutement", label: "Recrutement" },
-            { href: "/profil", label: "Profil" },
-            ...(user?.role === "admin" || user?.role === "developer" ? [{ href: "/admin", label: "Administration", special: true }] : []),
-          ]
-        : []),
-      { href: "/credits", label: "Crédits" },
-    ]
+  // Links avec gestion active
+  const links = [
+    { href: "/", label: "Accueil" },
+    { href: "/explorer", label: "Explorer" },
+    { href: "/equipes", label: "Équipes" },
+    { href: "/joueurs", label: "Joueurs" },
+    ...(isAuthenticated
+      ? [
+          { href: "/recrutement", label: "Recrutement" },
+          { href: "/profil", label: "Profil" },
+          ...(user?.role === "admin" || user?.role === "developer"
+            ? [{ href: "/admin", label: "Administration", special: true }]
+            : []),
+        ]
+      : []),
+    { href: "/credits", label: "Crédits" },
+  ]
 
-    return links.map((link) => {
-      const isActive = pathname.startsWith(link.href)
+  const NavLinks = () =>
+    links.map((link) => {
+      const isActive = pathname === link.href
       return (
         <Link
           key={link.href}
           href={link.href}
-          className={`
-            flex items-center space-x-2 text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110
-            ${isActive ? "text-white border-b-2 border-white" : "text-gray-300"}
-            ${link.special ? "text-glow" : ""}
-          `}
           onClick={() => setIsOpen(false)}
+          className={`flex items-center space-x-1 text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 ${
+            isActive ? "text-white border-b-2 border-white" : "text-gray-300"
+          } ${link.special ? "text-glow" : ""}`}
         >
-          {/* Petit logo blanc à gauche du lien */}
           {isActive && <span className="w-2 h-2 bg-white rounded-full inline-block"></span>}
           <span>{link.label}</span>
         </Link>
       )
     })
-  }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
-      <div className="container flex h-16 items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80">
+      <div className="container flex h-16 items-center justify-between px-3 lg:px-5">
 
-        {/* Logo + texte NEMESIS */}
-        <Link href="/" className="flex items-center pl-3 lg:pl-5 group">
-          <Image
-            src={LogoImage}
-            alt="Logo"
-            width={32}
-            height={32}
-            className="transition-all duration-300 group-hover:scale-110"
-          />
-          <span className="ml-5 text-2xl font-bold text-white font-heading transition-all duration-300 group-hover:text-white/90">
+        {/* Logo + texte */}
+        <Link href="/" className="flex items-center space-x-4">
+          <Image src={LogoImage} alt="Logo" width={28} height={28} className="transition-all duration-300 hover:scale-110" />
+          <span className="text-2xl font-bold text-white font-heading transition-all duration-300 hover:text-white/90">
             NEMESIS
           </span>
         </Link>
 
-        {/* Navigation desktop */}
-        <div className="hidden lg:flex items-center justify-center space-x-8">
-          <NavLinks />
-        </div>
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center space-x-8">{NavLinks()}</div>
 
-        {/* Section utilisateur / login */}
+        {/* Right section: user/login */}
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <DropdownMenu>
@@ -95,13 +86,15 @@ export function Navbar() {
               <DropdownMenuContent align="end" sideOffset={5} className="w-48 bg-black border-white/20 animate-scale-in z-50">
                 <DropdownMenuItem asChild>
                   <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                    <Settings className="mr-2 h-4 w-4" /> Profil
+                    <Settings className="mr-2 h-4 w-4" />
+                    Profil
                   </Link>
                 </DropdownMenuItem>
                 {(user?.role === "admin" || user?.role === "developer") && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                      <Shield className="mr-2 h-4 w-4" /> Administration
+                      <Shield className="mr-2 h-4 w-4" />
+                      Administration
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -113,7 +106,9 @@ export function Navbar() {
           ) : (
             <div className="hidden sm:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild className="hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <Link href="/login" className="text-white font-medium">Connexion</Link>
+                <Link href="/login" className="text-white font-medium">
+                  Connexion
+                </Link>
               </Button>
               <Button size="sm" asChild className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow">
                 <Link href="/signup">Inscription</Link>
@@ -121,7 +116,7 @@ export function Navbar() {
             </div>
           )}
 
-          {/* Mobile Menu */}
+          {/* Mobile menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
@@ -134,13 +129,13 @@ export function Navbar() {
                   <Image src={LogoImage} alt="Logo" width={32} height={32} />
                   <span>NEMESIS</span>
                 </Link>
-                <div className="flex flex-col space-y-6 items-center">
-                  <NavLinks />
-                </div>
+                <div className="flex flex-col space-y-6 items-center">{NavLinks()}</div>
                 {!isAuthenticated && (
                   <div className="flex flex-col space-y-2 pt-6 border-t border-white/20 items-center">
                     <Button variant="ghost" size="sm" asChild onClick={() => setIsOpen(false)} className="hover:bg-white/10 transition-all duration-300">
-                      <Link href="/login" className="text-white">Connexion</Link>
+                      <Link href="/login" className="text-white">
+                        Connexion
+                      </Link>
                     </Button>
                     <Button size="sm" asChild onClick={() => setIsOpen(false)} className="bg-white text-black hover:bg-white/90 transition-all duration-300">
                       <Link href="/signup">Inscription</Link>
