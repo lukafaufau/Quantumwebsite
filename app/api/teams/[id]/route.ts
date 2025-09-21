@@ -1,79 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs/promises";
 import path from "path";
 
 const TEAMS_FILE = path.join(process.cwd(), "data", "teams.json");
 
-interface Team {
-  id: number;
-  name: string;
-  captain: string;
-  members: string[];
-  game: string;
-  description?: string;
-  status: string;
-  created_at: string;
-  updated_at?: string;
-}
-
-async function ensureDataFile() {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let teams = [];
   try {
-    await fs.access(TEAMS_FILE);
+    const file = await fs.readFile(TEAMS_FILE, "utf-8");
+    teams = JSON.parse(file);
   } catch {
-    await fs.mkdir(path.dirname(TEAMS_FILE), { recursive: true });
-    await fs.writeFile(TEAMS_FILE, JSON.stringify({ teams: [] }, null, 2));
+    teams = [];
   }
-}
 
-// Récupérer une équipe par ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  await ensureDataFile();
-  const id = parseInt(params.id);
+  const id = parseInt(req.query.id as string);
+  const teamIndex = teams.findIndex(t => t.id === id);
+  if (teamIndex === -1) return res.status(404).json({ success: false, message: "Équipe non trouvée" });
 
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teams = JSON.parse(data).teams || [];
+  if (req.method === "PUT") {
+    const updates = req.body;
+    teams[teamIndex] = { ...teams[teamIndex], ...updates };
+    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
+    return res.status(200).json({ success: true, data: teams[teamIndex] });
+  }
 
-  const team = teams.find((t: Team) => t.id === id);
-  if (!team) return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
+  if (req.method === "DELETE") {
+    const removed = teams.splice(teamIndex, 1);
+    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
+    return res.status(200).json({ success: true, data: removed[0] });
+  }
 
-  return NextResponse.json({ success: true, data: team });
-}
-
-// Mettre à jour une équipe
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  await ensureDataFile();
-  const id = parseInt(params.id);
-  const updates = await request.json();
-
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teamsData = JSON.parse(data);
-  const teams = teamsData.teams || [];
-
-  const index = teams.findIndex((t: Team) => t.id === id);
-  if (index === -1) return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
-
-  teams[index] = {
-    ...teams[index],
-    ...updates,
-    updated_at: new Date().toISOString(),
-  };
-
-  await fs.writeFile(TEAMS_FILE, JSON.stringify({ teams }, null, 2));
-  return NextResponse.json({ success: true, data: teams[index] });
-}
-
-// Supprimer une équipe
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  await ensureDataFile();
-  const id = parseInt(params.id);
-
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teamsData = JSON.parse(data);
-  const teams = teamsData.teams || [];
-
-  const newTeams = teams.filter((t: Team) => t.id !== id);
-  if (newTeams.length === teams.length) return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
-
-  await fs.writeFile(TEAMS_FILE, JSON.stringify({ teams: newTeams }, null, 2));
-  return NextResponse.json({ success: true });
+  res.setHeader("Allow", ["PUT", "DELETE"]);
+  res.status(405).end(`Method ${req.method} Not Allowed`);
 }
