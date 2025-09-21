@@ -15,20 +15,19 @@ export default function HomePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [editableContent, setEditableContent] = useState<any>(null)
 
+  // Charger le contenu de l’API ou contenu par défaut
   useEffect(() => {
     fetch("/api/content?page=home")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setContent(data)
         setEditableContent(data)
       })
       .catch(() => {
-        // Contenu par défaut si erreur
         const defaultContent = {
           hero: {
-            title: "Bienvenue sur NEMESIS",
-            subtitle:
-              "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
+            title: "NEMESIS",
+            subtitle: "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
             cta_primary: "Rejoindre Nemesis",
             cta_secondary: "Voir les équipes",
           },
@@ -68,8 +67,8 @@ export default function HomePage() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero Section - Centré */}
-        <section className="relative py-20 px-4 overflow-hidden text-center">
+        {/* Hero Section */}
+        <section className="relative py-20 px-4 text-center">
           {(user?.role === "admin" || user?.role === "developer") && (
             <Button
               onClick={() => setIsEditing(!isEditing)}
@@ -81,64 +80,56 @@ export default function HomePage() {
             </Button>
           )}
 
-          <div className="container mx-auto text-center relative">
-            <div className="max-w-4xl mx-auto animate-fade-in">
-              {isEditing ? (
-                <div className="space-y-4 mb-8">
-                  <input
-                    type="text"
-                    value={editableContent.hero?.title || ""}
-                    onChange={(e) =>
-                      setEditableContent({
-                        ...editableContent,
-                        hero: { ...editableContent.hero, title: e.target.value },
-                      })
-                    }
-                    className="w-full text-4xl md:text-6xl lg:text-7xl font-heading font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
-                    placeholder="Titre principal"
-                  />
-                  <textarea
-                    value={editableContent.hero?.subtitle || ""}
-                    onChange={(e) =>
-                      setEditableContent({
-                        ...editableContent,
-                        hero: { ...editableContent.hero, subtitle: e.target.value },
-                      })
-                    }
-                    className="w-full text-lg md:text-xl bg-transparent border border-white/20 rounded p-4 text-center text-white placeholder-white/50 resize-none"
-                    rows={3}
-                    placeholder="Sous-titre"
-                  />
-                  <div className="flex justify-center space-x-4">
-                    <Button onClick={saveContent} className="bg-white text-black hover:bg-white/90">
-                      Sauvegarder
-                    </Button>
-                    <Button
-                      onClick={() => setIsEditing(false)}
-                      variant="outline"
-                      className="border-white/20 text-white hover:bg-white/10"
-                    >
-                      Annuler
-                    </Button>
-                  </div>
+          <div className="container mx-auto max-w-4xl">
+            {isEditing ? (
+              <div className="space-y-4 mb-8">
+                <input
+                  type="text"
+                  value={editableContent.hero?.title || ""}
+                  onChange={(e) =>
+                    setEditableContent({
+                      ...editableContent,
+                      hero: { ...editableContent.hero, title: e.target.value },
+                    })
+                  }
+                  className="w-full text-4xl md:text-6xl lg:text-7xl font-heading font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
+                  placeholder="Titre principal"
+                />
+                <textarea
+                  value={editableContent.hero?.subtitle || ""}
+                  onChange={(e) =>
+                    setEditableContent({
+                      ...editableContent,
+                      hero: { ...editableContent.hero, subtitle: e.target.value },
+                    })
+                  }
+                  className="w-full text-lg md:text-xl bg-transparent border border-white/20 rounded p-4 text-center text-white placeholder-white/50 resize-none"
+                  rows={3}
+                  placeholder="Sous-titre"
+                />
+                <div className="flex justify-center space-x-4">
+                  <Button onClick={saveContent} className="bg-white text-black hover:bg-white/90">
+                    Sauvegarder
+                  </Button>
+                  <Button
+                    onClick={() => setIsEditing(false)}
+                    variant="outline"
+                    className="border-white/20 text-white hover:bg-white/10"
+                  >
+                    Annuler
+                  </Button>
                 </div>
-              ) : (
-                <>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight animate-slide-up">
-              {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}
-              <span className="text-white">
-            {content.hero?.title || "NEMESIS"}
-            </span>
-            </h1>
+              </div>
+            ) : (
+              <>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight animate-slide-up">
+                  {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}
+                  <span className="text-white">{content.hero?.title}</span>
+                </h1>
+                <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up">
+                  {content.hero?.subtitle}
+                </p>
 
-
-                  <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto text-pretty leading-relaxed animate-slide-up">
-                    {content.hero?.subtitle}
-                  </p>
-                </>
-              )}
-
-              {!isEditing && (
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-bounce-in">
                   <Button
                     size="lg"
@@ -146,7 +137,7 @@ export default function HomePage() {
                     asChild
                   >
                     <Link href={isAuthenticated ? "/explorer" : "/signup"}>
-                      {isAuthenticated ? "Explorer Nemesis" : content.hero?.cta_primary || "Rejoindre Nemesis"}
+                      {isAuthenticated ? "Explorer Nemesis" : content.hero?.cta_primary}
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
@@ -156,84 +147,32 @@ export default function HomePage() {
                     asChild
                     className="border-white/20 text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 bg-transparent"
                   >
-                    <Link href="/equipes">{content.hero?.cta_secondary || "Voir les équipes"}</Link>
+                    <Link href="/equipes">{content.hero?.cta_secondary}</Link>
                   </Button>
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </section>
 
-        {/* Features Section - Centré */}
+        {/* Features Section */}
         <section className="py-16 px-4 bg-white/5 text-center">
           <div className="container mx-auto">
             <div className="text-center mb-12 animate-slide-up">
-              {isEditing ? (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    value={editableContent.features?.title || ""}
-                    onChange={(e) =>
-                      setEditableContent({
-                        ...editableContent,
-                        features: { ...editableContent.features, title: e.target.value },
-                      })
-                    }
-                    className="text-3xl md:text-4xl font-heading font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
-                    placeholder="Titre des fonctionnalités"
-                  />
-                  <input
-                    type="text"
-                    value={editableContent.features?.subtitle || ""}
-                    onChange={(e) =>
-                      setEditableContent({
-                        ...editableContent,
-                        features: { ...editableContent.features, subtitle: e.target.value },
-                      })
-                    }
-                    className="text-lg bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
-                    placeholder="Sous-titre des fonctionnalités"
-                  />
-                </div>
-              ) : (
-                <>
-                  <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-glow">
-                    {content.features?.title || "Pourquoi choisir NEMESIS ?"}
-                  </h2>
-                  <p className="text-lg text-white/80 max-w-2xl mx-auto">
-                    {content.features?.subtitle || "Découvrez tous les avantages de notre plateforme esport"}
-                  </p>
-                </>
-              )}
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-glow">
+                {content.features?.title}
+              </h2>
+              <p className="text-lg text-white/80 max-w-2xl mx-auto">{content.features?.subtitle}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                {
-                  icon: Trophy,
-                  title: "Équipes Pro",
-                  desc: "Rejoignez des équipes compétitives et participez aux tournois esport de haut niveau.",
-                },
-                {
-                  icon: Users,
-                  title: "Communauté",
-                  desc: "Connectez-vous avec d'autres joueurs passionnés d'esport français.",
-                },
-                {
-                  icon: Target,
-                  title: "Recrutement",
-                  desc: "Trouvez votre équipe idéale grâce à notre système de recrutement avancé.",
-                },
-                {
-                  icon: Zap,
-                  title: "Performance",
-                  desc: "Suivez vos statistiques et améliorez vos performances en continu.",
-                },
-              ].map((feature, index) => (
-                <Card
-                  key={index}
-                  className="text-center group hover-lift bg-black/50 border-white/20 transition-all duration-500 animate-scale-in hover:border-glow"
-                >
+                { icon: Trophy, title: "Équipes Pro", desc: "Rejoignez des équipes compétitives et participez aux tournois esport de haut niveau." },
+                { icon: Users, title: "Communauté", desc: "Connectez-vous avec d'autres joueurs passionnés d'esport français." },
+                { icon: Target, title: "Recrutement", desc: "Trouvez votre équipe idéale grâce à notre système de recrutement avancé." },
+                { icon: Zap, title: "Performance", desc: "Suivez vos statistiques et améliorez vos performances en continu." },
+              ].map((feature, i) => (
+                <Card key={i} className="text-center group hover-lift bg-black/50 border-white/20 transition-all duration-500 animate-scale-in hover:border-glow">
                   <CardHeader>
                     <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:bg-white/20 transition-all duration-300 animate-float">
                       <feature.icon className="h-8 w-8 text-white" />
@@ -241,9 +180,7 @@ export default function HomePage() {
                     <CardTitle className="text-xl text-white text-glow">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base leading-relaxed text-white/80">
-                      {feature.desc}
-                    </CardDescription>
+                    <CardDescription className="text-base leading-relaxed text-white/80">{feature.desc}</CardDescription>
                   </CardContent>
                 </Card>
               ))}
@@ -251,7 +188,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Stats Section - Centré */}
+        {/* Stats Section */}
         <section className="py-16 px-4 text-center">
           <div className="container mx-auto">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
@@ -260,8 +197,8 @@ export default function HomePage() {
                 { value: "15+", label: "Joueurs inscrits" },
                 { value: "6", label: "Jeux supportés" },
                 { value: "24/7", label: "Support communauté" },
-              ].map((stat, index) => (
-                <div key={index} className="space-y-2 animate-bounce-in hover-lift">
+              ].map((stat, i) => (
+                <div key={i} className="space-y-2 animate-bounce-in hover-lift">
                   <div className="text-4xl md:text-5xl font-heading font-bold text-white text-glow animate-pulse-slow">
                     {stat.value}
                   </div>
@@ -272,35 +209,33 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section - Centré */}
+        {/* CTA Section */}
         {!isAuthenticated && (
           <section className="py-16 px-4 bg-white/5 text-center">
-            <div className="container mx-auto text-center">
-              <div className="max-w-3xl mx-auto animate-fade-in">
-                <div className="flex justify-center mb-6">
-                  <div className="flex items-center space-x-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-white text-white animate-glow" />
-                    ))}
-                  </div>
+            <div className="container mx-auto text-center max-w-3xl animate-fade-in">
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center space-x-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-white text-white animate-glow" />
+                  ))}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-glow">
-                  Prêt à rejoindre l'élite esport ?
-                </h2>
-                <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto leading-relaxed">
-                  Inscrivez-vous dès maintenant et commencez votre parcours dans l'esport compétitif français.
-                </p>
-                <Button
-                  size="lg"
-                  className="group bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
-                  asChild
-                >
-                  <Link href="/signup">
-                    Créer mon compte
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
               </div>
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-glow">
+                Prêt à rejoindre l'élite esport ?
+              </h2>
+              <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto leading-relaxed">
+                Inscrivez-vous dès maintenant et commencez votre parcours dans l'esport compétitif français.
+              </p>
+              <Button
+                size="lg"
+                className="group bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
+                asChild
+              >
+                <Link href="/signup">
+                  Créer mon compte
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
             </div>
           </section>
         )}
