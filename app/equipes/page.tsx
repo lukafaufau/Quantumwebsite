@@ -46,7 +46,7 @@ export default function TeamsPage() {
   })
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-black">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
       <main className="flex-1 py-8 px-4">
@@ -54,7 +54,7 @@ export default function TeamsPage() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-400">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
           </div>
@@ -100,27 +100,27 @@ export default function TeamsPage() {
                 return (
                   <Card
                     key={team.id}
-                    className="bg-white border border-gray-300 hover:shadow-lg transition-shadow"
+                    className="bg-white border border-gray-300 hover:shadow-xl transition-shadow"
                   >
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-xl font-bold">{team.name}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-black">{team.name}</CardTitle>
                         <Badge variant="secondary">{team.game}</Badge>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Users className="h-4 w-4" /> {allMembers.length} membres
                       </div>
                     </CardHeader>
 
                     <CardContent className="space-y-3">
-                      {team.description && <CardDescription>{team.description}</CardDescription>}
+                      {team.description && <CardDescription className="text-gray-700">{team.description}</CardDescription>}
 
                       <div className="flex flex-wrap gap-2">
                         {allMembers.map((member, index) => (
                           <div
                             key={member}
                             className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm ${
-                              index === 0 ? "font-bold" : "text-gray-700"
+                              index === 0 ? "font-bold text-black" : "text-gray-700"
                             }`}
                           >
                             {index === 0 ? (
@@ -170,10 +170,9 @@ export default function TeamsPage() {
           <div className="mt-12 text-center">
             <Card className="bg-white border border-gray-300">
               <CardContent className="py-8">
-                <h3 className="text-2xl font-heading font-bold mb-4">Envie de rejoindre une équipe ?</h3>
+                <h3 className="text-2xl font-heading font-bold mb-4 text-black">Envie de rejoindre une équipe ?</h3>
                 <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
-                  tournois esport.
+                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands tournois esport.
                 </p>
                 <Button
                   size="lg"
