@@ -86,8 +86,8 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          {/* Bas de page centré */}
-          <div className="mt-12 flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
+          {/* Bas de page centré avec padding */}
+          <div className="mt-12 py-6 px-4 md:px-0 flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
             <p>
               Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur : <span className="text-white font-medium">16k</span>
             </p>
