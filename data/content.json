@@ -2,7 +2,7 @@
   "pages": {
     "home": {
       "hero": {
-        "title": "Bienvenue sur Nemesis",
+        "title": "Bienvenqsdis",
         "subtitle": "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
         "cta_primary": "Rejoindre Nemesis",
         "cta_secondary": "Voir les équipes"
@@ -30,10 +30,22 @@
         ]
       },
       "stats": [
-        { "value": "3+", "label": "Équipes actives" },
-        { "value": "15+", "label": "Joueurs inscrits" },
-        { "value": "6", "label": "Jeux supportés" },
-        { "value": "24/7", "label": "Support communauté" }
+        {
+          "value": "3+",
+          "label": "Équipes actives"
+        },
+        {
+          "value": "15+",
+          "label": "Joueurs inscrits"
+        },
+        {
+          "value": "6",
+          "label": "Jeux supportés"
+        },
+        {
+          "value": "24/7",
+          "label": "Support communauté"
+        }
       ],
       "cta_final": {
         "title": "Prêt à rejoindre l'élite esport ?",
