@@ -61,7 +61,7 @@ export const mockTeams: Team[] = [
     name: "L'équipe Gen",
     captain: "Gen",
     members: ["HeadshotHero", "SprayControl", "ClutchMaster", "EntryFragger"],
-    game: "Rocket League"",
+    game: "Rocket League",
     description: "Cette équipe peut être attribuée à des joueurs de tous rangs, mais elle est le plus souvent réservée aux Diamant & Champions.",
   },
     {
