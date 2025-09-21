@@ -9,7 +9,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="text-2xl font-heading font-bold text-primary">
-              Quantum
+              Nemesis
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               La plateforme communautaire esport française de référence.
