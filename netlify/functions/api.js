@@ -26,7 +26,7 @@ exports.handler = async (event, context) => {
       {
         id: 1,
         username: "Wayzze",
-        email: "wayzze@quantum.gg",
+        email: "wayzze@Nemesis.gg",
         role: "admin",
         discord_id: "Wayzze#0001",
         status: "active",
@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
       {
         id: 2,
         username: "16k",
-        email: "16k@quantum.gg",
+        email: "16k@Nemesis.gg",
         role: "developer",
         discord_id: "16k#0002",
         status: "active",
@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
     announcements: [
       {
         id: 1,
-        title: "Bienvenue sur Quantum",
+        title: "Bienvenue sur Nemesis",
         description: "La plateforme esport française est maintenant en ligne !",
         type: "news",
         date: new Date().toISOString(),
