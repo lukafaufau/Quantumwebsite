@@ -1,49 +1,47 @@
+"use client"
+
 import Link from "next/link"
-import { Github, Twitter, Diamond as Discord } from "lucide-react"
+import { Diamond as Discord } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card/50">
-      <div className="container py-12">
+    <footer className="border-t border-white/20 bg-black/90 text-white">
+      <div className="container py-12 px-4 md:px-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
           {/* Brand */}
           <div className="space-y-4">
-            <Link href="/" className="text-2xl font-heading font-bold text-primary">
+            <Link href="/" className="text-2xl font-heading font-bold text-white">
               Nemesis
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-gray-400 leading-relaxed">
               La plateforme communautaire esport française de référence.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Discord className="h-5 w-5" />
                 <span className="sr-only">Discord</span>
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
               </a>
             </div>
           </div>
 
           {/* Navigation */}
           <div className="space-y-4">
-            <h3 className="font-heading font-semibold">Navigation</h3>
+            <h3 className="font-heading font-semibold text-white">Navigation</h3>
             <div className="space-y-2 text-sm">
-              <Link href="/explorer" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/explorer" className="block text-gray-400 hover:text-white transition-colors">
                 Explorer
               </Link>
-              <Link href="/equipes" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/equipes" className="block text-gray-400 hover:text-white transition-colors">
                 Équipes
               </Link>
-              <Link href="/joueurs" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/joueurs" className="block text-gray-400 hover:text-white transition-colors">
                 Joueurs
               </Link>
-              <Link href="/recrutement" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/recrutement" className="block text-gray-400 hover:text-white transition-colors">
                 Recrutement
               </Link>
             </div>
@@ -51,51 +49,50 @@ export function Footer() {
 
           {/* Support */}
           <div className="space-y-4">
-            <h3 className="font-heading font-semibold">Support</h3>
+            <h3 className="font-heading font-semibold text-white">Support</h3>
             <div className="space-y-2 text-sm">
-              <Link href="/credits" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/credits" className="block text-gray-400 hover:text-white transition-colors">
                 Crédits
               </Link>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 Contact
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 FAQ
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 Règlement
-              </a>
+              </Link>
             </div>
           </div>
 
           {/* Legal */}
           <div className="space-y-4">
-            <h3 className="font-heading font-semibold">Légal</h3>
+            <h3 className="font-heading font-semibold text-white">Légal</h3>
             <div className="space-y-2 text-sm">
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 Mentions légales
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 Politique de confidentialité
-              </a>
-              <a href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link href="#" className="block text-gray-400 hover:text-white transition-colors">
                 CGU
-              </a>
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-center md:text-left text-sm text-muted-foreground">
-              <p>
-                Chef de projet : <span className="text-primary font-medium">Wayzze</span> | Développeur :{" "}
-                <span className="text-primary font-medium">16k</span>
-              </p>
-              <p className="mt-1">© 2024 Nemesis Esports. Tous droits réservés.</p>
-            </div>
-            <div className="text-sm text-muted-foreground">Version 1.0.0</div>
+        {/* Bottom */}
+        <div className="border-t border-white/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+          <div className="text-center md:text-left">
+            <p>
+              Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur :{" "}
+              <span className="text-white font-medium">16k</span>
+            </p>
+            <p className="mt-1">© 2024 Nemesis Esports. Tous droits réservés.</p>
           </div>
+          <div className="mt-2 md:mt-0">Version 1.0.0</div>
         </div>
       </div>
     </footer>
