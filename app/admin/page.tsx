@@ -1,165 +1,251 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-interface Team {
-  id: number;
-  name: string;
-  captain: string;
-  members: string[];
-  game: string;
-  description?: string;
-  status: string;
-}
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
+import { isAdmin } from "@/lib/auth";
+import { AdminAPI } from "@/lib/admin-api";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdvancedUserManagement } from "@/components/admin/advanced-user-management";
+import {
+  Shield,
+  Users,
+  UserPlus,
+  Trophy,
+  Megaphone,
+  CheckCircle,
+  AlertTriangle,
+  Server,
+  Database,
+  HardDrive,
+  Cpu,
+  Clock,
+  Download,
+  RefreshCw,
+  Settings,
+  BarChart3,
+  PieChart,
+  LineChart,
+} from "lucide-react";
 
 export default function AdminPage() {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [name, setName] = useState("");
-  const [captain, setCaptain] = useState("");
-  const [game, setGame] = useState("");
-  const [description, setDescription] = useState("");
-
-  // Récupérer les équipes
-  const fetchTeams = async () => {
-    try {
-      const res = await fetch("/api/teams");
-      const data = await res.json();
-      if (data.success) setTeams(data.data);
-    } catch (err) {
-      console.error("Erreur fetch équipes :", err);
-    }
-  };
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchTeams();
-  }, []);
+    if (!isAuthenticated) return router.push("/login");
+    if (!isAdmin(user)) return router.push("/");
+    loadStats();
+  }, [user, isAuthenticated, router]);
 
-  // Ajouter une équipe
-  const addTeam = async () => {
-    if (!name || !captain || !game) return alert("Remplis tous les champs");
-
+  const loadStats = async () => {
     try {
-      const res = await fetch("/api/teams", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, captain, game, description }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setTeams([...teams, data.data]);
-        setName("");
-        setCaptain("");
-        setGame("");
-        setDescription("");
-      }
+      setLoading(true);
+      const statsData = await AdminAPI.getStats(); // Assurez-vous que AdminAPI renvoie des mock ou données réelles
+      setStats(statsData);
     } catch (err) {
-      console.error("Erreur ajout équipe :", err);
+      console.error("Erreur stats:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Supprimer une équipe
-  const deleteTeam = async (id: number) => {
-    if (!confirm("Voulez-vous vraiment supprimer cette équipe ?")) return;
+  const refreshStats = async () => {
+    setRefreshing(true);
+    await loadStats();
+    setRefreshing(false);
+  };
 
+  const createBackup = async () => {
     try {
-      const res = await fetch(`/api/teams/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) setTeams(teams.filter((t) => t.id !== id));
-    } catch (err) {
-      console.error("Erreur suppression équipe :", err);
+      await AdminAPI.createBackup();
+      alert("Sauvegarde créée avec succès!");
+    } catch {
+      alert("Erreur lors de la création de la sauvegarde");
     }
   };
 
-  // Mettre à jour une équipe
-  const updateTeam = async (id: number) => {
-    const newName = prompt("Nouveau nom de l'équipe :") || "";
-    const newCaptain = prompt("Nouveau capitaine :") || "";
-    const newGame = prompt("Nouveau jeu :") || "";
-    const newDescription = prompt("Nouvelle description :") || "";
-
-    if (!newName || !newCaptain || !newGame) return alert("Tous les champs sont requis");
-
-    try {
-      const res = await fetch(`/api/teams/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: newName,
-          captain: newCaptain,
-          game: newGame,
-          description: newDescription,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setTeams(teams.map((t) => (t.id === id ? data.data : t)));
-      }
-    } catch (err) {
-      console.error("Erreur mise à jour équipe :", err);
-    }
-  };
+  if (!isAuthenticated || !isAdmin(user)) return null;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white/60">Chargement du tableau de bord...</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl mb-4">Admin - Gestion des équipes</h1>
-
-      <div className="mb-6 space-y-2">
-        <input
-          placeholder="Nom de l'équipe"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border px-2 py-1"
-        />
-        <input
-          placeholder="Capitaine"
-          value={captain}
-          onChange={(e) => setCaptain(e.target.value)}
-          className="border px-2 py-1"
-        />
-        <input
-          placeholder="Jeu"
-          value={game}
-          onChange={(e) => setGame(e.target.value)}
-          className="border px-2 py-1"
-        />
-        <input
-          placeholder="Description (optionnel)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="border px-2 py-1"
-        />
-        <button onClick={addTeam} className="bg-blue-500 text-white px-4 py-2">
-          Ajouter
-        </button>
-      </div>
-
-      <h2 className="text-xl mb-2">Liste des équipes</h2>
-      <ul className="space-y-2">
-        {teams.map((team) => (
-          <li key={team.id} className="flex justify-between items-center border p-2 rounded">
-            <div>
-              <strong>{team.name}</strong> - {team.captain} ({team.game})
-              {team.description && <p className="text-sm text-gray-500">{team.description}</p>}
+    <div className="min-h-screen flex flex-col bg-black text-white">
+      <Navbar />
+      <main className="flex-1 py-8 px-4">
+        <div className="container mx-auto">
+          {/* En-tête */}
+          <div className="mb-8 text-center animate-fade-in">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="p-3 bg-white/10 rounded-lg animate-glow">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-5xl font-heading font-bold text-glow">QUANTUM ADMIN</h1>
+                <p className="text-white/60 text-lg">Tableau de bord administrateur avancé</p>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => updateTeam(team.id)}
-                className="bg-yellow-400 px-2 py-1 text-white rounded"
+
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 animate-pulse-slow">
+                <Shield className="h-3 w-3 mr-1" /> Admin Access
+              </Badge>
+              <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
+                {user?.username}
+              </Badge>
+              <Button
+                onClick={refreshStats}
+                disabled={refreshing}
+                variant="outline"
+                size="sm"
+                className="border-white/20 text-white hover:bg-white/10 bg-transparent"
               >
-                Modifier
-              </button>
-              <button
-                onClick={() => deleteTeam(team.id)}
-                className="bg-red-500 px-2 py-1 text-white rounded"
-              >
-                Supprimer
-              </button>
+                <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} />
+                Actualiser
+              </Button>
             </div>
-          </li>
-        ))}
-      </ul>
+          </div>
+
+          {/* Statistiques principales */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Utilisateurs */}
+            <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-white/20 hover-lift animate-scale-in">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Utilisateurs</CardTitle>
+                <Users className="h-4 w-4 text-blue-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white text-glow">{stats?.users?.total || 0}</div>
+                <p className="text-xs text-blue-400">+{stats?.users?.todaySignups || 0} aujourd'hui</p>
+                <div className="flex space-x-2 mt-2">
+                  <Badge className="bg-green-500/20 text-green-400 text-xs">{stats?.users?.active || 0} actifs</Badge>
+                  <Badge className="bg-red-500/20 text-red-400 text-xs">{stats?.users?.banned || 0} bannis</Badge>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Équipes */}
+            <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-white/20 hover-lift animate-scale-in">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Équipes</CardTitle>
+                <Trophy className="h-4 w-4 text-green-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white text-glow">{stats?.teams?.total || 0}</div>
+                <p className="text-xs text-green-400">{stats?.teams?.active || 0} actives</p>
+              </CardContent>
+            </Card>
+            {/* Candidatures */}
+            <Card className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 border-white/20 hover-lift animate-scale-in">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Candidatures</CardTitle>
+                <UserPlus className="h-4 w-4 text-purple-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white text-glow">{stats?.applications?.pending || 0}</div>
+                <p className="text-xs text-purple-400">En attente</p>
+              </CardContent>
+            </Card>
+            {/* Annonces */}
+            <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-white/20 hover-lift animate-scale-in">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Annonces</CardTitle>
+                <Megaphone className="h-4 w-4 text-orange-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white text-glow">{stats?.announcements?.total || 0}</div>
+                <p className="text-xs text-orange-400">{stats?.announcements?.visible || 0} visibles</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Actions rapides */}
+          <div className="grid md:grid-cols-4 gap-4 mb-8">
+            <Button onClick={createBackup} className="bg-gradient-to-r from-green-500 to-emerald-500 text-white h-16">
+              <Download className="h-5 w-5 mr-2" />
+              Créer une sauvegarde
+            </Button>
+            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-16">
+              Restaurer
+            </Button>
+            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-16">
+              <BarChart3 className="h-5 w-5 mr-2" />
+              Rapports
+            </Button>
+            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-16">
+              <Settings className="h-5 w-5 mr-2" />
+              Configuration
+            </Button>
+          </div>
+
+          {/* Onglets */}
+          <Tabs defaultValue="users" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-6 bg-white/10 border-white/20">
+              <TabsTrigger value="users" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <Users className="h-4 w-4 mr-2" /> Utilisateurs
+              </TabsTrigger>
+              <TabsTrigger value="teams" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <Trophy className="h-4 w-4 mr-2" /> Équipes
+              </TabsTrigger>
+              <TabsTrigger value="applications" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <UserPlus className="h-4 w-4 mr-2" /> Candidatures
+              </TabsTrigger>
+              <TabsTrigger value="announcements" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <Megaphone className="h-4 w-4 mr-2" /> Annonces
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <BarChart3 className="h-4 w-4 mr-2" /> Analytics
+              </TabsTrigger>
+              <TabsTrigger value="system" className="text-white data-[state=active]:bg-white data-[state=active]:text-black">
+                <Server className="h-4 w-4 mr-2" /> Système
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="users">
+              <AdvancedUserManagement />
+            </TabsContent>
+            <TabsContent value="teams">
+              <div className="text-center py-12">
+                <Trophy className="h-16 w-16 text-white/20 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Gestion des équipes</h3>
+                <p className="text-white/60 mb-6">Module de gestion avancée des équipes en développement</p>
+                <Button className="bg-white text-black hover:bg-white/90">
+                  <Trophy className="h-4 w-4 mr-2" /> Bientôt disponible
+                </Button>
+              </div>
+            </TabsContent>
+            <TabsContent value="applications">
+              <div className="text-center py-12">
+                <UserPlus className="h-16 w-16 text-white/20 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Candidatures</h3>
+                <p className="text-white/60 mb-6">{stats?.applications?.pending || 0} candidatures en attente</p>
+              </div>
+            </TabsContent>
+            <TabsContent value="announcements">
+              <div className="text-center py-12">
+                <Megaphone className="h-16 w-16 text-white/20 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Annonces</h3>
+                <p className="text-white/60 mb-6">{stats?.announcements?.total || 0} annonces publiées</p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
