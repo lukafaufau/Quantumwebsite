@@ -72,15 +72,15 @@ export default function TeamsPage() {
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-gray-900 border border-gray-700 text-white"
+                className="pl-10 bg-black border border-gray-700 text-white"
               />
             </div>
 
             <Select value={selectedGame} onValueChange={setSelectedGame}>
-              <SelectTrigger className="w-full sm:w-48 bg-gray-900 border border-gray-700 text-white">
+              <SelectTrigger className="w-full sm:w-48 bg-black border border-gray-700 text-white">
                 <SelectValue placeholder="Tous les jeux" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 text-white border border-gray-700">
+              <SelectContent className="bg-black text-white border border-gray-700">
                 <SelectItem value="all">Tous les jeux</SelectItem>
                 {[...new Set(teams.map((t) => t.game))].map((game) => (
                   <SelectItem key={game} value={game}>
@@ -107,7 +107,7 @@ export default function TeamsPage() {
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold text-white">{team.name}</CardTitle>
-                        <Badge variant="secondary">{team.game}</Badge>
+                        <Badge variant="secondary" className="bg-gray-800 text-gray-300">{team.game}</Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-400">
                         <Users className="h-4 w-4" /> {allMembers.length} membres
