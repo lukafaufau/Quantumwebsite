@@ -67,15 +67,15 @@ export default function TeamsPage() {
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white border border-gray-300 text-black"
+                className="pl-10 bg-gray-100 border border-gray-300 text-black"
               />
             </div>
 
             <Select value={selectedGame} onValueChange={setSelectedGame}>
-              <SelectTrigger className="w-full sm:w-48 bg-white border border-gray-300 text-black">
+              <SelectTrigger className="w-full sm:w-48 bg-gray-100 border border-gray-300 text-black">
                 <SelectValue placeholder="Tous les jeux" />
               </SelectTrigger>
-              <SelectContent className="bg-white text-black border border-gray-300">
+              <SelectContent className="bg-gray-100 text-black border border-gray-300">
                 <SelectItem value="all">Tous les jeux</SelectItem>
                 {[...new Set(teams.map((t) => t.game))].map((game) => (
                   <SelectItem key={game} value={game}>
@@ -88,8 +88,8 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-white border border-gray-300">
-              <CardContent className="py-8 text-center text-gray-500">
+            <Card className="bg-gray-100 border border-gray-300">
+              <CardContent className="py-8 text-center text-gray-600">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
             </Card>
@@ -100,7 +100,7 @@ export default function TeamsPage() {
                 return (
                   <Card
                     key={team.id}
-                    className="bg-white border border-gray-300 hover:shadow-xl transition-shadow"
+                    className="bg-gray-100 border border-gray-300 hover:shadow-xl transition-shadow"
                   >
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -150,7 +150,7 @@ export default function TeamsPage() {
                         </Button>
                         <Button
                           size="sm"
-                          className="flex-1 bg-black text-white hover:bg-white hover:text-black transition-colors"
+                          className="flex-1 bg-black text-white hover:bg-gray-200 hover:text-black transition-colors"
                           asChild
                         >
                           <Link href="/recrutement">
@@ -168,7 +168,7 @@ export default function TeamsPage() {
 
           {/* Call to Action */}
           <div className="mt-12 text-center">
-            <Card className="bg-white border border-gray-300">
+            <Card className="bg-gray-100 border border-gray-300">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4 text-black">Envie de rejoindre une équipe ?</h3>
                 <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
@@ -176,7 +176,7 @@ export default function TeamsPage() {
                 </p>
                 <Button
                   size="lg"
-                  className="bg-black text-white hover:bg-white hover:text-black transition-colors"
+                  className="bg-black text-white hover:bg-gray-200 hover:text-black transition-colors"
                 >
                   <Link href="/recrutement">Postuler maintenant</Link>
                 </Button>
