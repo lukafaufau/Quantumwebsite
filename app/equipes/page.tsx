@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,9 +9,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { mockTeams, availableGames, getPlayersByTeam } from "@/lib/data"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
-import Link from "next/link"
+import { mockTeams, availableGames, getPlayersByTeam } from "@/lib/data"
 
 export default function TeamsPage() {
   const [selectedGame, setSelectedGame] = useState<string>("all")
@@ -26,14 +26,31 @@ export default function TeamsPage() {
     return matchesGame && matchesSearch
   })
 
+  const renderMembers = (team: typeof mockTeams[number]) => {
+    return team.members.map((member) => {
+      const isCaptain = member === team.captain
+      return (
+        <Badge
+          key={member}
+          variant={isCaptain ? "secondary" : "outline"}
+          className="flex items-center gap-1 text-xs"
+        >
+          {isCaptain && <Crown className="h-3 w-3 text-yellow-400" />}
+          {member}
+        </Badge>
+      )
+    })
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
+          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
+            <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
             <p className="text-lg text-muted-foreground">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
@@ -75,69 +92,52 @@ export default function TeamsPage() {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTeams.map((team) => {
-                const teamPlayers = getPlayersByTeam(team.name)
-
-                return (
-                  <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <CardTitle className="text-xl">{team.name}</CardTitle>
-                          <Badge variant="secondary">{team.game}</Badge>
-                        </div>
-                        <div className="text-right text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            {team.members.length}
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {team.description && <CardDescription>{team.description}</CardDescription>}
-
+              {filteredTeams.map((team) => (
+                <Card key={team.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
                       <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Crown className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium">Capitaine:</span>
-                          <span className="text-sm text-muted-foreground">{team.captain}</span>
-                        </div>
-
-                        <div className="space-y-1">
-                          <span className="text-sm font-medium">Membres:</span>
-                          <div className="flex flex-wrap gap-1">
-                            {team.members.map((member) => (
-                              <Badge key={member} variant="outline" className="text-xs">
-                                {member}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
+                        <CardTitle className="text-xl">{team.name}</CardTitle>
+                        <Badge variant="secondary">{team.game}</Badge>
                       </div>
-
-                      <div className="flex gap-2 pt-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="flex-1 bg-transparent"
-                          onClick={() => {
-                            alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`)
-                          }}
-                        >
-                          Voir détails
-                        </Button>
-                        <Button size="sm" className="flex-1" asChild>
-                          <Link href="/recrutement">
-                            <UserPlus className="h-4 w-4 mr-1" />
-                            Rejoindre
-                          </Link>
-                        </Button>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Users className="h-4 w-4 mr-1" />
+                        {team.members.length}
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4">
+                    {team.description && <CardDescription>{team.description}</CardDescription>}
+
+                    <div className="space-y-2">
+                      <span className="text-sm font-medium">Membres:</span>
+                      <div className="flex flex-wrap gap-1">{renderMembers(team)}</div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 bg-transparent"
+                        onClick={() => {
+                          alert(
+                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`
+                          )
+                        }}
+                      >
+                        Voir détails
+                      </Button>
+                      <Button size="sm" className="flex-1" asChild>
+                        <Link href="/recrutement">
+                          <UserPlus className="h-4 w-4 mr-1" />
+                          Rejoindre
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
 
