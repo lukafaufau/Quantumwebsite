@@ -22,7 +22,6 @@ export default function TeamsPage() {
       !searchTerm ||
       team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       team.captain.toLowerCase().includes(searchTerm.toLowerCase())
-
     return matchesGame && matchesSearch
   })
 
@@ -42,7 +41,7 @@ export default function TeamsPage() {
           {/* Filters */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-label="Rechercher" />
               <Input
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
@@ -76,7 +75,7 @@ export default function TeamsPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTeams.map((team) => {
-                const teamPlayers = getPlayersByTeam(team.name)
+                const teamPlayers = getPlayersByTeam(team.name) || []
 
                 return (
                   <Card key={team.id} className="hover:shadow-lg transition-shadow">
@@ -88,18 +87,19 @@ export default function TeamsPage() {
                         </div>
                         <div className="text-right text-sm text-muted-foreground">
                           <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            {team.members.length}
+                            <Users className="h-4 w-4 mr-1" aria-label="Nombre de membres" />
+                            {teamPlayers.length}
                           </div>
                         </div>
                       </div>
                     </CardHeader>
+
                     <CardContent className="space-y-4">
                       {team.description && <CardDescription>{team.description}</CardDescription>}
 
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <Crown className="h-4 w-4 text-primary" />
+                          <Crown className="h-4 w-4 text-primary" aria-label="Capitaine" />
                           <span className="text-sm font-medium">Capitaine:</span>
                           <span className="text-sm text-muted-foreground">{team.captain}</span>
                         </div>
@@ -107,7 +107,7 @@ export default function TeamsPage() {
                         <div className="space-y-1">
                           <span className="text-sm font-medium">Membres:</span>
                           <div className="flex flex-wrap gap-1">
-                            {team.members.map((member) => (
+                            {teamPlayers.map((member) => (
                               <Badge key={member} variant="outline" className="text-xs">
                                 {member}
                               </Badge>
@@ -117,22 +117,27 @@ export default function TeamsPage() {
                       </div>
 
                       <div className="flex gap-2 pt-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="flex-1 bg-transparent"
                           onClick={() => {
-                            alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`)
+                            alert(
+                              `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${teamPlayers.length}\n\nDescription: ${
+                                team.description || "Aucune description"
+                              }`
+                            )
                           }}
                         >
                           Voir détails
                         </Button>
-                        <Button size="sm" className="flex-1" asChild>
-                          <Link href="/recrutement">
-                            <UserPlus className="h-4 w-4 mr-1" />
+
+                        <Link href="/recrutement" className="flex-1">
+                          <Button size="sm" className="w-full flex items-center justify-center gap-1">
+                            <UserPlus className="h-4 w-4" />
                             Rejoindre
-                          </Link>
-                        </Button>
+                          </Button>
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>
@@ -150,9 +155,9 @@ export default function TeamsPage() {
                   Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
                   tournois esport.
                 </p>
-                <Button size="lg" asChild>
-                  <Link href="/recrutement">Postuler maintenant</Link>
-                </Button>
+                <Link href="/recrutement">
+                  <Button size="lg">Postuler maintenant</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
