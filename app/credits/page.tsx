@@ -14,7 +14,6 @@ export default function CreditsPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [editableContent, setEditableContent] = useState<any>(null)
 
-  // Fetch content
   useEffect(() => {
     fetch("/api/content?page=credits")
       .then(res => res.json())
@@ -65,7 +64,7 @@ export default function CreditsPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 px-4 text-center">
+        <section className="py-20 px-4 text-center">
           {(user?.role === "admin" || user?.role === "developer") && (
             <Button
               onClick={() => setIsEditing(!isEditing)}
@@ -132,29 +131,35 @@ export default function CreditsPage() {
         {/* Team Section */}
         <section className="py-16 px-4 text-center">
           <div className="container mx-auto">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-glow">Équipe Nemesis</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-glow">
+              Équipe Nemesis
+            </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {content.team?.map((member: any, i: number) => (
-                <Card key={i} className="bg-black/50 border-white/20 text-center hover-lift transition-all duration-500">
-                  <CardHeader>
-                    <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit">
-                      <Star className="h-8 w-8 text-white" />
-                    </div>
-                    <CardTitle className="text-xl text-white">{member.name}</CardTitle>
-                    <CardDescription className="text-white/60">{member.role}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-center space-x-2 mt-2">
-                      <Button size="sm" className="bg-white text-black hover:bg-white/90">
-                        Profil
-                      </Button>
-                      <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                        Message
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )) || <p className="text-white/50">Aucun membre trouvé.</p>}
+              {content.team && content.team.length > 0 ? (
+                content.team.map((member: any, i: number) => (
+                  <Card key={i} className="bg-black/50 border-white/20 text-center hover-lift transition-all duration-500">
+                    <CardHeader>
+                      <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit">
+                        <Star className="h-8 w-8 text-white" />
+                      </div>
+                      <CardTitle className="text-xl text-white">{member.name}</CardTitle>
+                      <CardDescription className="text-white/60">{member.role}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-center space-x-2 mt-2">
+                        <Button size="sm" className="bg-white text-black hover:bg-white/90">
+                          Profil
+                        </Button>
+                        <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                          Message
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-white/50">Aucun membre trouvé.</p>
+              )}
             </div>
           </div>
         </section>
