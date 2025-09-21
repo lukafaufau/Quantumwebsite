@@ -1,174 +1,207 @@
 "use client"
 
+import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
-import { useState, useEffect } from "react"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Star } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
+import { useState } from "react"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
 
-export default function CreditsPage() {
-  const { user } = useAuth()
-  const [content, setContent] = useState<any>(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [editableContent, setEditableContent] = useState<any>(null)
+const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
 
-  // Fetch content
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const res = await fetch("/api/content?page=credits")
-        const data = await res.json()
-        setContent(data)
-        setEditableContent(data)
-      } catch {
-        // fallback content
-        const defaultContent = {
-          hero: {
-            title: "Crédits",
-            subtitle: "Merci à toutes les personnes qui ont contribué au succès de Nemesis Esports.",
-          },
-          team: [
-            { name: "Wayzze", role: "Fondateur" },
-            { name: "16k", role: "Dev" },
-          ],
-        }
-        setContent(defaultContent)
-        setEditableContent(defaultContent)
-      }
-    }
-    fetchContent()
-  }, [])
+export function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname() || "/"
 
-  const saveContent = async () => {
-    if (!editableContent) return
-    try {
-      await fetch("/api/content", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ page: "credits", content: editableContent }),
-      })
-      setContent(editableContent)
-      setIsEditing(false)
-    } catch (err) {
-      console.error("Erreur lors de la sauvegarde :", err)
-    }
-  }
+  const links = [
+    { href: "/", label: "Accueil" },
+    { href: "/explorer", label: "Explorer" },
+    { href: "/equipes", label: "Équipes" },
+    { href: "/joueurs", label: "Joueurs" },
+    ...(isAuthenticated
+      ? [
+          { href: "/recrutement", label: "Recrutement" },
+          { href: "/profil", label: "Profil" },
+          ...(user?.role === "admin" || user?.role === "developer"
+            ? [{ href: "/admin", label: "Administration" }]
+            : []),
+        ]
+      : []),
+    { href: "/credits", label: "Crédits" },
+  ]
 
-  if (!content)
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white animate-pulse-slow">Chargement...</div>
-      </div>
-    )
+  const NavLinks = () =>
+    links.map((link) => {
+      const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
+      return (
+        <Link
+          key={link.href}
+          href={link.href}
+          onClick={() => setIsOpen(false)}
+          className={`
+            relative text-sm font-medium transition-all duration-300 transform hover:scale-105
+            ${isActive ? "text-white" : "text-gray-300 hover:text-white"}
+          `}
+        >
+          {link.label}
+          {isActive && (
+            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-white rounded-sm animate-fade-in"></span>
+          )}
+        </Link>
+      )
+    })
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white font-sans">
-      <Navbar />
+    <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80">
+      <div className="container flex h-16 items-center justify-between px-3 lg:px-5">
 
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative py-20 px-4 text-center">
-          {(user?.role === "admin" || user?.role === "developer") && (
-            <Button
-              onClick={() => setIsEditing(!isEditing)}
-              className="fixed top-20 right-4 z-40 bg-white/10 hover:bg-white/20 border-white/20"
-              size="sm"
-            >
-              {isEditing ? "Annuler" : "Modifier"}
-            </Button>
+        {/* Logo + texte */}
+        <Link href="/" className="flex items-center space-x-4">
+          <Image
+            src={LogoImage}
+            alt="Logo"
+            width={28}
+            height={28}
+            className="transition-all duration-300 hover:scale-110"
+          />
+          <span className="text-2xl font-bold text-white font-heading transition-all duration-300">
+            NEMESIS
+          </span>
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden lg:flex items-center space-x-8">{NavLinks()}</div>
+
+        {/* Right section: user/login */}
+        <div className="flex items-center space-x-4">
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                {/* Button doit propager correctement le clic */}
+                <button
+                  className="flex items-center space-x-2 bg-transparent border-none p-1 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
+                  <User className="h-5 w-5 text-white" />
+                  <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
+                </button>
+              </DropdownMenuTrigger>
+
+              {/* forceMount garantit que le menu est monté */}
+              <DropdownMenuContent
+                align="end"
+                sideOffset={5}
+                forceMount
+                className="w-48 bg-black border-white/20 animate-scale-in z-50"
+              >
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/profil"
+                    className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                  >
+                    <Settings className="mr-2 h-4 w-4" /> Profil
+                  </Link>
+                </DropdownMenuItem>
+                {(user?.role === "admin" || user?.role === "developer") && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/admin"
+                      className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                    >
+                      <Shield className="mr-2 h-4 w-4" /> Administration
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                >
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden sm:flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
+                <Link href="/login" className="text-white font-medium">
+                  Connexion
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                asChild
+                className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105"
+              >
+                <Link href="/signup">Inscription</Link>
+              </Button>
+            </div>
           )}
 
-          <div className="container mx-auto max-w-4xl">
-            {isEditing ? (
-              <div className="space-y-4 mb-8">
-                <input
-                  type="text"
-                  value={editableContent.hero?.title || ""}
-                  onChange={(e) =>
-                    setEditableContent({
-                      ...editableContent,
-                      hero: { ...editableContent.hero, title: e.target.value },
-                    })
-                  }
-                  className="w-full text-4xl md:text-6xl lg:text-7xl font-heading font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
-                  placeholder="Titre principal"
-                />
-                <textarea
-                  value={editableContent.hero?.subtitle || ""}
-                  onChange={(e) =>
-                    setEditableContent({
-                      ...editableContent,
-                      hero: { ...editableContent.hero, subtitle: e.target.value },
-                    })
-                  }
-                  className="w-full text-lg md:text-xl bg-transparent border border-white/20 rounded p-4 text-center text-white placeholder-white/50 resize-none"
-                  rows={3}
-                  placeholder="Sous-titre"
-                />
-                <div className="flex justify-center space-x-4">
-                  <Button onClick={saveContent} className="bg-white text-black hover:bg-white/90">
-                    Sauvegarder
-                  </Button>
-                  <Button
-                    onClick={() => setIsEditing(false)}
-                    variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10"
-                  >
-                    Annuler
-                  </Button>
-                </div>
+          {/* Mobile menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
+                <Menu className="h-6 w-6 text-white" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left"
+            >
+              <div className="flex flex-col space-y-6 mt-10 text-center">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4"
+                >
+                  <Image src={LogoImage} alt="Logo" width={32} height={32} />
+                  <span>NEMESIS</span>
+                </Link>
+                <div className="flex flex-col space-y-6 items-center">{NavLinks()}</div>
+                {!isAuthenticated && (
+                  <div className="flex flex-col space-y-2 pt-6 border-t border-white/20 items-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="hover:bg-white/10 transition-all duration-300"
+                    >
+                      <Link href="/login" className="text-white">
+                        Connexion
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="bg-white text-black hover:bg-white/90 transition-all duration-300"
+                    >
+                      <Link href="/signup">Inscription</Link>
+                    </Button>
+                  </div>
+                )}
               </div>
-            ) : (
-              <>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight">
-                  {content.hero?.title}
-                </h1>
-                <p className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
-                  {content.hero?.subtitle}
-                </p>
-              </>
-            )}
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="py-16 px-4 text-center">
-          <div className="container mx-auto">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-glow">Équipe Nemesis</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {content.team?.length ? (
-                content.team.map((member: any, i: number) => (
-                  <Card key={i} className="bg-black/50 border-white/20 text-center hover-lift transition-all duration-500">
-                    <CardHeader>
-                      <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit">
-                        <Star className="h-8 w-8 text-white" />
-                      </div>
-                      <CardTitle className="text-xl text-white">{member.name}</CardTitle>
-                      <CardDescription className="text-white/60">{member.role}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex justify-center space-x-2 mt-2">
-                        <Button size="sm" className="bg-white text-black hover:bg-white/90">
-                          Profil
-                        </Button>
-                        <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                          Message
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-white/50">Aucun membre trouvé.</p>
-              )}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </nav>
   )
 }
