@@ -88,7 +88,7 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-gray-900 border border-gray-700">
+            <Card className="bg-black border border-gray-700">
               <CardContent className="py-8 text-center text-gray-500">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
@@ -100,7 +100,7 @@ export default function TeamsPage() {
                 return (
                   <Card
                     key={team.id}
-                    className="bg-gray-900 border border-gray-700 hover:shadow-lg transition-shadow"
+                    className="bg-black border border-gray-700 hover:shadow-lg transition-shadow"
                   >
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -170,7 +170,7 @@ export default function TeamsPage() {
 
           {/* Call to Action */}
           <div className="mt-12 text-center">
-            <Card className="bg-gray-900 border border-gray-700">
+            <Card className="bg-black border border-gray-700">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4 text-white">
                   Envie de rejoindre une équipe ?
