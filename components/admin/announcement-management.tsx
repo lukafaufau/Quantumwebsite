@@ -72,28 +72,7 @@ export function AnnouncementManagement() {
   const fetchAnnouncements = async () => {
     try {
       setLoading(true)
-      // Essayer d'abord l'API locale
-      let response = await fetch("/api/announcements")
-      
-      if (!response.ok) {
-        // Si l'API locale échoue, charger depuis les données statiques
-        console.log("API locale non disponible, chargement des données par défaut")
-        setAnnouncements([
-          {
-            id: 1,
-            title: "Bienvenue sur Nemesis",
-            description: "La plateforme esport française est maintenant en ligne !",
-            type: "news",
-            game: "",
-            date: new Date().toISOString(),
-            author: "Admin",
-            visible: true,
-            priority: "high"
-          }
-        ])
-        return
-      }
-      
+      const response = await fetch("/api/announcements")
       const data = await response.json()
       if (data.success) {
         setAnnouncements(data.data || [])
@@ -103,20 +82,7 @@ export function AnnouncementManagement() {
       }
     } catch (error) {
       console.error("Erreur lors du chargement des annonces:", error)
-      // Données par défaut en cas d'erreur
-      setAnnouncements([
-        {
-          id: 1,
-          title: "Bienvenue sur Nemesis",
-          description: "La plateforme esport française est maintenant en ligne !",
-          type: "news",
-          game: "",
-          date: new Date().toISOString(),
-          author: "Admin",
-          visible: true,
-          priority: "high"
-        }
-      ])
+      setAnnouncements([])
     } finally {
       setLoading(false)
     }
@@ -140,55 +106,19 @@ export function AnnouncementManagement() {
         }),
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchAnnouncements()
-          setIsCreateDialogOpen(false)
-          setNewAnnouncement({ title: "", description: "", type: "general", game: "", priority: "medium" })
-          alert("Annonce créée avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la création de l'annonce: " + (result.error || "Erreur inconnue"))
-        }
-      } else {
-        // Simulation locale si l'API ne fonctionne pas
-        const newId = Math.max(...announcements.map(a => a.id), 0) + 1
-        const newAnnouncementData: Announcement = {
-          id: newId,
-          title: newAnnouncement.title!,
-          description: newAnnouncement.description!,
-          type: newAnnouncement.type || "general",
-          game: newAnnouncement.game,
-          date: new Date().toISOString(),
-          author: "Admin",
-          visible: true,
-          priority: newAnnouncement.priority || "medium"
-        }
-        setAnnouncements([...announcements, newAnnouncementData])
+      const result = await response.json()
+      if (result.success) {
+        await fetchAnnouncements()
         setIsCreateDialogOpen(false)
         setNewAnnouncement({ title: "", description: "", type: "general", game: "", priority: "medium" })
-        alert("Annonce créée avec succès! (Mode local)")
+        alert("Annonce créée avec succès!")
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la création de l'annonce: " + (result.error || "Erreur inconnue"))
       }
     } catch (error) {
       console.error("Erreur lors de la création:", error)
-      // Simulation locale en cas d'erreur
-      const newId = Math.max(...announcements.map(a => a.id), 0) + 1
-      const newAnnouncementData: Announcement = {
-        id: newId,
-        title: newAnnouncement.title!,
-        description: newAnnouncement.description!,
-        type: newAnnouncement.type || "general",
-        game: newAnnouncement.game,
-        date: new Date().toISOString(),
-        author: "Admin",
-        visible: true,
-        priority: newAnnouncement.priority || "medium"
-      }
-      setAnnouncements([...announcements, newAnnouncementData])
-      setIsCreateDialogOpen(false)
-      setNewAnnouncement({ title: "", description: "", type: "general", game: "", priority: "medium" })
-      alert("Annonce créée avec succès! (Mode local)")
+      alert("Erreur de connexion lors de la création")
     }
   }
 
@@ -207,37 +137,19 @@ export function AnnouncementManagement() {
         body: JSON.stringify(editingAnnouncement),
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchAnnouncements()
-          setIsEditDialogOpen(false)
-          setEditingAnnouncement(null)
-          alert("Annonce mise à jour avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la mise à jour de l'annonce: " + (result.error || "Erreur inconnue"))
-        }
-      } else {
-        // Simulation locale
-        const updatedAnnouncements = announcements.map(a => 
-          a.id === editingAnnouncement.id ? editingAnnouncement : a
-        )
-        setAnnouncements(updatedAnnouncements)
+      const result = await response.json()
+      if (result.success) {
+        await fetchAnnouncements()
         setIsEditDialogOpen(false)
         setEditingAnnouncement(null)
-        alert("Annonce mise à jour avec succès! (Mode local)")
+        alert("Annonce mise à jour avec succès!")
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la mise à jour de l'annonce: " + (result.error || "Erreur inconnue"))
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
-      // Simulation locale en cas d'erreur
-      const updatedAnnouncements = announcements.map(a => 
-        a.id === editingAnnouncement.id ? editingAnnouncement : a
-      )
-      setAnnouncements(updatedAnnouncements)
-      setIsEditDialogOpen(false)
-      setEditingAnnouncement(null)
-      alert("Annonce mise à jour avec succès! (Mode local)")
+      alert("Erreur de connexion lors de la mise à jour")
     }
   }
 
@@ -247,27 +159,17 @@ export function AnnouncementManagement() {
         method: "DELETE",
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchAnnouncements()
-          alert("Annonce supprimée avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la suppression de l'annonce: " + (result.error || "Erreur inconnue"))
-        }
+      const result = await response.json()
+      if (result.success) {
+        await fetchAnnouncements()
+        alert("Annonce supprimée avec succès!")
       } else {
-        // Simulation locale
-        const filteredAnnouncements = announcements.filter(a => a.id !== announcementId)
-        setAnnouncements(filteredAnnouncements)
-        alert("Annonce supprimée avec succès! (Mode local)")
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la suppression de l'annonce: " + (result.error || "Erreur inconnue"))
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)
-      // Simulation locale en cas d'erreur
-      const filteredAnnouncements = announcements.filter(a => a.id !== announcementId)
-      setAnnouncements(filteredAnnouncements)
-      alert("Annonce supprimée avec succès! (Mode local)")
+      alert("Erreur de connexion lors de la suppression")
     }
   }
 

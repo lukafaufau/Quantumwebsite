@@ -47,7 +47,7 @@
     },
     {
       "id": 4,
-      "name": "L'équipe Blasts",
+      "name": "L'équipe Blast",
       "captain": "Blast",
       "members": [
         "HeadshotHero",
@@ -58,8 +58,7 @@
       "game": "Rocket League",
       "description": "Cette équipe peut être attribuée à des joueurs de tous rangs.",
       "status": "active",
-      "created_at": "2024-01-01T00:00:00.000Z",
-      "updated_at": "2025-09-21T18:58:06.662Z"
+      "created_at": "2024-01-01T00:00:00.000Z"
     }
   ]
 }

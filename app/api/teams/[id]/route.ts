@@ -1,35 +1,33 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs/promises";
-import path from "path";
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/database'
 
-const TEAMS_FILE = path.join(process.cwd(), "data", "teams.json");
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  let teams = [];
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const file = await fs.readFile(TEAMS_FILE, "utf-8");
-    teams = JSON.parse(file);
-  } catch {
-    teams = [];
+    const id = parseInt(params.id)
+    const updates = await request.json()
+    
+    const updatedTeam = await db.updateTeam(id, updates)
+    if (!updatedTeam) {
+      return NextResponse.json({ success: false, error: 'Team not found' }, { status: 404 })
+    }
+    
+    return NextResponse.json({ success: true, data: updatedTeam })
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Failed to update team' }, { status: 500 })
   }
+}
 
-  const id = parseInt(req.query.id as string);
-  const teamIndex = teams.findIndex(t => t.id === id);
-  if (teamIndex === -1) return res.status(404).json({ success: false, message: "Équipe non trouvée" });
-
-  if (req.method === "PUT") {
-    const updates = req.body;
-    teams[teamIndex] = { ...teams[teamIndex], ...updates };
-    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-    return res.status(200).json({ success: true, data: teams[teamIndex] });
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const id = parseInt(params.id)
+    const deleted = await db.deleteTeam(id)
+    
+    if (!deleted) {
+      return NextResponse.json({ success: false, error: 'Team not found' }, { status: 404 })
+    }
+    
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Failed to delete team' }, { status: 500 })
   }
-
-  if (req.method === "DELETE") {
-    const removed = teams.splice(teamIndex, 1);
-    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-    return res.status(200).json({ success: true, data: removed[0] });
-  }
-
-  res.setHeader("Allow", ["PUT", "DELETE"]);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
 }

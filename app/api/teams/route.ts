@@ -1,37 +1,31 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs/promises";
-import path from "path";
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/database'
 
-const TEAMS_FILE = path.join(process.cwd(), "data", "teams.json");
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  let teams = [];
+export async function GET() {
   try {
-    const file = await fs.readFile(TEAMS_FILE, "utf-8");
-    teams = JSON.parse(file);
-  } catch {
-    teams = [];
+    const teams = await db.getTeams()
+    return NextResponse.json({ success: true, data: teams })
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Failed to fetch teams' }, { status: 500 })
   }
+}
 
-  if (req.method === "GET") {
-    return res.status(200).json({ success: true, data: teams });
+export async function POST(request: NextRequest) {
+  try {
+    const teamData = await request.json()
+    
+    if (!teamData.name || !teamData.captain || !teamData.game) {
+      return NextResponse.json({ success: false, error: 'Name, captain and game are required' }, { status: 400 })
+    }
+    
+    const newTeam = await db.addTeam({
+      ...teamData,
+      members: teamData.members || [],
+      status: teamData.status || 'active'
+    })
+    return NextResponse.json({ success: true, data: newTeam })
+  } catch (error) {
+    console.error('Error creating team:', error)
+    return NextResponse.json({ success: false, error: 'Failed to create team' }, { status: 500 })
   }
-
-  if (req.method === "POST") {
-    const { name } = req.body;
-    if (!name) return res.status(400).json({ success: false, message: "Nom requis" });
-
-    const newTeam = {
-      id: Date.now(),
-      name,
-      active: true,
-      recruiting: false,
-    };
-    teams.push(newTeam);
-    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-    return res.status(201).json({ success: true, data: newTeam });
-  }
-
-  res.setHeader("Allow", ["GET", "POST"]);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
 }

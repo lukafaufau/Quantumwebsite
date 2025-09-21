@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,48 +8,21 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { mockTeams, availableGames, getPlayersByTeam } from "@/lib/data"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
-interface Team {
-  id: number
-  name: string
-  captain: string
-  members: string[]
-  game: string
-  description?: string
-  status: string
-  created_at: string
-}
-
-const availableGames = ["League of Legends", "Valorant", "CS:GO", "Fortnite", "Overwatch"]
-
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Récupérer les équipes depuis l'API
-  const fetchTeams = async () => {
-    try {
-      const res = await fetch("/api/teams")
-      const data = await res.json()
-      if (data.success) setTeams(data.data)
-    } catch (err) {
-      console.error("Erreur lors du fetch des équipes :", err)
-    }
-  }
-
-  useEffect(() => {
-    fetchTeams()
-  }, [])
-
-  const filteredTeams = teams.filter((team) => {
+  const filteredTeams = mockTeams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
       !searchTerm ||
       team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       team.captain.toLowerCase().includes(searchTerm.toLowerCase())
+
     return matchesGame && matchesSearch
   })
 
@@ -61,7 +34,7 @@ export default function TeamsPage() {
         <div className="container mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
-            <p className="text-lg text-gray-500">
+            <p className="text-lg text-muted-foreground">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
           </div>
@@ -69,7 +42,7 @@ export default function TeamsPage() {
           {/* Filters */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
@@ -97,76 +70,74 @@ export default function TeamsPage() {
           {filteredTeams.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
-                <p className="text-gray-500">Aucune équipe trouvée avec ces filtres.</p>
+                <p className="text-muted-foreground">Aucune équipe trouvée avec ces filtres.</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTeams.map((team) => (
-                <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
+              {filteredTeams.map((team) => {
+                const teamPlayers = getPlayersByTeam(team.name)
+
+                return (
+                  <Card key={team.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <CardTitle className="text-xl">{team.name}</CardTitle>
+                          <Badge variant="secondary">{team.game}</Badge>
+                        </div>
+                        <div className="text-right text-sm text-muted-foreground">
+                          <div className="flex items-center">
+                            <Users className="h-4 w-4 mr-1" />
+                            {team.members.length}
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {team.description && <CardDescription>{team.description}</CardDescription>}
+
                       <div className="space-y-2">
-                        <CardTitle className="text-xl">{team.name}</CardTitle>
-                        <Badge variant="secondary">{team.game}</Badge>
-                      </div>
-                      <div className="text-right text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Users className="h-4 w-4 mr-1" />
-                          {team.members.length}
+                        <div className="flex items-center space-x-2">
+                          <Crown className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Capitaine:</span>
+                          <span className="text-sm text-muted-foreground">{team.captain}</span>
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium">Membres:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {team.members.map((member) => (
+                              <Badge key={member} variant="outline" className="text-xs">
+                                {member}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    {team.description && <CardDescription>{team.description}</CardDescription>}
-
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Crown className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">Capitaine:</span>
-                        <span className="text-sm text-gray-500">{team.captain}</span>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="text-sm font-medium">Membres:</span>
-                        <div className="flex flex-wrap gap-1">
-                          {team.members.map((member, i) => (
-                            <Badge key={member + i} variant="outline" className="text-xs">
-                              {member}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 bg-transparent"
-                        onClick={() =>
-                          alert(
-                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${
-                              team.members.length
-                            }\nDescription: ${team.description || "Aucune description"}`
-                          )
-                        }
-                      >
-                        Voir détails
-                      </Button>
-
-                      <Link href="/recrutement" className="flex-1">
-                        <Button size="sm" className="w-full flex items-center justify-center gap-1">
-                          <UserPlus className="h-4 w-4" />
-                          Rejoindre
+                      <div className="flex gap-2 pt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1 bg-transparent"
+                          onClick={() => {
+                            alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`)
+                          }}
+                        >
+                          Voir détails
                         </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        <Button size="sm" className="flex-1" asChild>
+                          <Link href="/recrutement">
+                            <UserPlus className="h-4 w-4 mr-1" />
+                            Rejoindre
+                          </Link>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           )}
 
@@ -175,13 +146,13 @@ export default function TeamsPage() {
             <Card className="bg-card/50">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4">Envie de rejoindre une équipe ?</h3>
-                <p className="text-gray-500 mb-6 max-w-2xl mx-auto">
+                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                   Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
                   tournois esport.
                 </p>
-                <Link href="/recrutement">
-                  <Button size="lg">Postuler maintenant</Button>
-                </Link>
+                <Button size="lg" asChild>
+                  <Link href="/recrutement">Postuler maintenant</Link>
+                </Button>
               </CardContent>
             </Card>
           </div>
