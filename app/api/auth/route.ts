@@ -10,14 +10,14 @@ export async function POST(request: Request) {
       {
         id: 1,
         username: "Wayzze",
-        email: "wayzze@quantum.gg",
+        email: "wayzze@Nemesis.gg",
         role: "admin",
         discord_id: "Wayzze#0001",
       },
       {
         id: 2,
         username: "16k",
-        email: "16k@quantum.gg",
+        email: "16k@Nemesis.gg",
         role: "developer",
         discord_id: "16k#0002",
       },
