@@ -16,7 +16,7 @@ interface Team {
   updated_at?: string;
 }
 
-// Vérifie que le fichier existe
+// Assure que le fichier existe
 async function ensureDataFile() {
   try {
     await fs.access(TEAMS_FILE);
@@ -34,7 +34,7 @@ export async function GET() {
   return NextResponse.json({ success: true, data: teams.teams || [] });
 }
 
-// POST : ajouter une équipe
+// POST : ajouter une nouvelle équipe
 export async function POST(request: NextRequest) {
   await ensureDataFile();
   const teamData = await request.json();
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true, data: newTeam });
 }
 
-// PUT : modifier une équipe
+// PUT : mettre à jour une équipe
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   await ensureDataFile();
   const id = parseInt(params.id);
@@ -80,6 +80,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
   const data = await fs.readFile(TEAMS_FILE, "utf8");
   const teams = JSON.parse(data);
+
+  if (!teams.teams) teams.teams = [];
 
   const teamIndex = teams.teams.findIndex((t: any) => t.id === id);
   if (teamIndex === -1) {
@@ -105,6 +107,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   const data = await fs.readFile(TEAMS_FILE, "utf8");
   const teams = JSON.parse(data);
 
+  if (!teams.teams) teams.teams = [];
+
   const initialLength = teams.teams.length;
   teams.teams = teams.teams.filter((t: any) => t.id !== id);
 
@@ -113,5 +117,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   }
 
   await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
+
   return NextResponse.json({ success: true });
 }
