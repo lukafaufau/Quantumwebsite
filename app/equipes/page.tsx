@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,15 +8,30 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { mockTeams, availableGames, getPlayersByTeam } from "@/lib/data"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
 export default function TeamsPage() {
+  const [teams, setTeams] = useState<any[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  const filteredTeams = mockTeams.filter((team) => {
+  // Fetch des équipes depuis l'API
+  const fetchTeams = async () => {
+    try {
+      const res = await fetch("/api/teams")
+      const data = await res.json()
+      if (data.success) setTeams(data.data)
+    } catch (err) {
+      console.error("Erreur fetch teams:", err)
+    }
+  }
+
+  useEffect(() => {
+    fetchTeams()
+  }, [])
+
+  const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
       !searchTerm ||
@@ -41,7 +56,7 @@ export default function TeamsPage() {
           {/* Filters */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-label="Rechercher" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
@@ -56,7 +71,8 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                {availableGames.map((game) => (
+                {/* Remplace par tes jeux dynamiques si nécessaire */}
+                {Array.from(new Set(teams.map(t => t.game))).map((game) => (
                   <SelectItem key={game} value={game}>
                     {game}
                   </SelectItem>
@@ -75,7 +91,7 @@ export default function TeamsPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTeams.map((team) => {
-                const teamPlayers = getPlayersByTeam(team.name) || []
+                const teamPlayers = team.members || []
 
                 return (
                   <Card key={team.id} className="hover:shadow-lg transition-shadow">
@@ -87,7 +103,7 @@ export default function TeamsPage() {
                         </div>
                         <div className="text-right text-sm text-muted-foreground">
                           <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" aria-label="Nombre de membres" />
+                            <Users className="h-4 w-4 mr-1" />
                             {teamPlayers.length}
                           </div>
                         </div>
@@ -99,7 +115,7 @@ export default function TeamsPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <Crown className="h-4 w-4 text-primary" aria-label="Capitaine" />
+                          <Crown className="h-4 w-4 text-primary" />
                           <span className="text-sm font-medium">Capitaine:</span>
                           <span className="text-sm text-muted-foreground">{team.captain}</span>
                         </div>
@@ -145,22 +161,6 @@ export default function TeamsPage() {
               })}
             </div>
           )}
-
-          {/* Call to Action */}
-          <div className="mt-12 text-center">
-            <Card className="bg-card/50">
-              <CardContent className="py-8">
-                <h3 className="text-2xl font-heading font-bold mb-4">Envie de rejoindre une équipe ?</h3>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
-                  tournois esport.
-                </p>
-                <Link href="/recrutement">
-                  <Button size="lg">Postuler maintenant</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </main>
 
