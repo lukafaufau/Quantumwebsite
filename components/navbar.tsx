@@ -50,13 +50,12 @@ export function Navbar() {
           className={`
             relative text-sm font-medium transition-all duration-300 transform hover:scale-105
             ${isActive ? "text-white" : "text-gray-300 hover:text-white"}
+            ${link.special ? "text-glow" : ""}
           `}
         >
-          <span className="px-2 py-1 hover:bg-white/10 rounded-md transition-all duration-300">
-            {link.label}
-          </span>
+          <span className="px-2 py-1">{link.label}</span>
           {isActive && (
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-white rounded animate-fade-in"></span>
+            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-white rounded-sm shadow-sm animate-fade-in"></span>
           )}
         </Link>
       )
@@ -71,8 +70,8 @@ export function Navbar() {
           <Image
             src={LogoImage}
             alt="Logo"
-            width={30}
-            height={30}
+            width={28}
+            height={28}
             className="transition-all duration-300 group-hover:scale-110"
           />
           <span className="text-2xl font-bold text-white font-heading transition-all duration-300 group-hover:text-white/90 animate-glow">
