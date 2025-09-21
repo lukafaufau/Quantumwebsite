@@ -20,7 +20,7 @@ const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
+  const pathname = usePathname() || "/"
 
   const NavLinks = () => {
     const links = [
@@ -39,19 +39,21 @@ export function Navbar() {
     ]
 
     return links.map((link) => {
-      const isActive = pathname === link.href
+      const isActive = pathname.startsWith(link.href)
       return (
         <Link
           key={link.href}
           href={link.href}
           className={`
-            text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 focus:text-white animate-fade-in
+            flex items-center space-x-2 text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110
             ${isActive ? "text-white border-b-2 border-white" : "text-gray-300"}
             ${link.special ? "text-glow" : ""}
           `}
           onClick={() => setIsOpen(false)}
         >
-          {link.label}
+          {/* Petit logo blanc à gauche du lien */}
+          {isActive && <span className="w-2 h-2 bg-white rounded-full inline-block"></span>}
+          <span>{link.label}</span>
         </Link>
       )
     })
