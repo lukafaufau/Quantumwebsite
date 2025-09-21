@@ -10,8 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { User, LogOut, Settings, Menu, Zap, Shield } from "lucide-react"
+import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
 import { useState } from "react"
+import Image from "next/image"
+import LogoImage from 'https://cdn.discordapp.com/attachments/1369328695742955574/1419277407566827613/Fichier_2.png?ex=68d12c96&is=68cfdb16&hm=b5c28d3597b01fb49be11db3210cd3290a13cc8179cfdc20dd3d67b8af853c4b&' // ton logo
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -86,139 +88,138 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
-      <div className="container flex h-16 items-center justify-center">
-        <div className="flex items-center justify-center space-x-8 w-full">
+      <div className="container flex h-16 items-center justify-between">
 
-          <Link
-            href="/"
-            className="text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 hover:scale-110 animate-glow flex items-center space-x-2"
-          >
-            <Zap className="h-5 w-5" />
-            <span className="text-glow">NEMESIS</span>
-          </Link>
+        {/* Logo à gauche */}
+        <Link
+          href="/"
+          className="flex items-center space-x-2 text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 animate-glow"
+        >
+          <Image src={LogoImage} alt="Logo" width={32} height={32} />
+          <span className="text-glow">NEMESIS</span>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-center space-x-8">
-            <NavLinks />
-          </div>
+        {/* Navigation centrée */}
+        <div className="hidden lg:flex items-center justify-center space-x-8">
+          <NavLinks />
+        </div>
 
-          {/* User Section */}
-          <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow"
-                  >
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline text-white">{user?.username}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={5}
-                  className="w-48 bg-black border-white/20 animate-scale-in z-50"
+        {/* Section utilisateur / login à droite */}
+        <div className="flex items-center space-x-4">
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow"
                 >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline text-white">{user?.username}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                sideOffset={5}
+                className="w-48 bg-black border-white/20 animate-scale-in z-50"
+              >
+                <DropdownMenuItem asChild>
+                  <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Profil
+                  </Link>
+                </DropdownMenuItem>
+                {(user?.role === "admin" || user?.role === "developer") && (
                   <DropdownMenuItem asChild>
-                    <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Profil
+                    <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Administration
                     </Link>
                   </DropdownMenuItem>
-                  {(user?.role === "admin" || user?.role === "developer") && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                        <Shield className="mr-2 h-4 w-4" />
-                        Administration
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem
-                    onClick={logout}
-                    className="flex items-center cursor-pointer text-white hover:bg-white/10"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Déconnexion
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="hidden sm:flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                )}
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="flex items-center cursor-pointer text-white hover:bg-white/10"
                 >
-                  <Link href="/login" className="text-white">
-                    Connexion
-                  </Link>
-                </Button>
-                <Button
-                  size="sm"
-                  asChild
-                  className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden sm:flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
+                <Link href="/login" className="text-white">
+                  Connexion
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                asChild
+                className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
+              >
+                <Link href="/signup">Inscription</Link>
+              </Button>
+            </div>
+          )}
+
+          {/* Mobile Navigation */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
+                <Menu className="h-5 w-5 text-white" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left">
+              <div className="flex flex-col space-y-4 mt-8 text-center">
+                <Link
+                  href="/"
+                  className="text-2xl font-heading font-bold text-white mb-4 text-glow flex items-center justify-center space-x-2"
                 >
-                  <Link href="/signup">Inscription</Link>
-                </Button>
-              </div>
-            )}
+                  <Image src={LogoImage} alt="Logo" width={32} height={32} />
+                  <span>Nemesis</span>
+                </Link>
 
-            {/* Mobile Navigation */}
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
-                >
-                  <Menu className="h-5 w-5 text-white" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left">
-                <div className="flex flex-col space-y-4 mt-8 text-center">
-                  <Link
-                    href="/"
-                    className="text-2xl font-heading font-bold text-white mb-4 text-glow flex items-center justify-center space-x-2"
-                  >
-                    <Zap className="h-6 w-6 animate-pulse-slow" />
-                    <span>Nemesis</span>
-                  </Link>
-
-                  <div className="flex flex-col space-y-6 items-center">
-                    <NavLinks />
-                  </div>
-
-                  {!isAuthenticated && (
-                    <div className="flex flex-col space-y-2 pt-4 border-t border-white/20 items-center">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                        onClick={() => setIsOpen(false)}
-                        className="hover:bg-white/10 transition-all duration-300"
-                      >
-                        <Link href="/login" className="text-white">
-                          Connexion
-                        </Link>
-                      </Button>
-                      <Button
-                        size="sm"
-                        asChild
-                        onClick={() => setIsOpen(false)}
-                        className="bg-white text-black hover:bg-white/90 transition-all duration-300"
-                      >
-                        <Link href="/signup">Inscription</Link>
-                      </Button>
-                    </div>
-                  )}
+                <div className="flex flex-col space-y-6 items-center">
+                  <NavLinks />
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+
+                {!isAuthenticated && (
+                  <div className="flex flex-col space-y-2 pt-4 border-t border-white/20 items-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="hover:bg-white/10 transition-all duration-300"
+                    >
+                      <Link href="/login" className="text-white">
+                        Connexion
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="bg-white text-black hover:bg-white/90 transition-all duration-300"
+                    >
+                      <Link href="/signup">Inscription</Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>
