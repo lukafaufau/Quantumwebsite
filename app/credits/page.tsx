@@ -32,7 +32,7 @@ export default function CreditsPage() {
                   </Badge>
                 </div>
                 <p className="text-muted-foreground">
-                  Visionnaire et leader du projet Quantum. Responsable de la conception, de la stratégie et de la
+                  Visionnaire et leader du projet Nemesis. Responsable de la conception, de la stratégie et de la
                   coordination de toutes les équipes.
                 </p>
                 <div className="text-sm text-muted-foreground">
