@@ -26,7 +26,6 @@ export function Navbar() {
     { href: "/", label: "Accueil" },
     { href: "/explorer", label: "Explorer" },
     { href: "/equipes", label: "Équipes" },
-    { href: "/joueurs", label: "Joueurs" },
     ...(isAuthenticated
       ? [
           { href: "/recrutement", label: "Recrutement" },
