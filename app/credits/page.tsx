@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react"; // ← obligatoire pour App Router
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
