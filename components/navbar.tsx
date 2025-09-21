@@ -32,7 +32,7 @@ export function Navbar() {
           { href: "/recrutement", label: "Recrutement" },
           { href: "/profil", label: "Profil" },
           ...(user?.role === "admin" || user?.role === "developer"
-            ? [{ href: "/admin", label: "Administration", special: true }]
+            ? [{ href: "/admin", label: "Administration" }]
             : []),
         ]
       : []),
@@ -50,12 +50,11 @@ export function Navbar() {
           className={`
             relative text-sm font-medium transition-all duration-300 transform hover:scale-105
             ${isActive ? "text-white" : "text-gray-300 hover:text-white"}
-            ${link.special ? "text-glow" : ""}
           `}
         >
-          <span className="px-2 py-1">{link.label}</span>
+          {link.label}
           {isActive && (
-            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-white rounded-sm shadow-sm animate-fade-in"></span>
+            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-white rounded-sm animate-fade-in"></span>
           )}
         </Link>
       )
@@ -66,15 +65,15 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between px-3 lg:px-5">
 
         {/* Logo + texte */}
-        <Link href="/" className="flex items-center space-x-4 group">
+        <Link href="/" className="flex items-center space-x-4">
           <Image
             src={LogoImage}
             alt="Logo"
             width={28}
             height={28}
-            className="transition-all duration-300 group-hover:scale-110"
+            className="transition-all duration-300 hover:scale-110"
           />
-          <span className="text-2xl font-bold text-white font-heading transition-all duration-300 group-hover:text-white/90 animate-glow">
+          <span className="text-2xl font-bold text-white font-heading transition-all duration-300">
             NEMESIS
           </span>
         </Link>
@@ -87,37 +86,63 @@ export function Navbar() {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                >
                   <User className="h-5 w-5" />
                   <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" sideOffset={5} className="w-48 bg-black border-white/20 animate-scale-in z-50">
+              <DropdownMenuContent
+                align="end"
+                sideOffset={5}
+                className="w-48 bg-black border-white/20 animate-scale-in z-50"
+              >
                 <DropdownMenuItem asChild>
-                  <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                  <Link
+                    href="/profil"
+                    className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                  >
                     <Settings className="mr-2 h-4 w-4" /> Profil
                   </Link>
                 </DropdownMenuItem>
                 {(user?.role === "admin" || user?.role === "developer") && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                    <Link
+                      href="/admin"
+                      className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                    >
                       <Shield className="mr-2 h-4 w-4" /> Administration
                     </Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={logout} className="flex items-center cursor-pointer text-white hover:bg-white/10">
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="flex items-center cursor-pointer text-white hover:bg-white/10"
+                >
                   <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="hidden sm:flex items-center space-x-2">
-              <Button variant="ghost" size="sm" asChild className="hover:bg-white/10 transition-all duration-300 hover:scale-105">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
                 <Link href="/login" className="text-white font-medium">
                   Connexion
                 </Link>
               </Button>
-              <Button size="sm" asChild className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow">
+              <Button
+                size="sm"
+                asChild
+                className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105"
+              >
                 <Link href="/signup">Inscription</Link>
               </Button>
             </div>
@@ -126,25 +151,46 @@ export function Navbar() {
           {/* Mobile menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
+              >
                 <Menu className="h-6 w-6 text-white" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left">
+            <SheetContent
+              side="right"
+              className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left"
+            >
               <div className="flex flex-col space-y-6 mt-10 text-center">
-                <Link href="/" className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4"
+                >
                   <Image src={LogoImage} alt="Logo" width={32} height={32} />
                   <span>NEMESIS</span>
                 </Link>
                 <div className="flex flex-col space-y-6 items-center">{NavLinks()}</div>
                 {!isAuthenticated && (
                   <div className="flex flex-col space-y-2 pt-6 border-t border-white/20 items-center">
-                    <Button variant="ghost" size="sm" asChild onClick={() => setIsOpen(false)} className="hover:bg-white/10 transition-all duration-300">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="hover:bg-white/10 transition-all duration-300"
+                    >
                       <Link href="/login" className="text-white">
                         Connexion
                       </Link>
                     </Button>
-                    <Button size="sm" asChild onClick={() => setIsOpen(false)} className="bg-white text-black hover:bg-white/90 transition-all duration-300">
+                    <Button
+                      size="sm"
+                      asChild
+                      onClick={() => setIsOpen(false)}
+                      className="bg-white text-black hover:bg-white/90 transition-all duration-300"
+                    >
                       <Link href="/signup">Inscription</Link>
                     </Button>
                   </div>
