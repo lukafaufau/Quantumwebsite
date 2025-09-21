@@ -13,7 +13,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
-import LogoImage from 'https://cdn.discordapp.com/attachments/1369328695742955574/1419277407566827613/Fichier_2.png?ex=68d12c96&is=68cfdb16&hm=b5c28d3597b01fb49be11db3210cd3290a13cc8179cfdc20dd3d67b8af853c4b&' // ton logo
+
+// Si tu veux utiliser une URL externe, il faut l'autoriser dans next.config.js
+const LogoImage = "https://cdn.discordapp.com/attachments/1369328695742955574/1419277407566827613/Fichier_2.png"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
