@@ -13,14 +13,16 @@ export default function CreditsPage() {
 
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-5xl">
+
           {/* Titre */}
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-heading font-bold mb-2">Crédits</h1>
             <p className="text-lg md:text-xl text-gray-400">Les personnes qui ont rendu Nemesis possible</p>
           </div>
 
           {/* Equipe */}
           <div className="grid md:grid-cols-2 gap-6 md:gap-10 mb-12">
+            {/* Wayzze */}
             <Card className="text-center bg-gray-900/50 hover:scale-105 transition-transform duration-300">
               <CardHeader>
                 <div className="mx-auto mb-3 p-3 bg-primary/20 rounded-full w-fit">
@@ -43,6 +45,7 @@ export default function CreditsPage() {
               </CardContent>
             </Card>
 
+            {/* 16k */}
             <Card className="text-center bg-gray-900/50 hover:scale-105 transition-transform duration-300">
               <CardHeader>
                 <div className="mx-auto mb-3 p-3 bg-primary/20 rounded-full w-fit">
@@ -86,13 +89,13 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          {/* Bas de page centré avec padding */}
-          <div className="mt-12 py-6 px-4 md:px-0 flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
+          {/* Footer bas de page centré */}
+          <div className="mt-12 py-6 w-full flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
             <p>
               Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur : <span className="text-white font-medium">16k</span>
             </p>
-            <p>© 2025 Team Nemesis. Développé avec passion pour la communauté esport française.</p>
-            <p>Version 1.0.0 - Janvier 2025</p>
+            <p>© 2025 Nemesis Esports. Tous droits réservés.</p>
+            <p>Version 1.0.0</p>
           </div>
         </div>
       </main>
