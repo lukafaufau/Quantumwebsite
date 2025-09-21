@@ -22,7 +22,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname() || "/"
 
-  // Links avec gestion active
+  // Liste des liens
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/explorer", label: "Explorer" },
@@ -40,20 +40,20 @@ export function Navbar() {
     { href: "/credits", label: "Crédits" },
   ]
 
+  // Fonction pour générer les liens avec le trait actif
   const NavLinks = () =>
     links.map((link) => {
-      const isActive = pathname === link.href
+      const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
       return (
         <Link
           key={link.href}
           href={link.href}
           onClick={() => setIsOpen(false)}
-          className={`flex items-center space-x-1 text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 ${
+          className={`text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 ${
             isActive ? "text-white border-b-2 border-white" : "text-gray-300"
           } ${link.special ? "text-glow" : ""}`}
         >
-          {isActive && <span className="w-2 h-2 bg-white rounded-full inline-block"></span>}
-          <span>{link.label}</span>
+          {link.label}
         </Link>
       )
     })
