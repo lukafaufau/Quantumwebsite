@@ -1,17 +1,6 @@
 {
   "announcements": [
     {
-      "id": 1,
-      "title": "Bienvenue sur Nemesis",
-      "description": "La plateforme esport française est maintenant en ligne ! Rejoignez-nous pour découvrir nos équipes et participer aux tournois.",
-      "type": "news",
-      "game": "",
-      "author": "Admin",
-      "date": "2024-01-01T00:00:00.000Z",
-      "visible": true,
-      "priority": "high"
-    },
-    {
       "id": 2,
       "title": "Nouveaux tryouts Rocket League",
       "description": "Participez aux essais Nemesis RL pour la prochaine saison. Nous recherchons des joueurs motivés et compétitifs.",
