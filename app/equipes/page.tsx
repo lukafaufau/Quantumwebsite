@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
@@ -21,23 +22,19 @@ interface Team {
   created_at: string
 }
 
-const availableGames = ["CS:GO", "Valorant", "League of Legends", "Fortnite"]
-
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Récupère les équipes depuis l'API
+  // Fetch les équipes depuis l'API
   const fetchTeams = async () => {
     try {
       const res = await fetch("/api/teams")
       const data = await res.json()
-      if (data.success) {
-        setTeams(data.data)
-      }
+      if (data.success) setTeams(data.data)
     } catch (err) {
-      console.error("Erreur fetch teams:", err)
+      console.error("Erreur en récupérant les équipes :", err)
     }
   }
 
@@ -45,7 +42,7 @@ export default function TeamsPage() {
     fetchTeams()
   }, [])
 
-  // Filtrage
+  // Filtrage par jeu et recherche
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -86,11 +83,10 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                {availableGames.map((game) => (
-                  <SelectItem key={game} value={game}>
-                    {game}
-                  </SelectItem>
-                ))}
+                {/* Remplace cette ligne par tes jeux disponibles */}
+                <SelectItem value="League of Legends">League of Legends</SelectItem>
+                <SelectItem value="Valorant">Valorant</SelectItem>
+                <SelectItem value="CS:GO">CS:GO</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -141,6 +137,30 @@ export default function TeamsPage() {
                           ))}
                         </div>
                       </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 bg-transparent"
+                        onClick={() =>
+                          alert(
+                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${
+                              team.description || "Aucune description"
+                            }`
+                          )
+                        }
+                      >
+                        Voir détails
+                      </Button>
+
+                      <Link href="/recrutement" className="flex-1">
+                        <Button size="sm" className="w-full flex items-center justify-center gap-1">
+                          <UserPlus className="h-4 w-4" />
+                          Rejoindre
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
