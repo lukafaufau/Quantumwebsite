@@ -74,7 +74,7 @@ export function Navbar() {
             className="transition-all duration-300 hover:scale-110"
           />
           <span className="text-2xl font-bold text-white font-heading transition-all duration-300">
-            NEMESIS
+            
           </span>
         </Link>
 
