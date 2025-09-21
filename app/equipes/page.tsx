@@ -26,7 +26,6 @@ export default function TeamsPage() {
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Charger les équipes depuis l'API
   useEffect(() => {
     fetch("/api/teams")
       .then((res) => res.json())
@@ -36,7 +35,6 @@ export default function TeamsPage() {
       .catch((err) => console.error("Failed to fetch teams:", err))
   }, [])
 
-  // Filtrage
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -48,7 +46,7 @@ export default function TeamsPage() {
   })
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-black">
       <Navbar />
 
       <main className="flex-1 py-8 px-4">
@@ -56,7 +54,7 @@ export default function TeamsPage() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
-            <p className="text-lg text-gray-400">
+            <p className="text-lg text-gray-600">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
           </div>
@@ -69,15 +67,15 @@ export default function TeamsPage() {
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-gray-800 border-gray-700 text-white"
+                className="pl-10 bg-white border border-gray-300 text-black"
               />
             </div>
 
             <Select value={selectedGame} onValueChange={setSelectedGame}>
-              <SelectTrigger className="w-full sm:w-48 bg-gray-800 border-gray-700 text-white">
+              <SelectTrigger className="w-full sm:w-48 bg-white border border-gray-300 text-black">
                 <SelectValue placeholder="Tous les jeux" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 text-white border-gray-700">
+              <SelectContent className="bg-white text-black border border-gray-300">
                 <SelectItem value="all">Tous les jeux</SelectItem>
                 {[...new Set(teams.map((t) => t.game))].map((game) => (
                   <SelectItem key={game} value={game}>
@@ -90,25 +88,26 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="py-8 text-center text-gray-400">
+            <Card className="bg-white border border-gray-300">
+              <CardContent className="py-8 text-center text-gray-500">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTeams.map((team) => {
-                // Liste complète des membres avec le capitaine en premier
                 const allMembers = [team.captain, ...team.members.filter((m) => m !== team.captain)]
-
                 return (
-                  <Card key={team.id} className="bg-gray-800 border-gray-700 hover:shadow-xl transition-shadow">
+                  <Card
+                    key={team.id}
+                    className="bg-white border border-gray-300 hover:shadow-lg transition-shadow"
+                  >
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold">{team.name}</CardTitle>
                         <Badge variant="secondary">{team.game}</Badge>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
                         <Users className="h-4 w-4" /> {allMembers.length} membres
                       </div>
                     </CardHeader>
@@ -120,16 +119,14 @@ export default function TeamsPage() {
                         {allMembers.map((member, index) => (
                           <div
                             key={member}
-                            className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs ${
-                              index === 0
-                                ? "bg-yellow-600/30 text-yellow-300" // capitaine
-                                : "bg-gray-700 text-gray-200" // autres membres
+                            className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm ${
+                              index === 0 ? "font-bold" : "text-gray-700"
                             }`}
                           >
                             {index === 0 ? (
-                              <Crown className="h-4 w-4 text-yellow-400" />
+                              <Crown className="h-4 w-4 text-black" />
                             ) : (
-                              <Users className="h-3 w-3 text-gray-400" />
+                              <Users className="h-3 w-3 text-gray-500" />
                             )}
                             {member}
                           </div>
@@ -140,7 +137,7 @@ export default function TeamsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 border-white text-white hover:bg-white hover:text-black transition-colors"
+                          className="flex-1 border-black text-black hover:bg-black hover:text-white transition-colors"
                           onClick={() =>
                             alert(
                               `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${allMembers.length}\nDescription: ${
@@ -153,7 +150,7 @@ export default function TeamsPage() {
                         </Button>
                         <Button
                           size="sm"
-                          className="flex-1 bg-white text-black hover:bg-black hover:text-white transition-colors"
+                          className="flex-1 bg-black text-white hover:bg-white hover:text-black transition-colors"
                           asChild
                         >
                           <Link href="/recrutement">
@@ -171,15 +168,16 @@ export default function TeamsPage() {
 
           {/* Call to Action */}
           <div className="mt-12 text-center">
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white border border-gray-300">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4">Envie de rejoindre une équipe ?</h3>
-                <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands tournois esport.
+                <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
+                  tournois esport.
                 </p>
                 <Button
                   size="lg"
-                  className="bg-white text-black hover:bg-black hover:text-white transition-colors"
+                  className="bg-black text-white hover:bg-white hover:text-black transition-colors"
                 >
                   <Link href="/recrutement">Postuler maintenant</Link>
                 </Button>
