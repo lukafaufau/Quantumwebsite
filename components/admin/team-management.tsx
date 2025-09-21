@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Trophy, Edit, Trash2, Plus, Users, Crown, Search, Filter } from "lucide-react"
+import { Trophy, Edit, Trash2, Plus, Users, Crown, Search } from "lucide-react"
 
 interface Team {
   id: number
@@ -85,7 +85,6 @@ export function TeamManagement() {
 
   const filterTeams = () => {
     let filtered = teams
-
     if (searchTerm) {
       filtered = filtered.filter(team =>
         team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -93,60 +92,32 @@ export function TeamManagement() {
         team.game.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
-
     if (gameFilter !== "all") {
       filtered = filtered.filter(team => team.game === gameFilter)
     }
-
     if (statusFilter !== "all") {
       filtered = filtered.filter(team => (team.status || "active") === statusFilter)
     }
-
     setFilteredTeams(filtered)
   }
 
   const fetchTeams = async () => {
     try {
       setLoading(true)
-      // Essayer d'abord l'API locale
-      let response = await fetch("/api/teams")
-      
-      if (!response.ok) {
-        // Si l'API locale échoue, charger depuis les données statiques
-        console.log("API locale non disponible, chargement des données par défaut")
-        setTeams([
-          {
-            id: 1,
-            name: "L'équipe Epsilon",
-            captain: "Epsilon",
-            members: ["Player1", "Player2", "Player3"],
-            game: "Rocket League",
-            description: "Cette équipe est réservée aux meilleurs joueurs de la Nemesis.",
-            status: "active",
-            created_at: new Date().toISOString()
-          }
-        ])
-        return
-      }
-      
+      const response = await fetch("/api/teams")
+      if (!response.ok) throw new Error("API non disponible")
       const data = await response.json()
-      if (data.success) {
-        setTeams(data.data || [])
-      } else {
-        console.error("Erreur API:", data.error)
-        setTeams([])
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement des équipes:", error)
-      // Données par défaut en cas d'erreur
+      setTeams(data.success ? data.data || [] : [])
+    } catch {
+      // Données locales par défaut
       setTeams([
         {
           id: 1,
-          name: "L'équipe Epsilon",
+          name: "Équipe Epsilon",
           captain: "Epsilon",
           members: ["Player1", "Player2", "Player3"],
           game: "Rocket League",
-          description: "Cette équipe est réservée aux meilleurs joueurs de la Nemesis.",
+          description: "Équipe réservée aux meilleurs joueurs.",
           status: "active",
           created_at: new Date().toISOString()
         }
@@ -161,199 +132,71 @@ export function TeamManagement() {
       alert("Veuillez remplir tous les champs obligatoires")
       return
     }
-
-    try {
-      const response = await fetch("/api/teams", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newTeam,
-          members: Array.isArray(newTeam.members) ? newTeam.members : [],
-          created_at: new Date().toISOString(),
-        }),
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchTeams()
-          setIsCreateDialogOpen(false)
-          setNewTeam({ name: "", captain: "", members: [], game: "", description: "", status: "active" })
-          alert("Équipe créée avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la création de l'équipe: " + (result.error || "Erreur inconnue"))
-        }
-      } else {
-        // Simulation locale si l'API ne fonctionne pas
-        const newId = Math.max(...teams.map(t => t.id), 0) + 1
-        const newTeamData: Team = {
-          id: newId,
-          name: newTeam.name!,
-          captain: newTeam.captain!,
-          members: Array.isArray(newTeam.members) ? newTeam.members : [],
-          game: newTeam.game!,
-          description: newTeam.description,
-          status: newTeam.status || "active",
-          created_at: new Date().toISOString()
-        }
-        setTeams([...teams, newTeamData])
-        setIsCreateDialogOpen(false)
-        setNewTeam({ name: "", captain: "", members: [], game: "", description: "", status: "active" })
-        alert("Équipe créée avec succès! (Mode local)")
-      }
-    } catch (error) {
-      console.error("Erreur lors de la création:", error)
-      // Simulation locale en cas d'erreur
-      const newId = Math.max(...teams.map(t => t.id), 0) + 1
-      const newTeamData: Team = {
-        id: newId,
-        name: newTeam.name!,
-        captain: newTeam.captain!,
-        members: Array.isArray(newTeam.members) ? newTeam.members : [],
-        game: newTeam.game!,
-        description: newTeam.description,
-        status: newTeam.status || "active",
-        created_at: new Date().toISOString()
-      }
-      setTeams([...teams, newTeamData])
-      setIsCreateDialogOpen(false)
-      setNewTeam({ name: "", captain: "", members: [], game: "", description: "", status: "active" })
-      alert("Équipe créée avec succès! (Mode local)")
+    const newId = Math.max(...teams.map(t => t.id), 0) + 1
+    const teamData: Team = {
+      id: newId,
+      name: newTeam.name!,
+      captain: newTeam.captain!,
+      members: newTeam.members || [],
+      game: newTeam.game!,
+      description: newTeam.description,
+      status: newTeam.status || "active",
+      created_at: new Date().toISOString()
     }
+    setTeams([...teams, teamData])
+    setNewTeam({ name: "", captain: "", members: [], game: "", description: "", status: "active" })
+    setIsCreateDialogOpen(false)
+    alert("Équipe créée avec succès !")
   }
 
-  const handleEditTeam = async (team: Team) => {
+  const handleEditTeam = (team: Team) => {
     setEditingTeam({ ...team })
     setIsEditDialogOpen(true)
   }
 
-  const handleUpdateTeam = async () => {
+  const handleUpdateTeam = () => {
     if (!editingTeam) return
-
-    try {
-      const response = await fetch(`/api/teams/${editingTeam.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingTeam),
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchTeams()
-          setIsEditDialogOpen(false)
-          setEditingTeam(null)
-          alert("Équipe mise à jour avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la mise à jour de l'équipe: " + (result.error || "Erreur inconnue"))
-        }
-      } else {
-        // Simulation locale
-        const updatedTeams = teams.map(t => 
-          t.id === editingTeam.id ? editingTeam : t
-        )
-        setTeams(updatedTeams)
-        setIsEditDialogOpen(false)
-        setEditingTeam(null)
-        alert("Équipe mise à jour avec succès! (Mode local)")
-      }
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour:", error)
-      // Simulation locale en cas d'erreur
-      const updatedTeams = teams.map(t => 
-        t.id === editingTeam.id ? editingTeam : t
-      )
-      setTeams(updatedTeams)
-      setIsEditDialogOpen(false)
-      setEditingTeam(null)
-      alert("Équipe mise à jour avec succès! (Mode local)")
-    }
+    const updatedTeams = teams.map(t => t.id === editingTeam.id ? editingTeam : t)
+    setTeams(updatedTeams)
+    setEditingTeam(null)
+    setIsEditDialogOpen(false)
+    alert("Équipe mise à jour avec succès !")
   }
 
-  const handleDeleteTeam = async (teamId: number) => {
-    try {
-      const response = await fetch(`/api/teams/${teamId}`, {
-        method: "DELETE",
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          await fetchTeams()
-          alert("Équipe supprimée avec succès!")
-        } else {
-          console.error("Erreur:", result.error)
-          alert("Erreur lors de la suppression de l'équipe: " + (result.error || "Erreur inconnue"))
-        }
-      } else {
-        // Simulation locale
-        const filteredTeams = teams.filter(t => t.id !== teamId)
-        setTeams(filteredTeams)
-        alert("Équipe supprimée avec succès! (Mode local)")
-      }
-    } catch (error) {
-      console.error("Erreur lors de la suppression:", error)
-      // Simulation locale en cas d'erreur
-      const filteredTeams = teams.filter(t => t.id !== teamId)
-      setTeams(filteredTeams)
-      alert("Équipe supprimée avec succès! (Mode local)")
-    }
+  const handleDeleteTeam = (teamId: number) => {
+    const updatedTeams = teams.filter(t => t.id !== teamId)
+    setTeams(updatedTeams)
+    alert("Équipe supprimée avec succès !")
   }
 
-  const getStatusColor = (status: string) => {
-    const statusObj = teamStatuses.find(s => s.value === status)
-    return statusObj?.color || "bg-gray-500/10 text-gray-500 border-gray-500/20"
-  }
-
-  const getStatusLabel = (status: string) => {
-    const statusObj = teamStatuses.find(s => s.value === status)
-    return statusObj?.label || status
-  }
+  const getStatusColor = (status: string) => teamStatuses.find(s => s.value === status)?.color || "bg-gray-500/10 text-gray-500 border-gray-500/20"
+  const getStatusLabel = (status: string) => teamStatuses.find(s => s.value === status)?.label || status
 
   const addMemberToNewTeam = (member: string) => {
-    if (member.trim() && !newTeam.members?.includes(member.trim())) {
-      setNewTeam({
-        ...newTeam,
-        members: [...(newTeam.members || []), member.trim()]
-      })
-    }
+    if (!member.trim()) return
+    setNewTeam({ ...newTeam, members: [...(newTeam.members || []), member.trim()] })
   }
 
   const removeMemberFromNewTeam = (member: string) => {
-    setNewTeam({
-      ...newTeam,
-      members: (newTeam.members || []).filter(m => m !== member)
-    })
+    setNewTeam({ ...newTeam, members: (newTeam.members || []).filter(m => m !== member) })
   }
 
   const addMemberToEditingTeam = (member: string) => {
-    if (editingTeam && member.trim() && !editingTeam.members?.includes(member.trim())) {
-      setEditingTeam({
-        ...editingTeam,
-        members: [...(editingTeam.members || []), member.trim()]
-      })
-    }
+    if (!editingTeam || !member.trim()) return
+    setEditingTeam({ ...editingTeam, members: [...(editingTeam.members || []), member.trim()] })
   }
 
   const removeMemberFromEditingTeam = (member: string) => {
-    if (editingTeam) {
-      setEditingTeam({
-        ...editingTeam,
-        members: (editingTeam.members || []).filter(m => m !== member)
-      })
-    }
+    if (!editingTeam) return
+    setEditingTeam({ ...editingTeam, members: (editingTeam.members || []).filter(m => m !== member) })
   }
 
-  if (loading) {
-    return (
-      <div className="text-center py-8 text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-        Chargement des équipes...
-      </div>
-    )
-  }
+  if (loading) return (
+    <div className="text-center py-8 text-white">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+      Chargement des équipes...
+    </div>
+  )
 
   return (
     <Card className="bg-black border-white/20">
@@ -365,471 +208,246 @@ export function TeamManagement() {
               <span>Gestion des équipes</span>
             </CardTitle>
             <CardDescription className="text-white/60">
-              Administrez toutes les équipes de la plateforme ({teams.length} équipes)
+              Administrez toutes les équipes ({teams.length})
             </CardDescription>
           </div>
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-white text-black hover:bg-white/90">
-                <Plus className="h-4 w-4 mr-2" />
-                Nouvelle équipe
+                <Plus className="h-4 w-4 mr-2" /> Nouvelle équipe
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-black border-white/20 max-w-2xl">
               <DialogHeader>
-                <DialogTitle className="text-white">Créer une nouvelle équipe</DialogTitle>
-                <DialogDescription className="text-white/60">
-                  Ajoutez une nouvelle équipe à la plateforme
-                </DialogDescription>
+                <DialogTitle className="text-white">Créer une équipe</DialogTitle>
+                <DialogDescription className="text-white/60">Ajoutez une nouvelle équipe</DialogDescription>
               </DialogHeader>
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name" className="text-white">
-                      Nom de l'équipe *
-                    </Label>
+                    <Label className="text-white">Nom *</Label>
                     <Input
-                      id="name"
                       value={newTeam.name}
-                      onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
+                      onChange={e => setNewTeam({ ...newTeam, name: e.target.value })}
                       className="bg-white/10 border-white/20 text-white"
-                      placeholder="Nom de l'équipe"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="captain" className="text-white">
-                      Capitaine *
-                    </Label>
+                    <Label className="text-white">Capitaine *</Label>
                     <Input
-                      id="captain"
                       value={newTeam.captain}
-                      onChange={(e) => setNewTeam({ ...newTeam, captain: e.target.value })}
+                      onChange={e => setNewTeam({ ...newTeam, captain: e.target.value })}
                       className="bg-white/10 border-white/20 text-white"
-                      placeholder="Nom du capitaine"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="game" className="text-white">
-                      Jeu *
-                    </Label>
-                    <Select
-                      value={newTeam.game}
-                      onValueChange={(value) => setNewTeam({ ...newTeam, game: value })}
-                    >
-                      <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                        <SelectValue placeholder="Sélectionnez un jeu" />
-                      </SelectTrigger>
+                    <Label className="text-white">Jeu *</Label>
+                    <Select value={newTeam.game} onValueChange={value => setNewTeam({ ...newTeam, game: value })}>
+                      <SelectTrigger className="bg-white/10 border-white/20 text-white"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-black border-white/20">
-                        {availableGames.map((game) => (
-                          <SelectItem key={game} value={game} className="text-white">
-                            {game}
-                          </SelectItem>
-                        ))}
+                        {availableGames.map(game => <SelectItem key={game} value={game} className="text-white">{game}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="status" className="text-white">
-                      Statut
-                    </Label>
-                    <Select
-                      value={newTeam.status}
-                      onValueChange={(value) => setNewTeam({ ...newTeam, status: value })}
-                    >
-                      <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
+                    <Label className="text-white">Statut</Label>
+                    <Select value={newTeam.status} onValueChange={value => setNewTeam({ ...newTeam, status: value })}>
+                      <SelectTrigger className="bg-white/10 border-white/20 text-white"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-black border-white/20">
-                        {teamStatuses.map((status) => (
-                          <SelectItem key={status.value} value={status.value} className="text-white">
-                            {status.label}
-                          </SelectItem>
-                        ))}
+                        {teamStatuses.map(s => <SelectItem key={s.value} value={s.value} className="text-white">{s.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="description" className="text-white">
-                    Description
-                  </Label>
+                  <Label className="text-white">Description</Label>
                   <Textarea
-                    id="description"
                     value={newTeam.description}
-                    onChange={(e) => setNewTeam({ ...newTeam, description: e.target.value })}
+                    onChange={e => setNewTeam({ ...newTeam, description: e.target.value })}
                     className="bg-white/10 border-white/20 text-white"
-                    placeholder="Description de l'équipe"
-                    rows={3}
                   />
                 </div>
                 <div>
-                  <Label className="text-white">
-                    Membres ({(newTeam.members || []).length})
-                  </Label>
-                  <div className="space-y-2">
-                    <div className="flex space-x-2">
-                      <Input
-                        placeholder="Nom du membre"
-                        className="bg-white/10 border-white/20 text-white"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            addMemberToNewTeam(e.currentTarget.value)
-                            e.currentTarget.value = ''
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10"
-                        onClick={(e) => {
-                          const input = e.currentTarget.previousElementSibling as HTMLInputElement
-                          if (input?.value) {
-                            addMemberToNewTeam(input.value)
-                            input.value = ''
-                          }
-                        }}
-                      >
-                        Ajouter
-                      </Button>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {(newTeam.members || []).map((member, index) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-xs cursor-pointer hover:bg-red-500/20"
-                          onClick={() => removeMemberFromNewTeam(member)}
-                        >
-                          {member} ×
-                        </Badge>
-                      ))}
-                    </div>
+                  <Label className="text-white">Membres</Label>
+                  <div className="flex space-x-2 mb-2">
+                    <Input
+                      placeholder="Nom membre"
+                      className="bg-white/10 border-white/20 text-white"
+                      onKeyPress={e => {
+                        if (e.key === "Enter") {
+                          addMemberToNewTeam(e.currentTarget.value)
+                          e.currentTarget.value = ""
+                        }
+                      }}
+                    />
+                    <Button onClick={e => {
+                      const input = e.currentTarget.previousElementSibling as HTMLInputElement
+                      if (input?.value) { addMemberToNewTeam(input.value); input.value = "" }
+                    }}>Ajouter</Button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {(newTeam.members || []).map((m,i) => <Badge key={i} variant="outline" className="cursor-pointer" onClick={() => removeMemberFromNewTeam(m)}>{m} ×</Badge>)}
                   </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsCreateDialogOpen(false)}
-                  className="border-white/20 text-white hover:bg-white/10"
-                >
-                  Annuler
-                </Button>
-                <Button onClick={handleCreateTeam} className="bg-white text-black hover:bg-white/90">
-                  Créer l'équipe
-                </Button>
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Annuler</Button>
+                <Button onClick={handleCreateTeam}>Créer</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Filtres */}
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
-              <Input
-                placeholder="Rechercher par nom, capitaine ou jeu..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-white/40"
-              />
-            </div>
+
+      <CardContent>
+        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
+            <Input
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="pl-10 bg-white/5 border-white/20 text-white"
+            />
           </div>
           <Select value={gameFilter} onValueChange={setGameFilter}>
-            <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white">
-              <SelectValue placeholder="Filtrer par jeu" />
-            </SelectTrigger>
+            <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white"><SelectValue /></SelectTrigger>
             <SelectContent className="bg-black border-white/20">
               <SelectItem value="all">Tous les jeux</SelectItem>
-              {availableGames.map((game) => (
-                <SelectItem key={game} value={game}>
-                  {game}
-                </SelectItem>
-              ))}
+              {availableGames.map(game => <SelectItem key={game} value={game}>{game}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white">
-              <SelectValue placeholder="Filtrer par statut" />
-            </SelectTrigger>
+            <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white"><SelectValue /></SelectTrigger>
             <SelectContent className="bg-black border-white/20">
               <SelectItem value="all">Tous les statuts</SelectItem>
-              {teamStatuses.map((status) => (
-                <SelectItem key={status.value} value={status.value}>
-                  {status.label}
-                </SelectItem>
-              ))}
+              {teamStatuses.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="space-y-4">
-          {filteredTeams.length === 0 ? (
-            <div className="text-center py-8">
-              <Trophy className="h-12 w-12 text-white/20 mx-auto mb-4" />
-              <p className="text-white/60">
-                {teams.length === 0 ? "Aucune équipe trouvée" : "Aucune équipe ne correspond aux filtres"}
-              </p>
-            </div>
-          ) : (
-            filteredTeams.map((team) => (
-              <Card key={team.id} className="border-l-4 border-l-white bg-white/5 border-white/20">
-                <CardContent className="py-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center space-x-2 flex-wrap">
-                        <h4 className="font-medium text-white">{team.name}</h4>
-                        <Badge variant="secondary">{team.game}</Badge>
-                        <Badge variant="outline" className={getStatusColor(team.status || "active")}>
-                          {getStatusLabel(team.status || "active")}
-                        </Badge>
-                        <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
-                          <Users className="h-3 w-3 mr-1" />
-                          {team.members?.length || 0} membres
-                        </Badge>
-                      </div>
-
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Crown className="h-4 w-4 text-yellow-400" />
-                        <span className="text-white/60">Capitaine:</span>
-                        <span className="text-white">{team.captain}</span>
-                      </div>
-
-                      {team.description && (
-                        <p className="text-sm text-white/60">{team.description}</p>
-                      )}
-
-                      {team.members && team.members.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {team.members.map((member, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {member}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="flex items-center space-x-4 text-xs text-white/40">
-                        {team.created_at && (
-                          <span>Créée le {new Date(team.created_at).toLocaleDateString("fr-FR")}</span>
-                        )}
-                        <span>ID: #{team.id}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-2 ml-4">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEditTeam(team)}
-                        className="border-white/20 text-white hover:bg-white/10"
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Modifier
-                      </Button>
-
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="destructive">
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Supprimer
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="bg-black border-white/20">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className="text-white">Confirmer la suppression</AlertDialogTitle>
-                            <AlertDialogDescription className="text-white/60">
-                              Êtes-vous sûr de vouloir supprimer l'équipe "{team.name}" ? Cette action est
-                              irréversible.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="border-white/20 text-white hover:bg-white/10">
-                              Annuler
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteTeam(team.id)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              Supprimer
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredTeams.map(team => (
+            <Card key={team.id} className="bg-white/5 border-white/20">
+              <CardHeader className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-white">{team.name}</CardTitle>
+                  <CardDescription className="text-white/60">{team.game} • Capitaine: {team.captain}</CardDescription>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {(team.members || []).map((m,i) => <Badge key={i} variant="outline" className="text-white">{m}</Badge>)}
                   </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+                  <Badge className={`${getStatusColor(team.status || "active")} mt-2`}>{getStatusLabel(team.status || "active")}</Badge>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <Button size="icon" variant="outline" onClick={() => handleEditTeam(team)}><Edit className="h-4 w-4" /></Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="outline"><Trash2 className="h-4 w-4" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-black border-white/20">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-white">Supprimer l'équipe ?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-white/60">Cette action est irréversible.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteTeam(team.id)}>Supprimer</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
       </CardContent>
 
-      {/* Dialog d'édition */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-black border-white/20 max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-white">Modifier l'équipe</DialogTitle>
-            <DialogDescription className="text-white/60">
-              Modifiez les informations de l'équipe
-            </DialogDescription>
-          </DialogHeader>
-          {editingTeam && (
-            <div className="space-y-4 max-h-96 overflow-y-auto">
+      {/* Dialog édition */}
+      {editingTeam && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="bg-black border-white/20 max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-white">Éditer l'équipe</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="edit-name" className="text-white">
-                    Nom de l'équipe *
-                  </Label>
+                  <Label className="text-white">Nom *</Label>
                   <Input
-                    id="edit-name"
                     value={editingTeam.name}
-                    onChange={(e) =>
-                      setEditingTeam({ ...editingTeam, name: e.target.value })
-                    }
+                    onChange={e => setEditingTeam({ ...editingTeam, name: e.target.value })}
                     className="bg-white/10 border-white/20 text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-captain" className="text-white">
-                    Capitaine *
-                  </Label>
+                  <Label className="text-white">Capitaine *</Label>
                   <Input
-                    id="edit-captain"
                     value={editingTeam.captain}
-                    onChange={(e) =>
-                      setEditingTeam({ ...editingTeam, captain: e.target.value })
-                    }
+                    onChange={e => setEditingTeam({ ...editingTeam, captain: e.target.value })}
                     className="bg-white/10 border-white/20 text-white"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="edit-game" className="text-white">
-                    Jeu *
-                  </Label>
-                  <Select
-                    value={editingTeam.game}
-                    onValueChange={(value) =>
-                      setEditingTeam({ ...editingTeam, game: value })
-                    }
-                  >
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
+                  <Label className="text-white">Jeu *</Label>
+                  <Select value={editingTeam.game} onValueChange={value => setEditingTeam({ ...editingTeam, game: value })}>
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white"><SelectValue /></SelectTrigger>
                     <SelectContent className="bg-black border-white/20">
-                      {availableGames.map((game) => (
-                        <SelectItem key={game} value={game} className="text-white">
-                          {game}
-                        </SelectItem>
-                      ))}
+                      {availableGames.map(game => <SelectItem key={game} value={game}>{game}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="edit-status" className="text-white">
-                    Statut
-                  </Label>
-                  <Select
-                    value={editingTeam.status || "active"}
-                    onValueChange={(value) =>
-                      setEditingTeam({ ...editingTeam, status: value })
-                    }
-                  >
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
+                  <Label className="text-white">Statut</Label>
+                  <Select value={editingTeam.status} onValueChange={value => setEditingTeam({ ...editingTeam, status: value })}>
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white"><SelectValue /></SelectTrigger>
                     <SelectContent className="bg-black border-white/20">
-                      {teamStatuses.map((status) => (
-                        <SelectItem key={status.value} value={status.value} className="text-white">
-                          {status.label}
-                        </SelectItem>
-                      ))}
+                      {teamStatuses.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div>
-                <Label htmlFor="edit-description" className="text-white">
-                  Description
-                </Label>
+                <Label className="text-white">Description</Label>
                 <Textarea
-                  id="edit-description"
-                  value={editingTeam.description || ""}
-                  onChange={(e) =>
-                    setEditingTeam({ ...editingTeam, description: e.target.value })
-                  }
+                  value={editingTeam.description}
+                  onChange={e => setEditingTeam({ ...editingTeam, description: e.target.value })}
                   className="bg-white/10 border-white/20 text-white"
-                  rows={3}
                 />
               </div>
               <div>
-                <Label className="text-white">
-                  Membres ({(editingTeam.members || []).length})
-                </Label>
-                <div className="space-y-2">
-                  <div className="flex space-x-2">
-                    <Input
-                      placeholder="Nom du membre"
-                      className="bg-white/10 border-white/20 text-white"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          addMemberToEditingTeam(e.currentTarget.value)
-                          e.currentTarget.value = ''
-                        }
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="border-white/20 text-white hover:bg-white/10"
-                      onClick={(e) => {
-                        const input = e.currentTarget.previousElementSibling as HTMLInputElement
-                        if (input?.value) {
-                          addMemberToEditingTeam(input.value)
-                          input.value = ''
-                        }
-                      }}
-                    >
-                      Ajouter
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {(editingTeam.members || []).map((member, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="text-xs cursor-pointer hover:bg-red-500/20"
-                        onClick={() => removeMemberFromEditingTeam(member)}
-                      >
-                        {member} ×
-                      </Badge>
-                    ))}
-                  </div>
+                <Label className="text-white">Membres</Label>
+                <div className="flex space-x-2 mb-2">
+                  <Input
+                    placeholder="Nom membre"
+                    className="bg-white/10 border-white/20 text-white"
+                    onKeyPress={e => {
+                      if (e.key === "Enter") {
+                        addMemberToEditingTeam(e.currentTarget.value)
+                        e.currentTarget.value = ""
+                      }
+                    }}
+                  />
+                  <Button onClick={e => {
+                    const input = e.currentTarget.previousElementSibling as HTMLInputElement
+                    if (input?.value) { addMemberToEditingTeam(input.value); input.value = "" }
+                  }}>Ajouter</Button>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {(editingTeam.members || []).map((m,i) => <Badge key={i} variant="outline" className="cursor-pointer" onClick={() => removeMemberFromEditingTeam(m)}>{m} ×</Badge>)}
                 </div>
               </div>
             </div>
-          )}
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsEditDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              Annuler
-            </Button>
-            <Button onClick={handleUpdateTeam} className="bg-white text-black hover:bg-white/90">
-              Sauvegarder
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Annuler</Button>
+              <Button onClick={handleUpdateTeam}>Sauvegarder</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </Card>
   )
 }
