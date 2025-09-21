@@ -11,8 +11,18 @@ import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
+interface Team {
+  id: number
+  name: string
+  captain: string
+  members: string[]
+  game: string
+  description?: string
+  status: string
+}
+
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<any[]>([])
+  const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -20,8 +30,8 @@ export default function TeamsPage() {
   const fetchTeams = async () => {
     try {
       const res = await fetch("/api/teams")
-      const data = await res.json()
-      if (data.success) setTeams(data.data)
+      const json = await res.json()
+      if (json.success) setTeams(json.data)
     } catch (err) {
       console.error("Erreur fetch teams:", err)
     }
@@ -30,6 +40,23 @@ export default function TeamsPage() {
   useEffect(() => {
     fetchTeams()
   }, [])
+
+  // Suppression d'une équipe
+  const handleDelete = async (id: number) => {
+    if (!confirm("Voulez-vous vraiment supprimer cette équipe ?")) return
+    try {
+      const res = await fetch(`/api/teams/${id}`, { method: "DELETE" })
+      const json = await res.json()
+      if (json.success) {
+        // Mettre à jour l'état local pour supprimer directement l'équipe de la page
+        setTeams((prev) => prev.filter((team) => team.id !== id))
+      } else {
+        alert("Erreur suppression: " + json.error)
+      }
+    } catch (err) {
+      console.error("Erreur suppression:", err)
+    }
+  }
 
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
@@ -46,14 +73,9 @@ export default function TeamsPage() {
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
-            <p className="text-lg text-muted-foreground">
-              Découvrez nos équipes compétitives et leurs membres talentueux.
-            </p>
-          </div>
+          <h1 className="text-4xl font-bold mb-4">Équipes Nemesis</h1>
 
-          {/* Filters */}
+          {/* Filtres */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -71,94 +93,89 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                {/* Remplace par tes jeux dynamiques si nécessaire */}
-                {Array.from(new Set(teams.map(t => t.game))).map((game) => (
-                  <SelectItem key={game} value={game}>
-                    {game}
-                  </SelectItem>
-                ))}
+                <SelectItem value="CS:GO">CS:GO</SelectItem>
+                <SelectItem value="League of Legends">League of Legends</SelectItem>
+                <SelectItem value="Valorant">Valorant</SelectItem>
+                {/* ajoute tes autres jeux ici */}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Teams Grid */}
+          {/* Grid des équipes */}
           {filteredTeams.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
-                <p className="text-muted-foreground">Aucune équipe trouvée avec ces filtres.</p>
+                <p>Aucune équipe trouvée avec ces filtres.</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTeams.map((team) => {
-                const teamPlayers = team.members || []
-
-                return (
-                  <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <CardTitle className="text-xl">{team.name}</CardTitle>
-                          <Badge variant="secondary">{team.game}</Badge>
-                        </div>
-                        <div className="text-right text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            {teamPlayers.length}
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                      {team.description && <CardDescription>{team.description}</CardDescription>}
-
+              {filteredTeams.map((team) => (
+                <Card key={team.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
                       <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Crown className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium">Capitaine:</span>
-                          <span className="text-sm text-muted-foreground">{team.captain}</span>
-                        </div>
-
-                        <div className="space-y-1">
-                          <span className="text-sm font-medium">Membres:</span>
-                          <div className="flex flex-wrap gap-1">
-                            {teamPlayers.map((member) => (
-                              <Badge key={member} variant="outline" className="text-xs">
-                                {member}
-                              </Badge>
-                            ))}
-                          </div>
+                        <CardTitle>{team.name}</CardTitle>
+                        <Badge variant="secondary">{team.game}</Badge>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <div className="flex items-center">
+                          <Users className="h-4 w-4 mr-1" />
+                          {team.members.length}
                         </div>
                       </div>
+                    </div>
+                  </CardHeader>
 
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 bg-transparent"
-                          onClick={() => {
-                            alert(
-                              `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${teamPlayers.length}\n\nDescription: ${
-                                team.description || "Aucune description"
-                              }`
-                            )
-                          }}
-                        >
-                          Voir détails
+                  <CardContent className="space-y-4">
+                    {team.description && <CardDescription>{team.description}</CardDescription>}
+
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <Crown className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium">Capitaine:</span>
+                        <span className="text-sm text-muted-foreground">{team.captain}</span>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="text-sm font-medium">Membres:</span>
+                        <div className="flex flex-wrap gap-1">
+                          {team.members.map((member) => (
+                            <Badge key={member} variant="outline" className="text-xs">
+                              {member}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}`)}
+                      >
+                        Voir détails
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleDelete(team.id)}
+                      >
+                        Supprimer
+                      </Button>
+                      <Link href="/recrutement" className="flex-1">
+                        <Button size="sm" className="w-full flex items-center justify-center gap-1">
+                          <UserPlus className="h-4 w-4" />
+                          Rejoindre
                         </Button>
-
-                        <Link href="/recrutement" className="flex-1">
-                          <Button size="sm" className="w-full flex items-center justify-center gap-1">
-                            <UserPlus className="h-4 w-4" />
-                            Rejoindre
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </div>
