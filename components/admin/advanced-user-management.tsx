@@ -87,6 +87,11 @@ export function AdvancedUserManagement() {
   }
 
   const handleCreateUser = async (userData: Partial<User>) => {
+    if (!userData.username || !userData.email || !userData.discord_id) {
+      alert("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+
     try {
       const response = await fetch("/api/users", {
         method: "POST",
@@ -100,13 +105,16 @@ export function AdvancedUserManagement() {
       
       await loadUsers()
       setIsCreateDialogOpen(false)
+      alert("Utilisateur créé avec succès!")
     } catch (error) {
       console.error("Erreur lors de la création:", error)
+      alert("Erreur lors de la création de l'utilisateur")
     }
   }
 
   const handleUpdateUser = async (userData: Partial<User>) => {
     if (!selectedUser) return
+    
     try {
       const response = await fetch(`/api/users/${selectedUser.id}`, {
         method: "PUT",
@@ -121,8 +129,10 @@ export function AdvancedUserManagement() {
       await loadUsers()
       setIsEditDialogOpen(false)
       setSelectedUser(null)
+      alert("Utilisateur mis à jour avec succès!")
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
+      alert("Erreur lors de la mise à jour de l'utilisateur")
     }
   }
 
@@ -137,8 +147,10 @@ export function AdvancedUserManagement() {
       }
       
       await loadUsers()
+      alert("Utilisateur supprimé avec succès!")
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)
+      alert("Erreur lors de la suppression de l'utilisateur")
     }
   }
 
@@ -155,8 +167,10 @@ export function AdvancedUserManagement() {
       }
       
       await loadUsers()
+      alert("Utilisateur banni avec succès!")
     } catch (error) {
       console.error("Erreur lors du bannissement:", error)
+      alert("Erreur lors du bannissement de l'utilisateur")
     }
   }
 
@@ -405,6 +419,8 @@ export function AdvancedUserManagement() {
                         variant="outline"
                         size="sm"
                         className="border-red-500/20 text-red-400 hover:bg-red-500/10 bg-transparent"
+                        disabled={user.role === "admin" || user.role === "developer"}
+                        disabled={user.role === "admin" || user.role === "developer"}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

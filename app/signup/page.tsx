@@ -58,7 +58,7 @@ export default function SignupPage() {
     if (result.success) {
       router.push("/")
     } else {
-      setError(result.error || "Erreur lors de la création du compte")
+      setError(result.error || "Erreur lors de la création du compte. Vérifiez que vos informations sont uniques.")
     }
 
     setIsLoading(false)

@@ -228,8 +228,7 @@ export default function PlayersPage() {
                             size="sm" 
                             className="flex-1 bg-transparent"
                             onClick={() => {
-                              // Show player profile modal
-                              alert(`Profil de ${player.username}`)
+                              alert(`Joueur: ${player.username}\nRôle: ${player.role}\nJeu: ${player.game || 'Non spécifié'}\nÉquipe: ${player.team || 'Aucune'}\nStatut: ${getStatusText(player.status)}\nDiscord: ${player.discord_id || 'Non renseigné'}`)
                             }}
                           >
                             <User className="h-4 w-4 mr-1" />
@@ -239,8 +238,11 @@ export default function PlayersPage() {
                             variant="outline" 
                             size="sm"
                             onClick={() => {
-                              // Open Discord or contact modal
-                              alert(`Contacter ${player.username} sur Discord: ${player.discord_id}`)
+                              if (player.discord_id) {
+                                alert(`Pour contacter ${player.username}, ajoutez-le sur Discord: ${player.discord_id}`)
+                              } else {
+                                alert(`Aucun Discord renseigné pour ${player.username}`)
+                              }
                             }}
                           >
                             <MessageCircle className="h-4 w-4" />
@@ -327,12 +329,11 @@ export default function PlayersPage() {
                         )}
                       </div>
 
+                          onClick={() => {
+                            // Open contact modal for free agent
+                            alert(`Contacter ${player.username} - Agent libre`)
+                          }}
                       <Button size="sm" className="w-full">
-                        onClick={() => {
-                          // Open contact modal for free agent
-                          alert(`Contacter ${player.username} - Agent libre`)
-                        }}
-                      >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Contacter
                       </Button>

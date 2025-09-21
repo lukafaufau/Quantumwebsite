@@ -13,6 +13,11 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const announcementData = await request.json()
+    
+    if (!announcementData.title || !announcementData.description) {
+      return NextResponse.json({ success: false, error: 'Title and description are required' }, { status: 400 })
+    }
+    
     const newAnnouncement = await db.addAnnouncement({
       ...announcementData,
       date: new Date().toISOString(),
@@ -21,6 +26,7 @@ export async function POST(request: NextRequest) {
     })
     return NextResponse.json({ success: true, data: newAnnouncement })
   } catch (error) {
+    console.error('Error creating announcement:', error)
     return NextResponse.json({ success: false, error: 'Failed to create announcement' }, { status: 500 })
   }
 }

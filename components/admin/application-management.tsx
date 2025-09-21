@@ -67,6 +67,7 @@ export function ApplicationManagement() {
       const result = await response.json()
       if (result.success) {
         await fetchApplications()
+        alert(`Candidature ${status === "accepted" ? "acceptée" : "refusée"} avec succès!`)
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la mise à jour de la candidature")

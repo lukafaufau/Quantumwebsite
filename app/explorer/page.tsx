@@ -181,8 +181,7 @@ export default function ExplorerPage() {
                           variant="outline" 
                           size="sm"
                           onClick={() => {
-                            // Show full announcement details
-                            alert(`Détails de l'annonce: ${announcement.title}`)
+                            alert(`${announcement.title}\n\nType: ${announcement.type}\nJeu: ${announcement.game || 'Général'}\nDate: ${new Date(announcement.date).toLocaleDateString('fr-FR')}\n\n${announcement.description}`)
                           }}
                         >
                           En savoir plus

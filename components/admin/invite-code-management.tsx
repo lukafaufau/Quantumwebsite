@@ -71,6 +71,11 @@ export function InviteCodeManagement() {
   }
 
   const handleCreateCode = async () => {
+    if (!newCode.role || newCode.max_uses < 1) {
+      alert("Veuillez remplir tous les champs correctement")
+      return
+    }
+
     try {
       const response = await fetch("/api/invite-codes", {
         method: "POST",
@@ -88,6 +93,7 @@ export function InviteCodeManagement() {
         await fetchCodes()
         setIsCreateDialogOpen(false)
         setNewCode({ code: "", role: "player", max_uses: 1, expires_at: "" })
+        alert("Code d'invitation créé avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la création du code")
@@ -106,6 +112,7 @@ export function InviteCodeManagement() {
       const result = await response.json()
       if (result.success) {
         await fetchCodes()
+        alert("Code d'invitation supprimé avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la suppression du code")
@@ -117,7 +124,7 @@ export function InviteCodeManagement() {
 
   const copyToClipboard = (code: string) => {
     navigator.clipboard.writeText(code)
-    // In real app, show toast notification
+    alert(`Code "${code}" copié dans le presse-papiers!`)
   }
 
   const generateRandomCode = () => {

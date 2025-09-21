@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     
     if (userExists) {
       return NextResponse.json(
-        { success: false, error: 'User already exists' },
+        { success: false, error: 'Un utilisateur avec ce nom, email ou Discord ID existe déjà' },
         { status: 409 }
       )
     }
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       const usedCode = await db.useInviteCode(invite_code, username)
       if (!usedCode) {
         return NextResponse.json(
-          { success: false, error: 'Invalid or expired invite code' },
+          { success: false, error: 'Code d\'invitation invalide ou expiré' },
           { status: 400 }
         )
       }
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Signup error:', error)
     return NextResponse.json(
-      { success: false, error: 'Server error' },
+      { success: false, error: 'Erreur serveur lors de l\'inscription' },
       { status: 500 }
     )
   }

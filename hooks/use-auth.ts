@@ -77,10 +77,10 @@ export const useAuth = create<AuthStore>()(
             return { success: true }
           }
           
-          return { success: false, error: data.error || 'Signup failed' }
+          return { success: false, error: data.error || 'Erreur lors de l\'inscription. Vérifiez vos informations.' }
         } catch (error) {
           console.error('Signup error:', error)
-          return { success: false, error: 'Network error' }
+          return { success: false, error: 'Erreur de connexion au serveur' }
         }
       }
     }),

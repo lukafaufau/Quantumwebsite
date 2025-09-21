@@ -168,7 +168,8 @@ class Database {
     const newTeam: Team = {
       ...team,
       id: Math.max(0, ...teams.map(t => t.id)) + 1,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      members: team.members || []
     }
     teams.push(newTeam)
     await this.writeFile('teams.json', { teams })
@@ -287,7 +288,8 @@ class Database {
       ...code,
       id: Math.max(0, ...codes.map(c => c.id)) + 1,
       created_at: new Date().toISOString(),
-      used_by: []
+      used_by: [],
+      uses_left: code.uses_left || code.max_uses
     }
     codes.push(newCode)
     await this.writeFile('invite_codes.json', { codes })

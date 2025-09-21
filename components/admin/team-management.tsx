@@ -82,6 +82,11 @@ export function TeamManagement() {
   }
 
   const handleCreateTeam = async () => {
+    if (!newTeam.name || !newTeam.captain || !newTeam.game) {
+      alert("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
@@ -98,6 +103,7 @@ export function TeamManagement() {
         await fetchTeams()
         setIsCreateDialogOpen(false)
         setNewTeam({ name: "", captain: "", members: [], game: "", description: "" })
+        alert("Équipe créée avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la création de l'équipe")
@@ -127,6 +133,7 @@ export function TeamManagement() {
         await fetchTeams()
         setIsEditDialogOpen(false)
         setEditingTeam(null)
+        alert("Équipe mise à jour avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la mise à jour de l'équipe")
@@ -145,6 +152,7 @@ export function TeamManagement() {
       const result = await response.json()
       if (result.success) {
         await fetchTeams()
+        alert("Équipe supprimée avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la suppression de l'équipe")

@@ -122,8 +122,7 @@ export default function TeamsPage() {
                           size="sm" 
                           className="flex-1 bg-transparent"
                           onClick={() => {
-                            // Show team details modal or navigate to team page
-                            alert(`Détails de l'équipe ${team.name}`)
+                            alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`)
                           }}
                         >
                           Voir détails

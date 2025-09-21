@@ -72,6 +72,11 @@ export function AnnouncementManagement() {
   }
 
   const handleCreateAnnouncement = async () => {
+    if (!newAnnouncement.title || !newAnnouncement.description) {
+      alert("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+
     try {
       const response = await fetch("/api/announcements", {
         method: "POST",
@@ -90,6 +95,7 @@ export function AnnouncementManagement() {
         await fetchAnnouncements()
         setIsCreateDialogOpen(false)
         setNewAnnouncement({ title: "", description: "", type: "general", game: "" })
+        alert("Annonce créée avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la création de l'annonce")
@@ -119,6 +125,7 @@ export function AnnouncementManagement() {
         await fetchAnnouncements()
         setIsEditDialogOpen(false)
         setEditingAnnouncement(null)
+        alert("Annonce mise à jour avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la mise à jour de l'annonce")
@@ -137,6 +144,7 @@ export function AnnouncementManagement() {
       const result = await response.json()
       if (result.success) {
         await fetchAnnouncements()
+        alert("Annonce supprimée avec succès!")
       } else {
         console.error("Erreur:", result.error)
         alert("Erreur lors de la suppression de l'annonce")

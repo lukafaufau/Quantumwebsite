@@ -15,10 +15,28 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const userData = await request.json()
+    
+    if (!userData.username || !userData.email || !userData.discord_id) {
+      return NextResponse.json({ success: false, error: 'Username, email and discord_id are required' }, { status: 400 })
+    }
+    
+    // Check if user already exists
+    const existingUsers = await db.getUsers()
+    const userExists = existingUsers.some(u => 
+      u.username === userData.username || 
+      u.email === userData.email || 
+      u.discord_id === userData.discord_id
+    )
+    
+    if (userExists) {
+      return NextResponse.json({ success: false, error: 'User already exists' }, { status: 409 })
+    }
+    
     const newUser = await db.addUser(userData)
     const { password, ...safeUser } = newUser
     return NextResponse.json({ success: true, data: safeUser })
   } catch (error) {
+    console.error('Error creating user:', error)
     return NextResponse.json({ success: false, error: 'Failed to create user' }, { status: 500 })
   }
 }
