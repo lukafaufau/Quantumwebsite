@@ -13,7 +13,7 @@ export default function CreditsPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-heading font-bold mb-4">Crédits</h1>
-            <p className="text-lg text-muted-foreground">Les personnes qui ont rendu Quantum possible</p>
+            <p className="text-lg text-muted-foreground">Les personnes qui ont rendu Nemesis possible</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12">
