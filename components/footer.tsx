@@ -6,22 +6,22 @@ import { Diamond as Discord } from "lucide-react"
 export function Footer() {
   return (
     <footer className="bg-black text-white border-t border-white/20">
-      <div className="container mx-auto px-4 py-20 flex flex-col md:flex-row justify-between gap-16 md:gap-0">
+      <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row justify-between gap-8">
 
         {/* Brand */}
-        <div className="flex flex-col items-center md:items-start space-y-5">
-          <Link href="/" className="text-4xl font-heading font-bold hover:text-white/80 transition-all glow-text">
+        <div className="flex flex-col items-center md:items-start space-y-2">
+          <Link href="/" className="text-2xl font-heading font-bold hover:text-white/80 transition-all glow-text">
             Nemesis
           </Link>
-          <p className="text-sm text-gray-400 text-center md:text-left leading-relaxed max-w-xs">
-            La plateforme communautaire esports française de référence.
+          <p className="text-xs text-gray-400 text-center md:text-left leading-relaxed max-w-xs">
+            Plateforme communautaire esports française de référence.
           </p>
         </div>
 
         {/* Navigation */}
-        <div className="flex flex-col items-center md:items-start space-y-5">
-          <h3 className="font-heading font-bold text-white text-lg glow-text">Navigation</h3>
-          <div className="flex flex-col space-y-3 text-sm">
+        <div className="flex flex-col items-center md:items-start space-y-2">
+          <h3 className="font-heading font-semibold text-white text-sm glow-text">Navigation</h3>
+          <div className="flex flex-col space-y-1 text-xs">
             <Link href="/explorer" className="hover:text-indigo-400 transition-all duration-200">Explorer</Link>
             <Link href="/equipes" className="hover:text-indigo-400 transition-all duration-200">Équipes</Link>
             <Link href="/joueurs" className="hover:text-indigo-400 transition-all duration-200">Joueurs</Link>
@@ -30,9 +30,9 @@ export function Footer() {
         </div>
 
         {/* Support */}
-        <div className="flex flex-col items-center md:items-start space-y-5">
-          <h3 className="font-heading font-bold text-white text-lg glow-text">Support</h3>
-          <div className="flex flex-col space-y-3 text-sm">
+        <div className="flex flex-col items-center md:items-start space-y-2">
+          <h3 className="font-heading font-semibold text-white text-sm glow-text">Support</h3>
+          <div className="flex flex-col space-y-1 text-xs">
             <Link href="/credits" className="hover:text-indigo-400 transition-all duration-200">Crédits</Link>
             <Link href="#" className="hover:text-indigo-400 transition-all duration-200">Contact</Link>
             <Link href="#" className="hover:text-indigo-400 transition-all duration-200">FAQ</Link>
@@ -41,24 +41,23 @@ export function Footer() {
         </div>
 
         {/* Réseaux sociaux */}
-        <div className="flex flex-col items-center md:items-start space-y-5">
-          <h3 className="font-heading font-bold text-white text-lg glow-text">Réseaux sociaux</h3>
-          <div className="flex space-x-4">
+        <div className="flex flex-col items-center md:items-start space-y-2">
+          <h3 className="font-heading font-semibold text-white text-sm glow-text">Réseaux sociaux</h3>
+          <div className="flex space-x-2">
             <a
               href="#"
-              className="text-gray-400 hover:text-indigo-400 transition-all duration-300"
+              className="text-gray-400 hover:text-indigo-400 transition-all duration-200"
               aria-label="Discord"
             >
-              <Discord className="h-8 w-8 hover:scale-110 transition-transform duration-300" />
+              <Discord className="h-6 w-6 hover:scale-110 transition-transform duration-200" />
             </a>
-            {/* Ici tu peux rajouter d'autres icônes si besoin */}
           </div>
         </div>
 
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-white/20 mt-16 py-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 px-4 md:px-0">
+      <div className="border-t border-white/20 mt-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 px-4 md:px-0">
         <div className="text-center md:text-left space-y-1">
           <p>
             Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur :{" "}
@@ -66,12 +65,12 @@ export function Footer() {
           </p>
           <p>© 2024 Nemesis Esports. Tous droits réservés.</p>
         </div>
-        <div className="mt-2 md:mt-0 text-center md:text-right">Version 1.0.0</div>
+        <div className="mt-1 md:mt-0 text-center md:text-right">Version 1.0.0</div>
       </div>
 
       <style jsx>{`
         .glow-text {
-          text-shadow: 0 0 8px rgba(79, 70, 229, 0.6), 0 0 16px rgba(79, 70, 229, 0.4);
+          text-shadow: 0 0 6px rgba(79, 70, 229, 0.5);
         }
       `}</style>
     </footer>
