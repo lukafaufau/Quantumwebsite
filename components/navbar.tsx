@@ -22,7 +22,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname() || "/"
 
-  // Liste des liens
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/explorer", label: "Explorer" },
@@ -40,7 +39,6 @@ export function Navbar() {
     { href: "/credits", label: "Crédits" },
   ]
 
-  // Fonction pour générer les liens avec le trait actif
   const NavLinks = () =>
     links.map((link) => {
       const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
@@ -49,11 +47,17 @@ export function Navbar() {
           key={link.href}
           href={link.href}
           onClick={() => setIsOpen(false)}
-          className={`text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 ${
-            isActive ? "text-white border-b-2 border-white" : "text-gray-300"
-          } ${link.special ? "text-glow" : ""}`}
+          className={`
+            relative text-sm font-medium transition-all duration-300 transform hover:scale-105
+            ${isActive ? "text-white" : "text-gray-300 hover:text-white"}
+          `}
         >
-          {link.label}
+          <span className="px-2 py-1 hover:bg-white/10 rounded-md transition-all duration-300">
+            {link.label}
+          </span>
+          {isActive && (
+            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-white rounded animate-fade-in"></span>
+          )}
         </Link>
       )
     })
@@ -63,9 +67,15 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between px-3 lg:px-5">
 
         {/* Logo + texte */}
-        <Link href="/" className="flex items-center space-x-4">
-          <Image src={LogoImage} alt="Logo" width={28} height={28} className="transition-all duration-300 hover:scale-110" />
-          <span className="text-2xl font-bold text-white font-heading transition-all duration-300 hover:text-white/90">
+        <Link href="/" className="flex items-center space-x-4 group">
+          <Image
+            src={LogoImage}
+            alt="Logo"
+            width={30}
+            height={30}
+            className="transition-all duration-300 group-hover:scale-110"
+          />
+          <span className="text-2xl font-bold text-white font-heading transition-all duration-300 group-hover:text-white/90 animate-glow">
             NEMESIS
           </span>
         </Link>
@@ -86,15 +96,13 @@ export function Navbar() {
               <DropdownMenuContent align="end" sideOffset={5} className="w-48 bg-black border-white/20 animate-scale-in z-50">
                 <DropdownMenuItem asChild>
                   <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Profil
+                    <Settings className="mr-2 h-4 w-4" /> Profil
                   </Link>
                 </DropdownMenuItem>
                 {(user?.role === "admin" || user?.role === "developer") && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                      <Shield className="mr-2 h-4 w-4" />
-                      Administration
+                      <Shield className="mr-2 h-4 w-4" /> Administration
                     </Link>
                   </DropdownMenuItem>
                 )}
