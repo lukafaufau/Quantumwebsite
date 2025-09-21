@@ -3,21 +3,14 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Users, Crown, Search, UserPlus, X, Star, Calendar, MessageCircle } from "lucide-react"
+import { Users, Crown, Search, UserPlus, X } from "lucide-react"
 import Link from "next/link"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 
 interface Team {
   id: number
@@ -26,10 +19,7 @@ interface Team {
   game: string
   members: string[]
   description?: string
-  status?: "open" | "closed"
-  rank?: number
-  achievements?: string[]
-  lastEvent?: string
+  status?: string
 }
 
 export default function TeamsPage() {
@@ -67,14 +57,11 @@ export default function TeamsPage() {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
-      <main className="flex-1 py-10 px-4">
+      <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          {/* Header */}
-          <div className="mb-10 text-center">
+          <div className="mb-8 text-center">
             <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
-            <p className="text-lg text-gray-400">
-              Découvrez toutes nos équipes, leurs membres et leurs statistiques.
-            </p>
+            <p className="text-lg text-gray-400">Découvrez nos équipes compétitives et leurs membres talentueux.</p>
           </div>
 
           {/* Filters */}
@@ -106,7 +93,7 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-black border border-gray-700">
+            <Card className="bg-gray-900 border border-gray-700">
               <CardContent className="py-8 text-center text-gray-500">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
@@ -116,49 +103,29 @@ export default function TeamsPage() {
               {filteredTeams.map((team) => {
                 const allMembers = [team.captain, ...team.members.filter((m) => m !== team.captain)]
                 return (
-                  <Card
-                    key={team.id}
-                    className="bg-black border border-gray-700 hover:shadow-xl hover:scale-105 transition-transform duration-200"
-                  >
+                  <Card key={team.id} className="bg-gray-900 border border-gray-700 hover:shadow-xl transition-shadow">
                     <CardHeader className="flex flex-col gap-2">
-                      {/* Team Header */}
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold text-white">{team.name}</CardTitle>
-                        <Badge className={`${team.status === "open" ? "bg-green-600" : "bg-red-600"} text-white`}>
-                          {team.status === "open" ? "Ouvert" : "Fermé"}
-                        </Badge>
+                        <Badge variant="secondary" className="bg-gray-800 text-gray-300">{team.game}</Badge>
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                      <div className="flex items-center gap-2 text-sm text-gray-400">
                         <Users className="h-4 w-4" /> {allMembers.length} membres
-                        {team.rank && (
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-400" /> {team.rank}
-                          </div>
-                        )}
-                        {team.lastEvent && (
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" /> {team.lastEvent}
-                          </div>
-                        )}
                       </div>
                     </CardHeader>
 
                     <CardContent className="space-y-3">
                       {team.description && (
-                        <p className="text-gray-400 line-clamp-2">{team.description}</p>
+                        <CardDescription className="text-gray-300">{team.description}</CardDescription>
                       )}
 
-                      {/* Members List */}
                       <div className="flex flex-wrap gap-2">
                         {allMembers.map((member, index) => (
                           <div
                             key={member}
                             className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm ${
-                              index === 0
-                                ? "font-bold text-yellow-400 border border-gray-700"
-                                : "text-white border border-gray-700"
+                              index === 0 ? "font-bold text-yellow-400" : "text-gray-300"
                             }`}
-                            title={index === 0 ? "Capitaine" : "Membre"}
                           >
                             {index === 0 ? <Crown className="h-4 w-4" /> : <Users className="h-3 w-3" />}
                             {member}
@@ -166,12 +133,11 @@ export default function TeamsPage() {
                         ))}
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 pt-3">
+                      <div className="flex gap-2 pt-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 border-white text-white hover:bg-gray-800 hover:text-white transition-colors"
+                          className="flex-1 border-white text-white hover:bg-gray-800 transition-colors"
                           onClick={() => handleDetails(team)}
                         >
                           Voir détails
@@ -193,46 +159,61 @@ export default function TeamsPage() {
               })}
             </div>
           )}
+
+          {/* Call to Action */}
+          <div className="mt-12 text-center">
+            <Card className="bg-gray-900 border border-gray-700">
+              <CardContent className="py-8">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-white">
+                  Envie de rejoindre une équipe ?
+                </h3>
+                <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
+                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
+                  tournois esport.
+                </p>
+                <Button
+                  size="lg"
+                  className="bg-white text-black hover:bg-gray-200 hover:text-black transition-colors"
+                >
+                  <Link href="/recrutement">Postuler maintenant</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
 
       <Footer />
 
-      {/* Modal Details */}
+      {/* Modal Détails Noir UI */}
       {currentTeam && (
         <Dialog open={openModal} onOpenChange={setOpenModal}>
           <DialogContent className="bg-black text-white rounded-xl max-w-lg w-full p-6 border border-gray-700">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">{currentTeam.name}</DialogTitle>
-              <DialogDescription className="text-gray-400 mb-4 flex items-center gap-2">
-                <Calendar className="h-4 w-4" /> {currentTeam.game}
-              </DialogDescription>
+              <DialogDescription className="text-gray-400 mb-4">{currentTeam.game}</DialogDescription>
               <DialogClose asChild>
-                <Button className="absolute top-4 right-4 p-1 rounded-full bg-black border border-gray-700 hover:bg-gray-800">
-                  <X className="h-4 w-4 text-white" />
+                <Button className="absolute top-4 right-4 p-1 rounded-full bg-gray-800 hover:bg-gray-700">
+                  <X className="h-4 w-4" />
                 </Button>
               </DialogClose>
             </DialogHeader>
 
             <div className="space-y-4 max-h-96 overflow-y-auto">
-              {/* Capitaine */}
-              <div className="p-3 rounded-md bg-black border border-gray-700 flex items-center justify-between">
-                <div className="flex items-center gap-2 font-bold text-yellow-400">
+              <div className="bg-gray-900 p-3 rounded-md">
+                <h4 className="font-semibold text-yellow-400 flex items-center gap-2 mb-2">
                   <Crown className="h-5 w-5" /> Capitaine
-                </div>
-                <span>{currentTeam.captain}</span>
+                </h4>
+                <p>{currentTeam.captain}</p>
               </div>
 
-              {/* Membres */}
-              <div className="p-3 rounded-md bg-black border border-gray-700">
-                <div className="flex items-center gap-2 font-semibold mb-2">
-                  <Users className="h-4 w-4" /> Membres
-                </div>
+              <div className="bg-gray-900 p-3 rounded-md">
+                <h4 className="font-semibold text-gray-300 mb-2">Membres</h4>
                 <div className="flex flex-wrap gap-2">
                   {currentTeam.members.map((member) => (
                     <div
                       key={member}
-                      className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-white bg-black border border-gray-700"
+                      className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-gray-300 bg-gray-800"
                     >
                       <Users className="h-3 w-3" /> {member}
                     </div>
@@ -240,26 +221,9 @@ export default function TeamsPage() {
                 </div>
               </div>
 
-              {/* Achievements */}
-              {currentTeam.achievements && currentTeam.achievements.length > 0 && (
-                <div className="p-3 rounded-md bg-black border border-gray-700">
-                  <div className="flex items-center gap-2 font-semibold mb-2">
-                    <Star className="h-4 w-4 text-yellow-400" /> Achievements
-                  </div>
-                  <ul className="list-disc list-inside text-gray-400">
-                    {currentTeam.achievements.map((ach, idx) => (
-                      <li key={idx}>{ach}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Description */}
               {currentTeam.description && (
-                <div className="p-3 rounded-md bg-black border border-gray-700">
-                  <div className="flex items-center gap-2 font-semibold mb-2">
-                    <MessageCircle className="h-4 w-4" /> Description
-                  </div>
+                <div className="bg-gray-900 p-3 rounded-md">
+                  <h4 className="font-semibold text-gray-300 mb-2">Description</h4>
                   <p className="text-gray-400">{currentTeam.description}</p>
                 </div>
               )}
