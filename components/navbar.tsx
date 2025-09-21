@@ -15,7 +15,7 @@ import { useState } from "react"
 import Image from "next/image"
 
 // Si tu veux utiliser une URL externe, il faut l'autoriser dans next.config.js
-const LogoImage = "https://cdn.discordapp.com/attachments/1369328695742955574/1419277407566827613/Fichier_2.png"
+const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
