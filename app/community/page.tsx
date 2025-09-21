@@ -243,7 +243,7 @@ export default function CommunityPage() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredPlayers.map((player) => (
                     <Card key={player.id} className="glass-effect border-white/10 hover-lift">
-                      <CardHeader>
+                      <CardHeader className="flex justify-between items-center">
                         <CardTitle className="text-lg text-white">{player.username}</CardTitle>
                         <Badge variant="outline" className={getStatusColor(player.status)}>
                           {getStatusIcon(player.status)}
@@ -277,7 +277,9 @@ export default function CommunityPage() {
                             className="flex-1 border-white/20 text-white hover:bg-white/10"
                             onClick={() =>
                               alert(
-                                `Profil: ${player.username}\nRôle: ${player.role}\nJeu: ${player.game || "Non spécifié"}\nÉquipe: ${player.team || "Aucune"}\nStatut: ${getStatusText(player.status)}`
+                                `Profil: ${player.username}\nRôle: ${player.role}\nJeu: ${
+                                  player.game || "Non spécifié"
+                                }\nÉquipe: ${player.team || "Aucune"}\nStatut: ${getStatusText(player.status)}`
                               )
                             }
                           >
