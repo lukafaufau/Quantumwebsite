@@ -52,7 +52,7 @@ export default function LoginPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-heading">Connexion</CardTitle>
-            <CardDescription>Connectez-vous à votre compte Quantum</CardDescription>
+            <CardDescription>Connectez-vous à votre compte Nemesis</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

@@ -26,14 +26,14 @@ export default function HomePage() {
         // Contenu par défaut si erreur
         const defaultContent = {
           hero: {
-            title: "Bienvenue sur QUANTUM",
+            title: "Bienvenue sur NEMESIS",
             subtitle:
               "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
-            cta_primary: "Rejoindre Quantum",
+            cta_primary: "Rejoindre Nemesis",
             cta_secondary: "Voir les équipes",
           },
           features: {
-            title: "Pourquoi choisir QUANTUM ?",
+            title: "Pourquoi choisir NEMESIS ?",
             subtitle: "Découvrez tous les avantages de notre plateforme esport",
           },
         }
@@ -126,7 +126,7 @@ export default function HomePage() {
                 <>
                   <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-balance leading-tight animate-slide-up text-glow">
                     {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}{" "}
-                    <span className="text-white animate-glow">{content.hero?.title || "QUANTUM"}</span>
+                    <span className="text-white animate-glow">{content.hero?.title || "NEMESIS"}</span>
                   </h1>
                   <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto text-pretty leading-relaxed animate-slide-up">
                     {content.hero?.subtitle}
@@ -142,7 +142,7 @@ export default function HomePage() {
                     asChild
                   >
                     <Link href={isAuthenticated ? "/explorer" : "/signup"}>
-                      {isAuthenticated ? "Explorer Quantum" : content.hero?.cta_primary || "Rejoindre Quantum"}
+                      {isAuthenticated ? "Explorer Nemesis" : content.hero?.cta_primary || "Rejoindre Nemesis"}
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
@@ -194,7 +194,7 @@ export default function HomePage() {
               ) : (
                 <>
                   <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-glow">
-                    {content.features?.title || "Pourquoi choisir QUANTUM ?"}
+                    {content.features?.title || "Pourquoi choisir NEMESIS ?"}
                   </h2>
                   <p className="text-lg text-white/80 max-w-2xl mx-auto">
                     {content.features?.subtitle || "Découvrez tous les avantages de notre plateforme esport"}

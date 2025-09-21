@@ -45,14 +45,14 @@ export async function authenticateUser(username: string, password: string): Prom
     {
       id: 1,
       username: "Wayzze",
-      email: "wayzze@quantum.gg",
+      email: "wayzze@nemesis.gg",
       role: "admin" as const,
       discord_id: "Wayzze#0001",
     },
     {
       id: 2,
       username: "16k",
-      email: "16k@quantum.gg",
+      email: "16k@nemesis.gg",
       role: "developer" as const,
       discord_id: "16k#0002",
     },

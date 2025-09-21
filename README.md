@@ -1,8 +1,8 @@
-# Quantum esport website
+# Nemesis esport website
 
 *Automatically synced with your [v0.app](https://v0.app) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/faufauluka-6775s-projects/v0-quantum-esport-website)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/faufauluka-6775s-projects/v0-nemesis-esport-website)
 [![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/SGQXHRYBoM4)
 
 ## Overview

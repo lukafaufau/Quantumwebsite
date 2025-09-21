@@ -23,30 +23,30 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Quantum - Esports Community",
+  title: "Nemesis - Esports Community",
   description: "Plateforme communautaire esport française - Gestion d'équipes, recrutement et tournois",
   generator: "v0.app",
   keywords: ["esport", "gaming", "communauté", "équipes", "tournois", "recrutement", "france"],
   authors: [
-    { name: "Wayzze", url: "https://quantum.gg" },
-    { name: "16k", url: "https://quantum.gg" },
+    { name: "Wayzze", url: "https://nemesis.gg" },
+    { name: "16k", url: "https://nemesis.gg" },
   ],
-  creator: "Quantum Team",
-  publisher: "Quantum Esports",
+  creator: "Nemesis Team",
+  publisher: "Nemesis Esports",
   robots: "index, follow",
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://quantum-esports.netlify.app",
-    title: "Quantum - Esports Community",
+    url: "https://nemesis-esports.netlify.app",
+    title: "Nemesis - Esports Community",
     description: "Plateforme communautaire esport française",
-    siteName: "Quantum",
+    siteName: "Nemesis",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Quantum - Esports Community",
+    title: "Nemesis - Esports Community",
     description: "Plateforme communautaire esport française",
-    creator: "@quantum_esports",
+    creator: "@nemesis_esports",
   },
 }
 
