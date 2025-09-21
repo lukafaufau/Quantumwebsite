@@ -86,18 +86,20 @@ export function Navbar() {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                {/* Button doit propager correctement le clic */}
+                <button
+                  className="flex items-center space-x-2 bg-transparent border-none p-1 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
                 >
-                  <User className="h-5 w-5" />
+                  <User className="h-5 w-5 text-white" />
                   <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
+
+              {/* forceMount garantit que le menu est monté */}
               <DropdownMenuContent
                 align="end"
                 sideOffset={5}
+                forceMount
                 className="w-48 bg-black border-white/20 animate-scale-in z-50"
               >
                 <DropdownMenuItem asChild>
