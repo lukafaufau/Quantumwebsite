@@ -13,6 +13,18 @@
       "id": 1,
       "reviewed_by": "Admin",
       "reviewed_at": "2025-09-21T14:44:05.682Z"
+    },
+    {
+      "username": "luka",
+      "discord_id": "luka",
+      "role": "Attaquant",
+      "game": "Rocket League",
+      "message": "qsdqsdqsdsqdsqd",
+      "experience": "qsqsdsdqqd",
+      "availability": "qsdsqdsqdsqdqsdqsqsds",
+      "status": "pending",
+      "date": "2025-09-21T15:46:07.290Z",
+      "id": 2
     }
   ]
 }
