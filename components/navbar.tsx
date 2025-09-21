@@ -38,19 +38,23 @@ export function Navbar() {
       { href: "/credits", label: "Crédits" },
     ]
 
-    return links.map((link) => (
-      <Link
-        key={link.href}
-        href={link.href}
-        className={`text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 focus:text-white animate-fade-in
-          ${pathname === link.href ? "text-white underline underline-offset-4" : "text-gray-300" } 
-          ${link.special ? "text-glow" : ""}
-        `}
-        onClick={() => setIsOpen(false)}
-      >
-        {link.label}
-      </Link>
-    ))
+    return links.map((link) => {
+      const isActive = pathname === link.href
+      return (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`
+            text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 focus:text-white animate-fade-in
+            ${isActive ? "text-white border-b-2 border-white" : "text-gray-300"}
+            ${link.special ? "text-glow" : ""}
+          `}
+          onClick={() => setIsOpen(false)}
+        >
+          {link.label}
+        </Link>
+      )
+    })
   }
 
   return (
@@ -81,11 +85,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow"
-                >
+                <Button variant="ghost" size="sm" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow">
                   <User className="h-5 w-5" />
                   <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
                 </Button>
