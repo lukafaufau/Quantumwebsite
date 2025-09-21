@@ -257,7 +257,7 @@ export default function RecruitmentPage() {
                       <Label htmlFor="message">Message de motivation</Label>
                       <Textarea
                         id="message"
-                        placeholder="Expliquez pourquoi vous souhaitez rejoindre Quantum et ce que vous pouvez apporter à l'équipe"
+                        placeholder="Expliquez pourquoi vous souhaitez rejoindre Nemesis et ce que vous pouvez apporter à l'équipe"
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         required
