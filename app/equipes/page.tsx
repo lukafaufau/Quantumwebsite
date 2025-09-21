@@ -19,7 +19,8 @@ interface Team {
   game: string
   members: string[]
   description?: string
-  status?: string
+  status?: string // ajouté : "Recrutement ouvert / fermé"
+  maxMembers?: number
 }
 
 export default function TeamsPage() {
@@ -110,22 +111,30 @@ export default function TeamsPage() {
                         <Badge className="bg-black text-white border border-black">{team.game}</Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-400">
-                        <Users className="h-4 w-4" /> {allMembers.length} membres
+                        <Users className="h-4 w-4" /> {allMembers.length}{team.maxMembers ? `/${team.maxMembers}` : ""} membres
+                        {team.status && (
+                          <Badge className={`ml-2 border border-black text-sm ${team.status === "ouvert" ? "text-green-400" : "text-red-500"} bg-black`}>
+                            {team.status === "ouvert" ? "Recrutement ouvert" : "Recrutement fermé"}
+                          </Badge>
+                        )}
                       </div>
                     </CardHeader>
 
                     <CardContent className="space-y-3">
                       {team.description && (
-                        <CardDescription className="text-gray-300">{team.description}</CardDescription>
+                        <CardDescription className="text-gray-300 line-clamp-2">
+                          {team.description}
+                        </CardDescription>
                       )}
 
                       <div className="flex flex-wrap gap-2">
                         {allMembers.map((member, index) => (
                           <div
                             key={member}
-                            className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm ${
+                            className={`flex items-center gap-1 px-2 py-1 rounded-md text-sm cursor-default hover:bg-gray-800 transition-colors ${
                               index === 0 ? "font-bold text-yellow-400" : "text-white"
                             }`}
+                            title={index === 0 ? "Capitaine" : "Membre"}
                           >
                             {index === 0 ? <Crown className="h-4 w-4" /> : <Users className="h-3 w-3" />}
                             {member}
@@ -214,6 +223,7 @@ export default function TeamsPage() {
                     <div
                       key={member}
                       className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-white bg-black border border-gray-700"
+                      title="Membre"
                     >
                       <Users className="h-3 w-3" /> {member}
                     </div>
