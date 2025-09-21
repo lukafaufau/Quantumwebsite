@@ -179,7 +179,7 @@ export function Navbar() {
                     className="text-2xl font-heading font-bold text-white mb-4 text-glow flex items-center justify-center space-x-2"
                   >
                     <Zap className="h-6 w-6 animate-pulse-slow" />
-                    <span>QUANTUM</span>
+                    <span>Nemesis</span>
                   </Link>
 
                   <div className="flex flex-col space-y-6 items-center">
