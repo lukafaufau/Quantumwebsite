@@ -8,8 +8,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Users, Crown, Search, UserPlus } from "lucide-react"
+import { Users, Crown, Search, UserPlus, X } from "lucide-react"
 import Link from "next/link"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 
 interface Team {
   id: number
@@ -25,6 +26,8 @@ export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
+  const [openModal, setOpenModal] = useState(false)
+  const [currentTeam, setCurrentTeam] = useState<Team | null>(null)
 
   useEffect(() => {
     fetch("/api/teams")
@@ -45,18 +48,20 @@ export default function TeamsPage() {
     return matchesGame && matchesSearch
   })
 
+  const handleDetails = (team: Team) => {
+    setCurrentTeam(team)
+    setOpenModal(true)
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
-            <p className="text-lg text-gray-400">
-              Découvrez nos équipes compétitives et leurs membres talentueux.
-            </p>
+            <p className="text-lg text-gray-400">Découvrez nos équipes compétitives et leurs membres talentueux.</p>
           </div>
 
           {/* Filters */}
@@ -88,7 +93,7 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-black border border-gray-700">
+            <Card className="bg-gray-900/90 border border-gray-700">
               <CardContent className="py-8 text-center text-gray-500">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
@@ -100,7 +105,7 @@ export default function TeamsPage() {
                 return (
                   <Card
                     key={team.id}
-                    className="bg-black border border-gray-700 hover:shadow-lg transition-shadow"
+                    className="bg-gray-900/90 border border-gray-700 hover:shadow-lg transform hover:scale-105 transition-all"
                   >
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -140,13 +145,7 @@ export default function TeamsPage() {
                           variant="outline"
                           size="sm"
                           className="flex-1 border-white text-white hover:bg-white hover:text-black transition-colors"
-                          onClick={() =>
-                            alert(
-                              `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${allMembers.length}\nDescription: ${
-                                team.description || "Aucune description"
-                              }`
-                            )
-                          }
+                          onClick={() => handleDetails(team)}
                         >
                           Voir détails
                         </Button>
@@ -170,7 +169,7 @@ export default function TeamsPage() {
 
           {/* Call to Action */}
           <div className="mt-12 text-center">
-            <Card className="bg-black border border-gray-700">
+            <Card className="bg-gray-900/90 border border-gray-700">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4 text-white">
                   Envie de rejoindre une équipe ?
@@ -192,6 +191,49 @@ export default function TeamsPage() {
       </main>
 
       <Footer />
+
+      {/* Modal Détails */}
+      {currentTeam && (
+        <Dialog open={openModal} onOpenChange={setOpenModal}>
+          <DialogContent className="bg-gray-900 text-white rounded-xl max-w-lg w-full p-6">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">{currentTeam.name}</DialogTitle>
+              <DialogDescription className="text-gray-400 mb-4">{currentTeam.game}</DialogDescription>
+              <DialogClose asChild>
+                <Button className="absolute top-4 right-4 p-1 rounded-full bg-gray-700 hover:bg-gray-600">
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogClose>
+            </DialogHeader>
+
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              <h4 className="font-semibold text-yellow-400 flex items-center gap-2">
+                <Crown className="h-5 w-5" /> Capitaine
+              </h4>
+              <p>{currentTeam.captain}</p>
+
+              <h4 className="font-semibold text-gray-300 mt-3">Membres</h4>
+              <div className="flex flex-wrap gap-2">
+                {currentTeam.members.map((member) => (
+                  <div
+                    key={member}
+                    className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-gray-300 bg-gray-800"
+                  >
+                    <Users className="h-3 w-3" /> {member}
+                  </div>
+                ))}
+              </div>
+
+              {currentTeam.description && (
+                <>
+                  <h4 className="font-semibold text-gray-300 mt-3">Description</h4>
+                  <p className="text-gray-400">{currentTeam.description}</p>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }
