@@ -5,59 +5,38 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
-interface Team {
-  id: number
-  name: string
-  captain: string
-  members: string[]
-  game: string
-  description?: string
-  status: string
-}
+// Ici tu peux lister tes jeux disponibles
+const availableGames = ["League of Legends", "Valorant", "CS:GO", "Fortnite"]
 
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<Team[]>([])
+  const [teams, setTeams] = useState<any[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Fetch des équipes depuis l'API
+  // 🔄 Fonction pour récupérer les équipes depuis l'API
   const fetchTeams = async () => {
     try {
       const res = await fetch("/api/teams")
       const json = await res.json()
       if (json.success) setTeams(json.data)
     } catch (err) {
-      console.error("Erreur fetch teams:", err)
+      console.error("Erreur fetch équipes :", err)
     }
   }
 
   useEffect(() => {
     fetchTeams()
+    // Tu peux aussi mettre un intervalle pour refresh automatique
+    const interval = setInterval(fetchTeams, 5000) // refresh toutes les 5s
+    return () => clearInterval(interval)
   }, [])
 
-  // Suppression d'une équipe
-  const handleDelete = async (id: number) => {
-    if (!confirm("Voulez-vous vraiment supprimer cette équipe ?")) return
-    try {
-      const res = await fetch(`/api/teams/${id}`, { method: "DELETE" })
-      const json = await res.json()
-      if (json.success) {
-        // Mettre à jour l'état local pour supprimer directement l'équipe de la page
-        setTeams((prev) => prev.filter((team) => team.id !== id))
-      } else {
-        alert("Erreur suppression: " + json.error)
-      }
-    } catch (err) {
-      console.error("Erreur suppression:", err)
-    }
-  }
-
+  // Filtrage par jeu et recherche
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -73,9 +52,14 @@ export default function TeamsPage() {
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          <h1 className="text-4xl font-bold mb-4">Équipes Nemesis</h1>
+          <div className="mb-8">
+            <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
+            <p className="text-lg text-muted-foreground">
+              Découvrez nos équipes compétitives et leurs membres talentueux.
+            </p>
+          </div>
 
-          {/* Filtres */}
+          {/* Filters */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -93,19 +77,20 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                <SelectItem value="CS:GO">CS:GO</SelectItem>
-                <SelectItem value="League of Legends">League of Legends</SelectItem>
-                <SelectItem value="Valorant">Valorant</SelectItem>
-                {/* ajoute tes autres jeux ici */}
+                {availableGames.map((game) => (
+                  <SelectItem key={game} value={game}>
+                    {game}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Grid des équipes */}
+          {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
-                <p>Aucune équipe trouvée avec ces filtres.</p>
+                <p className="text-muted-foreground">Aucune équipe trouvée avec ces filtres.</p>
               </CardContent>
             </Card>
           ) : (
@@ -115,13 +100,13 @@ export default function TeamsPage() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="space-y-2">
-                        <CardTitle>{team.name}</CardTitle>
+                        <CardTitle className="text-xl">{team.name}</CardTitle>
                         <Badge variant="secondary">{team.game}</Badge>
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-right text-sm text-muted-foreground">
                         <div className="flex items-center">
                           <Users className="h-4 w-4 mr-1" />
-                          {team.members.length}
+                          {team.members?.length || 0}
                         </div>
                       </div>
                     </div>
@@ -140,38 +125,13 @@ export default function TeamsPage() {
                       <div className="space-y-1">
                         <span className="text-sm font-medium">Membres:</span>
                         <div className="flex flex-wrap gap-1">
-                          {team.members.map((member) => (
+                          {team.members?.map((member: string) => (
                             <Badge key={member} variant="outline" className="text-xs">
                               {member}
                             </Badge>
                           ))}
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => alert(`Équipe: ${team.name}\nCapitaine: ${team.captain}`)}
-                      >
-                        Voir détails
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleDelete(team.id)}
-                      >
-                        Supprimer
-                      </Button>
-                      <Link href="/recrutement" className="flex-1">
-                        <Button size="sm" className="w-full flex items-center justify-center gap-1">
-                          <UserPlus className="h-4 w-4" />
-                          Rejoindre
-                        </Button>
-                      </Link>
                     </div>
                   </CardContent>
                 </Card>
