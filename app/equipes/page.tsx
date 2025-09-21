@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Users, Crown, Search, UserPlus, X } from "lucide-react"
+import { Users, Crown, Search, UserPlus, X, Award } from "lucide-react"
 import Link from "next/link"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 
@@ -19,8 +19,11 @@ interface Team {
   game: string
   members: string[]
   description?: string
-  status?: string // ajouté : "Recrutement ouvert / fermé"
+  status?: string // "ouvert" | "fermé"
   maxMembers?: number
+  achievements?: string[]
+  created_at?: string
+  updated_at?: string
 }
 
 export default function TeamsPage() {
@@ -73,15 +76,15 @@ export default function TeamsPage() {
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-black border border-black text-white"
+                className="pl-10 bg-black border border-gray-700 text-white"
               />
             </div>
 
             <Select value={selectedGame} onValueChange={setSelectedGame}>
-              <SelectTrigger className="w-full sm:w-48 bg-black border border-black text-white">
+              <SelectTrigger className="w-full sm:w-48 bg-black border border-gray-700 text-white">
                 <SelectValue placeholder="Tous les jeux" />
               </SelectTrigger>
-              <SelectContent className="bg-black text-white border border-black">
+              <SelectContent className="bg-black text-white border border-gray-700">
                 <SelectItem value="all">Tous les jeux</SelectItem>
                 {[...new Set(teams.map((t) => t.game))].map((game) => (
                   <SelectItem key={game} value={game} className="bg-black text-white">
@@ -94,7 +97,7 @@ export default function TeamsPage() {
 
           {/* Teams Grid */}
           {filteredTeams.length === 0 ? (
-            <Card className="bg-black border border-black">
+            <Card className="bg-black border border-gray-700">
               <CardContent className="py-8 text-center text-gray-500">
                 Aucune équipe trouvée avec ces filtres.
               </CardContent>
@@ -104,27 +107,37 @@ export default function TeamsPage() {
               {filteredTeams.map((team) => {
                 const allMembers = [team.captain, ...team.members.filter((m) => m !== team.captain)]
                 return (
-                  <Card key={team.id} className="bg-black border border-black hover:shadow-lg transition-shadow">
+                  <Card key={team.id} className="bg-black border border-gray-700 hover:shadow-lg transition-shadow">
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold text-white">{team.name}</CardTitle>
-                        <Badge className="bg-black text-white border border-black">{team.game}</Badge>
+                        <Badge className="bg-black text-white border border-gray-700">{team.game}</Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-400">
                         <Users className="h-4 w-4" /> {allMembers.length}{team.maxMembers ? `/${team.maxMembers}` : ""} membres
                         {team.status && (
-                          <Badge className={`ml-2 border border-black text-sm ${team.status === "ouvert" ? "text-green-400" : "text-red-500"} bg-black`}>
+                          <Badge className={`ml-2 border border-gray-700 text-sm ${
+                            team.status === "ouvert" ? "text-green-400" : "text-red-500"
+                          } bg-black`}>
                             {team.status === "ouvert" ? "Recrutement ouvert" : "Recrutement fermé"}
                           </Badge>
                         )}
                       </div>
+
+                      {team.achievements && team.achievements.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {team.achievements.map((a, idx) => (
+                            <Badge key={idx} className="text-xs border border-gray-700 bg-black flex items-center gap-1">
+                              <Award className="h-3 w-3" /> {a}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </CardHeader>
 
                     <CardContent className="space-y-3">
                       {team.description && (
-                        <CardDescription className="text-gray-300 line-clamp-2">
-                          {team.description}
-                        </CardDescription>
+                        <CardDescription className="text-gray-300 line-clamp-2">{team.description}</CardDescription>
                       )}
 
                       <div className="flex flex-wrap gap-2">
@@ -171,14 +184,13 @@ export default function TeamsPage() {
 
           {/* Call to Action */}
           <div className="mt-12 text-center">
-            <Card className="bg-black border border-black">
+            <Card className="bg-black border border-gray-700">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4 text-white">
                   Envie de rejoindre une équipe ?
                 </h3>
                 <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
-                  tournois esport.
+                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands tournois esport.
                 </p>
                 <Button
                   size="lg"
@@ -194,10 +206,10 @@ export default function TeamsPage() {
 
       <Footer />
 
-      {/* Modal full black */}
+      {/* Modal Détails amélioré */}
       {currentTeam && (
         <Dialog open={openModal} onOpenChange={setOpenModal}>
-          <DialogContent className="bg-black text-white rounded-xl max-w-lg w-full p-6 border border-black">
+          <DialogContent className="bg-black text-white rounded-xl max-w-lg w-full p-6 border border-gray-700">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">{currentTeam.name}</DialogTitle>
               <DialogDescription className="text-gray-400 mb-4">{currentTeam.game}</DialogDescription>
@@ -209,6 +221,7 @@ export default function TeamsPage() {
             </DialogHeader>
 
             <div className="space-y-4 max-h-96 overflow-y-auto">
+              {/* Capitaine */}
               <div className="p-3 rounded-md bg-black border border-gray-700">
                 <h4 className="font-semibold text-yellow-400 flex items-center gap-2 mb-2">
                   <Crown className="h-5 w-5" /> Capitaine
@@ -216,13 +229,14 @@ export default function TeamsPage() {
                 <p>{currentTeam.captain}</p>
               </div>
 
+              {/* Membres */}
               <div className="p-3 rounded-md bg-black border border-gray-700">
                 <h4 className="font-semibold text-white mb-2">Membres</h4>
                 <div className="flex flex-wrap gap-2">
                   {currentTeam.members.map((member) => (
                     <div
                       key={member}
-                      className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-white bg-black border border-gray-700"
+                      className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-white bg-black border border-gray-700 hover:bg-gray-800 transition-colors"
                       title="Membre"
                     >
                       <Users className="h-3 w-3" /> {member}
@@ -231,12 +245,47 @@ export default function TeamsPage() {
                 </div>
               </div>
 
+              {/* Description */}
               {currentTeam.description && (
                 <div className="p-3 rounded-md bg-black border border-gray-700">
                   <h4 className="font-semibold text-white mb-2">Description</h4>
                   <p className="text-gray-400">{currentTeam.description}</p>
                 </div>
               )}
+
+              {/* Statut & Membres max */}
+              <div className="p-3 rounded-md bg-black border border-gray-700 flex justify-between items-center">
+                {currentTeam.status && (
+                  <Badge className={`text-sm border border-gray-700 ${
+                    currentTeam.status === "ouvert" ? "text-green-400" : "text-red-500"
+                  } bg-black`}>
+                    {currentTeam.status === "ouvert" ? "Recrutement ouvert" : "Recrutement fermé"}
+                  </Badge>
+                )}
+                <span className="text-gray-500 text-xs">
+                  Membres: {currentTeam.members.length}/{currentTeam.maxMembers || "∞"}
+                </span>
+              </div>
+
+              {/* Achievements */}
+              {currentTeam.achievements && currentTeam.achievements.length > 0 && (
+                <div className="p-3 rounded-md bg-black border border-gray-700">
+                  <h4 className="font-semibold text-white mb-2">Achievements</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {currentTeam.achievements.map((a, idx) => (
+                      <Badge key={idx} className="text-xs border border-gray-700 bg-black flex items-center gap-1">
+                        <Award className="h-3 w-3" /> {a}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dates */}
+              <div className="p-3 rounded-md bg-black border border-gray-700 text-gray-500 text-xs flex justify-between">
+                <span>Créée: {currentTeam.created_at ? new Date(currentTeam.created_at).toLocaleDateString() : "-"}</span>
+                {currentTeam.updated_at && <span>Mis à jour: {new Date(currentTeam.updated_at).toLocaleDateString()}</span>}
+              </div>
             </div>
           </DialogContent>
         </Dialog>
