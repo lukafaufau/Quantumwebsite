@@ -69,7 +69,7 @@ export const mockTeams: Team[] = [
     name: "L'équipe Blast",
     captain: "Blast",
     members: ["HeadshotHero", "SprayControl", "ClutchMaster", "EntryFragger"],
-    game: "Rocket League"",
+    game: "Rocket League",
     description: "Cette équipe peut être attribuée à des joueurs de tous rangs.",
   },
 ]
