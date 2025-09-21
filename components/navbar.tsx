@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { User, LogOut, Settings, Menu, Shield, Home, Users, Megaphone, UserPlus, Trophy } from "lucide-react"
+import { User, LogOut, Settings, Menu, Shield, Home, Users, Megaphone, UserPlus, TrendingUp } from "lucide-react"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 
@@ -23,7 +23,7 @@ export function Navbar() {
     { href: "/", label: "Accueil", icon: Home },
     { href: "/explorer", label: "Explorer", icon: Megaphone },
     { href: "/community", label: "Communauté", icon: Users },
-    { href: "/updates", label: "Updates", icon: Trophy },
+    { href: "/updates", label: "Updates", icon: TrendingUp },
     ...(isAuthenticated
       ? [
           { href: "/recrutement", label: "Recrutement", icon: UserPlus },
@@ -37,7 +37,7 @@ export function Navbar() {
 
   const NavLinks = () =>
     links.map((link) => {
-      const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
+      const isActive = pathname === link.href
       const Icon = link.icon
       return (
         <Link
@@ -45,18 +45,15 @@ export function Navbar() {
           href={link.href}
           onClick={() => setIsOpen(false)}
           className={`
-            group relative flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300
+            flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
             ${isActive 
-              ? "bg-gradient-to-r from-primary/20 to-purple-500/20 text-white border border-primary/30" 
-              : "text-gray-300 hover:text-white hover:bg-white/5"
+              ? "bg-white text-black" 
+              : "text-white/70 hover:text-white hover:bg-white/10"
             }
           `}
         >
           <Icon className="h-4 w-4" />
           <span>{link.label}</span>
-          {isActive && (
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-xl animate-pulse" />
-          )}
         </Link>
       )
     })
@@ -66,10 +63,10 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-8 h-8 bg-gradient-to-r from-primary to-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-            <span className="text-white font-bold text-sm">N</span>
+          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+            <span className="text-black font-bold text-sm">N</span>
           </div>
-          <span className="text-xl font-heading font-bold gradient-text">
+          <span className="text-xl font-heading font-bold text-white">
             Nemesis
           </span>
         </Link>
@@ -86,10 +83,10 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="flex items-center space-x-2 hover:bg-white/10 rounded-xl px-3 py-2"
+                  className="flex items-center space-x-2 hover:bg-white/10 rounded-lg px-3 py-2"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-r from-primary to-purple-500 rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                    <User className="h-4 w-4 text-black" />
                   </div>
                   <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
                 </Button>
@@ -97,7 +94,7 @@ export function Navbar() {
 
               <DropdownMenuContent
                 align="end"
-                className="w-48 glass-effect border-white/20 animate-scale-in"
+                className="w-48 glass-effect border-white/20"
               >
                 <DropdownMenuItem asChild>
                   <Link
@@ -131,16 +128,16 @@ export function Navbar() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="hover:bg-white/10 rounded-xl"
+                className="hover:bg-white/10 rounded-lg text-white"
               >
-                <Link href="/login" className="text-white font-medium">
+                <Link href="/login">
                   Connexion
                 </Link>
               </Button>
               <Button
                 size="sm"
                 asChild
-                className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/80 hover:to-purple-500/80 rounded-xl"
+                className="bg-white text-black hover:bg-white/90 rounded-lg"
               >
                 <Link href="/signup">Inscription</Link>
               </Button>
@@ -153,7 +150,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden hover:bg-white/10 rounded-xl"
+                className="lg:hidden hover:bg-white/10 rounded-lg"
               >
                 <Menu className="h-6 w-6 text-white" />
               </Button>
@@ -164,10 +161,10 @@ export function Navbar() {
             >
               <div className="flex flex-col space-y-6 mt-10">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-r from-primary to-purple-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">N</span>
+                  <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <span className="text-black font-bold">N</span>
                   </div>
-                  <span className="text-xl font-heading font-bold gradient-text">Nemesis</span>
+                  <span className="text-xl font-heading font-bold text-white">Nemesis</span>
                 </div>
                 
                 <div className="flex flex-col space-y-2">
@@ -180,16 +177,16 @@ export function Navbar() {
                       variant="ghost"
                       asChild
                       onClick={() => setIsOpen(false)}
-                      className="justify-start hover:bg-white/10 rounded-xl"
+                      className="justify-start hover:bg-white/10 rounded-lg text-white"
                     >
-                      <Link href="/login" className="text-white">
+                      <Link href="/login">
                         Connexion
                       </Link>
                     </Button>
                     <Button
                       asChild
                       onClick={() => setIsOpen(false)}
-                      className="justify-start bg-gradient-to-r from-primary to-purple-500 rounded-xl"
+                      className="justify-start bg-white text-black hover:bg-white/90 rounded-lg"
                     >
                       <Link href="/signup">Inscription</Link>
                     </Button>
