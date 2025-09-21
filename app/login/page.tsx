@@ -98,12 +98,6 @@ export default function LoginPage() {
                 S'inscrire
               </Link>
             </div>
-
-            <div className="mt-4 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
-              <p className="font-medium mb-1">Comptes de test :</p>
-              <p>Admin: Wayzze / password</p>
-              <p>Dev: 16k / password</p>
-            </div>
           </CardContent>
         </Card>
       </main>
