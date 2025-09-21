@@ -57,7 +57,7 @@ export default function CreditsPage() {
                   </Badge>
                 </div>
                 <p className="text-muted-foreground">
-                  Architecte technique et développeur principal de la plateforme Quantum. Responsable du développement
+                  Architecte technique et développeur principal de la plateforme Nemesis. Responsable du développement
                   et de la maintenance de l'infrastructure.
                 </p>
                 <div className="text-sm text-muted-foreground">
