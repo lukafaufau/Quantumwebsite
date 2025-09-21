@@ -6,7 +6,7 @@ import { Diamond as Discord } from "lucide-react"
 export function Footer() {
   return (
     <footer className="bg-black text-white border-t border-white/20">
-      <div className="container mx-auto px-4 py-24 flex flex-col md:flex-row justify-between gap-16 md:gap-0">
+      <div className="container mx-auto px-4 py-20 flex flex-col md:flex-row justify-between gap-16 md:gap-0">
 
         {/* Brand */}
         <div className="flex flex-col items-center md:items-start space-y-5">
@@ -16,15 +16,6 @@ export function Footer() {
           <p className="text-sm text-gray-400 text-center md:text-left leading-relaxed max-w-xs">
             La plateforme communautaire esports française de référence.
           </p>
-          <div className="flex space-x-4">
-            <a
-              href="#"
-              className="text-gray-400 hover:text-white transition-all duration-300"
-              aria-label="Discord"
-            >
-              <Discord className="h-8 w-8 hover:scale-110 hover:text-indigo-500 transition-transform duration-300" />
-            </a>
-          </div>
         </div>
 
         {/* Navigation */}
@@ -49,15 +40,21 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Legal */}
+        {/* Réseaux sociaux */}
         <div className="flex flex-col items-center md:items-start space-y-5">
-          <h3 className="font-heading font-bold text-white text-lg glow-text">Légal</h3>
-          <div className="flex flex-col space-y-3 text-sm">
-            <Link href="#" className="hover:text-indigo-400 transition-all duration-200">Mentions légales</Link>
-            <Link href="#" className="hover:text-indigo-400 transition-all duration-200">Politique de confidentialité</Link>
-            <Link href="#" className="hover:text-indigo-400 transition-all duration-200">CGU</Link>
+          <h3 className="font-heading font-bold text-white text-lg glow-text">Réseaux sociaux</h3>
+          <div className="flex space-x-4">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-indigo-400 transition-all duration-300"
+              aria-label="Discord"
+            >
+              <Discord className="h-8 w-8 hover:scale-110 transition-transform duration-300" />
+            </a>
+            {/* Ici tu peux rajouter d'autres icônes si besoin */}
           </div>
         </div>
+
       </div>
 
       {/* Bottom */}
