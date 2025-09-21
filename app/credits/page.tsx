@@ -1,61 +1,70 @@
 "use client"
 
-import { useState } from "react"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Diamond as Discord } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
-export default function CreditsPage() {
-  const [showMore, setShowMore] = useState(false)
-
-  const contributors = [
-    "Alice", "Bob", "Charlie", "David", "Eve"
-  ]
-
+export function Footer() {
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white font-sans">
-      <Navbar />
+    <footer className="bg-black text-white border-t border-white/20">
+      <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row justify-between gap-8 md:gap-0">
 
-      <main className="flex-1 container mx-auto px-4 py-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">Crédits</h1>
-        <p className="text-lg md:text-xl text-white/80 mb-8 text-center max-w-2xl mx-auto leading-relaxed">
-          Merci à toutes les personnes qui ont contribué au développement et au succès de Nemesis Esports.
-        </p>
-
-        <section className="max-w-2xl mx-auto space-y-4">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Contributeurs</h2>
-          <ul className="space-y-2 text-center">
-            {contributors.slice(0, showMore ? contributors.length : 3).map((name, i) => (
-              <li key={i} className="text-white/80">{name}</li>
-            ))}
-          </ul>
-          {contributors.length > 3 && (
-            <div className="flex justify-center mt-4">
-              <Button
-                size="sm"
-                className="bg-white/10 hover:bg-white/20 text-white border border-white/20"
-                onClick={() => setShowMore(!showMore)}
-              >
-                {showMore ? "Voir moins" : "Voir tous"}
-              </Button>
-            </div>
-          )}
-        </section>
-
-        <section className="mt-12 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Nous suivre</h2>
-          <div className="flex justify-center space-x-4">
-            <Link href="#" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+        {/* Brand */}
+        <div className="flex flex-col items-center md:items-start space-y-3 text-center md:text-left">
+          <Link href="/" className="text-2xl font-heading font-bold hover:text-white/80 transition-all">
+            Nemesis
+          </Link>
+          <p className="text-sm text-gray-400 max-w-xs">
+            La plateforme communautaire esport française de référence.
+          </p>
+          <div className="flex space-x-4 mt-2">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-white transition-colors"
+              aria-label="Discord"
+            >
               <Discord className="h-6 w-6" />
-              Discord
-            </Link>
+            </a>
           </div>
-        </section>
-      </main>
+        </div>
 
-      <Footer />
-    </div>
+        {/* Navigation */}
+        <div className="flex flex-col items-center md:items-start space-y-3 text-center md:text-left">
+          <h3 className="font-semibold">Navigation</h3>
+          <div className="flex flex-col space-y-1 text-sm">
+            <Link href="/explorer" className="hover:text-white transition-colors">Explorer</Link>
+            <Link href="/equipes" className="hover:text-white transition-colors">Équipes</Link>
+            <Link href="/joueurs" className="hover:text-white transition-colors">Joueurs</Link>
+            <Link href="/recrutement" className="hover:text-white transition-colors">Recrutement</Link>
+          </div>
+        </div>
+
+        {/* Support */}
+        <div className="flex flex-col items-center md:items-start space-y-3 text-center md:text-left">
+          <h3 className="font-semibold">Support</h3>
+          <div className="flex flex-col space-y-1 text-sm">
+            <Link href="/credits" className="hover:text-white transition-colors">Crédits</Link>
+            <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+            <Link href="#" className="hover:text-white transition-colors">FAQ</Link>
+            <Link href="#" className="hover:text-white transition-colors">Règlement</Link>
+          </div>
+        </div>
+
+        {/* Légal */}
+        <div className="flex flex-col items-center md:items-start space-y-3 text-center md:text-left">
+          <h3 className="font-semibold">Légal</h3>
+          <div className="flex flex-col space-y-1 text-sm">
+            <Link href="#" className="hover:text-white transition-colors">Mentions légales</Link>
+            <Link href="#" className="hover:text-white transition-colors">Politique de confidentialité</Link>
+            <Link href="#" className="hover:text-white transition-colors">CGU</Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Bas de page centré */}
+      <div className="border-t border-white/20 mt-10 pt-6 text-center text-sm text-gray-400">
+        <p>© 2025 Nemesis Esports. Tous droits réservés.</p>
+        <p>Version 1.0.0</p>
+      </div>
+    </footer>
   )
 }
