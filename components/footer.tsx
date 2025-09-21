@@ -92,7 +92,7 @@ export function Footer() {
                 Chef de projet : <span className="text-primary font-medium">Wayzze</span> | Développeur :{" "}
                 <span className="text-primary font-medium">16k</span>
               </p>
-              <p className="mt-1">© 2024 Quantum Esports. Tous droits réservés.</p>
+              <p className="mt-1">© 2024 Nemesis Esports. Tous droits réservés.</p>
             </div>
             <div className="text-sm text-muted-foreground">Version 1.0.0</div>
           </div>
