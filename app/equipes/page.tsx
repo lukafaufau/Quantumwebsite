@@ -22,7 +22,7 @@ interface Team {
   created_at: string
 }
 
-const availableGames = ["League of Legends", "Valorant", "CS:GO", "Fortnite", "Overwatch"] // à adapter
+const availableGames = ["League of Legends", "Valorant", "CS:GO", "Fortnite", "Overwatch"]
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
@@ -44,7 +44,6 @@ export default function TeamsPage() {
     fetchTeams()
   }, [])
 
-  // Filtrer les équipes selon jeu et recherche
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -62,7 +61,7 @@ export default function TeamsPage() {
         <div className="container mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-500">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
           </div>
@@ -70,7 +69,7 @@ export default function TeamsPage() {
           {/* Filters */}
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Rechercher une équipe..."
                 value={searchTerm}
@@ -98,7 +97,7 @@ export default function TeamsPage() {
           {filteredTeams.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
-                <p className="text-muted-foreground">Aucune équipe trouvée avec ces filtres.</p>
+                <p className="text-gray-500">Aucune équipe trouvée avec ces filtres.</p>
               </CardContent>
             </Card>
           ) : (
@@ -111,7 +110,7 @@ export default function TeamsPage() {
                         <CardTitle className="text-xl">{team.name}</CardTitle>
                         <Badge variant="secondary">{team.game}</Badge>
                       </div>
-                      <div className="text-right text-sm text-muted-foreground">
+                      <div className="text-right text-sm text-gray-500">
                         <div className="flex items-center">
                           <Users className="h-4 w-4 mr-1" />
                           {team.members.length}
@@ -127,14 +126,14 @@ export default function TeamsPage() {
                       <div className="flex items-center space-x-2">
                         <Crown className="h-4 w-4 text-primary" />
                         <span className="text-sm font-medium">Capitaine:</span>
-                        <span className="text-sm text-muted-foreground">{team.captain}</span>
+                        <span className="text-sm text-gray-500">{team.captain}</span>
                       </div>
 
                       <div className="space-y-1">
                         <span className="text-sm font-medium">Membres:</span>
                         <div className="flex flex-wrap gap-1">
-                          {team.members.map((member) => (
-                            <Badge key={member} variant="outline" className="text-xs">
+                          {team.members.map((member, i) => (
+                            <Badge key={member + i} variant="outline" className="text-xs">
                               {member}
                             </Badge>
                           ))}
@@ -176,7 +175,7 @@ export default function TeamsPage() {
             <Card className="bg-card/50">
               <CardContent className="py-8">
                 <h3 className="text-2xl font-heading font-bold mb-4">Envie de rejoindre une équipe ?</h3>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                <p className="text-gray-500 mb-6 max-w-2xl mx-auto">
                   Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
                   tournois esport.
                 </p>
