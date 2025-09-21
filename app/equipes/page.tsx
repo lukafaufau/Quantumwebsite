@@ -21,7 +21,6 @@ interface Team {
   status?: string
 }
 
-// Remplace mockTeams par un state
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
@@ -37,7 +36,6 @@ export default function TeamsPage() {
       .catch((err) => console.error("Failed to fetch teams:", err))
   }, [])
 
-  // Filtrage
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -53,16 +51,16 @@ export default function TeamsPage() {
 
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
-          <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4">Équipes Nemesis</h1>
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
             <p className="text-lg text-muted-foreground">
               Découvrez nos équipes compétitives et leurs membres talentueux.
             </p>
           </div>
 
           {/* Filters */}
-          <div className="mb-8 flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
+          <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher une équipe..."
@@ -78,7 +76,6 @@ export default function TeamsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les jeux</SelectItem>
-                {/* Liste des jeux dynamiques */}
                 {[...new Set(teams.map((t) => t.game))].map((game) => (
                   <SelectItem key={game} value={game}>
                     {game}
@@ -98,59 +95,57 @@ export default function TeamsPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTeams.map((team) => (
-                <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <CardTitle className="text-xl">{team.name}</CardTitle>
-                        <Badge variant="secondary">{team.game}</Badge>
-                      </div>
-                      <div className="text-right text-sm text-muted-foreground">
-                        <div className="flex items-center">
-                          <Users className="h-4 w-4 mr-1" />
-                          {team.members.length}
-                        </div>
-                      </div>
+                <Card key={team.id} className="hover:shadow-xl transition-shadow">
+                  <CardHeader className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl font-bold">{team.name}</CardTitle>
+                      <Badge variant="secondary">{team.game}</Badge>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4" /> {team.members.length} membres
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+
+                  <CardContent className="space-y-3">
                     {team.description && <CardDescription>{team.description}</CardDescription>}
 
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Crown className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">Capitaine:</span>
-                        <span className="text-sm text-muted-foreground">{team.captain}</span>
+                    <div className="flex flex-wrap gap-2">
+                      <div className="flex items-center gap-1">
+                        <Crown className="h-5 w-5 text-yellow-400" />
+                        <span className="text-sm font-medium">{team.captain}</span>
                       </div>
 
-                      <div className="space-y-1">
-                        <span className="text-sm font-medium">Membres:</span>
-                        <div className="flex flex-wrap gap-1">
-                          {team.members.map((member) => (
-                            <Badge key={member} variant="outline" className="text-xs">
-                              {member}
-                            </Badge>
-                          ))}
+                      {team.members.map((member) => (
+                        <div
+                          key={member}
+                          className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md text-xs"
+                        >
+                          <Users className="h-3 w-3 text-gray-500" />
+                          {member}
                         </div>
-                      </div>
+                      ))}
                     </div>
 
                     <div className="flex gap-2 pt-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 bg-transparent"
-                        onClick={() => {
+                        className="flex-1 border-white text-white hover:bg-white hover:text-black transition-colors"
+                        onClick={() =>
                           alert(
-                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${
+                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\nDescription: ${
                               team.description || "Aucune description"
                             }`
                           )
-                        }}
+                        }
                       >
                         Voir détails
                       </Button>
-                      <Button size="sm" className="flex-1" asChild>
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-white text-black hover:bg-black hover:text-white transition-colors"
+                        asChild
+                      >
                         <Link href="/recrutement">
                           <UserPlus className="h-4 w-4 mr-1" />
                           Rejoindre
@@ -172,7 +167,7 @@ export default function TeamsPage() {
                   Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus grands
                   tournois esport.
                 </p>
-                <Button size="lg" asChild>
+                <Button size="lg" className="bg-white text-black hover:bg-black hover:text-white transition-colors">
                   <Link href="/recrutement">Postuler maintenant</Link>
                 </Button>
               </CardContent>
