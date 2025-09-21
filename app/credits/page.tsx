@@ -19,6 +19,8 @@ export function Footer() {
           <div className="flex space-x-4 mt-2">
             <a
               href="#"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="Discord"
             >
