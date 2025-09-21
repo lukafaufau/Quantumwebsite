@@ -91,7 +91,7 @@ export class AdminAPI {
         {
           id: 1,
           username: "Wayzze",
-          email: "wayzze@quantum.gg",
+          email: "wayzze@Nemesis.gg",
           password: "hashed_password",
           role: "admin",
           discord_id: "Wayzze#0001",
@@ -101,7 +101,7 @@ export class AdminAPI {
         {
           id: 2,
           username: "16k",
-          email: "16k@quantum.gg",
+          email: "16k@Nemesis.gg",
           password: "hashed_password",
           role: "developer",
           discord_id: "16k#0002",
