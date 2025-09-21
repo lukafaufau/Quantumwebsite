@@ -223,11 +223,26 @@ export default function PlayersPage() {
                         </div>
 
                         <div className="flex gap-2 pt-2">
-                          <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 bg-transparent"
+                            onClick={() => {
+                              // Show player profile modal
+                              alert(`Profil de ${player.username}`)
+                            }}
+                          >
                             <User className="h-4 w-4 mr-1" />
                             Profil
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              // Open Discord or contact modal
+                              alert(`Contacter ${player.username} sur Discord: ${player.discord_id}`)
+                            }}
+                          >
                             <MessageCircle className="h-4 w-4" />
                           </Button>
                         </div>
@@ -313,6 +328,11 @@ export default function PlayersPage() {
                       </div>
 
                       <Button size="sm" className="w-full">
+                        onClick={() => {
+                          // Open contact modal for free agent
+                          alert(`Contacter ${player.username} - Agent libre`)
+                        }}
+                      >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Contacter
                       </Button>

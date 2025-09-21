@@ -177,7 +177,14 @@ export default function ExplorerPage() {
                     <CardContent>
                       <CardDescription className="text-base">{announcement.description}</CardDescription>
                       <div className="mt-4">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            // Show full announcement details
+                            alert(`Détails de l'annonce: ${announcement.title}`)
+                          }}
+                        >
                           En savoir plus
                         </Button>
                       </div>

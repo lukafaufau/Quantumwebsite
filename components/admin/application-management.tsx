@@ -54,10 +54,10 @@ export function ApplicationManagement() {
 
   const handleUpdateStatus = async (id: number, status: "accepted" | "rejected") => {
     try {
-      const response = await fetch("/api/recruitment", {
-        method: "PATCH",
+      const response = await fetch(`/api/recruitment/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
+        body: JSON.stringify({ status, reviewed_by: "Admin" }),
       })
 
       if (response.ok) {

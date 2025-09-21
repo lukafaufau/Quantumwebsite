@@ -117,7 +117,15 @@ export default function TeamsPage() {
                       </div>
 
                       <div className="flex gap-2 pt-2">
-                        <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1 bg-transparent"
+                          onClick={() => {
+                            // Show team details modal or navigate to team page
+                            alert(`Détails de l'équipe ${team.name}`)
+                          }}
+                        >
                           Voir détails
                         </Button>
                         <Button size="sm" className="flex-1" asChild>

@@ -15,12 +15,14 @@ import { AdvancedUserManagement } from "@/components/admin/advanced-user-managem
 import { TeamManagement } from "@/components/admin/team-management"
 import { ApplicationManagement } from "@/components/admin/application-management"
 import { AnnouncementManagement } from "@/components/admin/announcement-management"
+import { InviteCodeManagement } from "@/components/admin/invite-code-management"
 import {
   Shield,
   Users,
   UserPlus,
   Trophy,
   Megaphone,
+  Ticket,
   CheckCircle,
   AlertTriangle,
   Server,
@@ -301,7 +303,7 @@ export default function AdminPage() {
 
           {/* Onglets de gestion */}
           <Tabs defaultValue="users" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 bg-white/10 border-white/20">
+            <TabsList className="grid w-full grid-cols-7 bg-white/10 border-white/20">
               <TabsTrigger
                 value="users"
                 className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
@@ -343,6 +345,13 @@ export default function AdminPage() {
               >
                 <Server className="h-4 w-4 mr-2" />
                 Système
+              </TabsTrigger>
+              <TabsTrigger
+                value="invites"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Ticket className="h-4 w-4 mr-2" />
+                Invitations
               </TabsTrigger>
             </TabsList>
 
@@ -511,6 +520,10 @@ export default function AdminPage() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="invites" className="space-y-6">
+              <InviteCodeManagement />
             </TabsContent>
           </Tabs>
         </div>
