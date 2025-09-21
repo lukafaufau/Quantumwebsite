@@ -103,7 +103,7 @@ export default function TeamsPage() {
               {filteredTeams.map((team) => {
                 const allMembers = [team.captain, ...team.members.filter((m) => m !== team.captain)]
                 return (
-                  <Card key={team.id} className="bg-gray-900 border border-gray-700 hover:shadow-lg transition-shadow">
+                  <Card key={team.id} className="bg-gray-900 border border-gray-700 hover:shadow-xl transition-shadow">
                     <CardHeader className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold text-white">{team.name}</CardTitle>
@@ -137,7 +137,7 @@ export default function TeamsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 border-white text-white hover:bg-white hover:text-black transition-colors"
+                          className="flex-1 border-white text-white hover:bg-gray-800 transition-colors"
                           onClick={() => handleDetails(team)}
                         >
                           Voir détails
@@ -185,43 +185,47 @@ export default function TeamsPage() {
 
       <Footer />
 
-      {/* Modal Détails */}
+      {/* Modal Détails Noir UI */}
       {currentTeam && (
         <Dialog open={openModal} onOpenChange={setOpenModal}>
-          <DialogContent className="bg-gray-900 text-white rounded-xl max-w-lg w-full p-6">
+          <DialogContent className="bg-black text-white rounded-xl max-w-lg w-full p-6 border border-gray-700">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">{currentTeam.name}</DialogTitle>
               <DialogDescription className="text-gray-400 mb-4">{currentTeam.game}</DialogDescription>
               <DialogClose asChild>
-                <Button className="absolute top-4 right-4 p-1 rounded-full bg-gray-700 hover:bg-gray-600">
+                <Button className="absolute top-4 right-4 p-1 rounded-full bg-gray-800 hover:bg-gray-700">
                   <X className="h-4 w-4" />
                 </Button>
               </DialogClose>
             </DialogHeader>
 
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              <h4 className="font-semibold text-yellow-400 flex items-center gap-2">
-                <Crown className="h-5 w-5" /> Capitaine
-              </h4>
-              <p>{currentTeam.captain}</p>
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="bg-gray-900 p-3 rounded-md">
+                <h4 className="font-semibold text-yellow-400 flex items-center gap-2 mb-2">
+                  <Crown className="h-5 w-5" /> Capitaine
+                </h4>
+                <p>{currentTeam.captain}</p>
+              </div>
 
-              <h4 className="font-semibold text-gray-300 mt-3">Membres</h4>
-              <div className="flex flex-wrap gap-2">
-                {currentTeam.members.map((member) => (
-                  <div
-                    key={member}
-                    className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-gray-300 bg-gray-800"
-                  >
-                    <Users className="h-3 w-3" /> {member}
-                  </div>
-                ))}
+              <div className="bg-gray-900 p-3 rounded-md">
+                <h4 className="font-semibold text-gray-300 mb-2">Membres</h4>
+                <div className="flex flex-wrap gap-2">
+                  {currentTeam.members.map((member) => (
+                    <div
+                      key={member}
+                      className="flex items-center gap-1 px-2 py-1 rounded-md text-sm text-gray-300 bg-gray-800"
+                    >
+                      <Users className="h-3 w-3" /> {member}
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {currentTeam.description && (
-                <>
-                  <h4 className="font-semibold text-gray-300 mt-3">Description</h4>
+                <div className="bg-gray-900 p-3 rounded-md">
+                  <h4 className="font-semibold text-gray-300 mb-2">Description</h4>
                   <p className="text-gray-400">{currentTeam.description}</p>
-                </>
+                </div>
               )}
             </div>
           </DialogContent>
