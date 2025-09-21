@@ -89,7 +89,7 @@ export default function CreditsPage() {
           </Card>
 
           <div className="mt-12 text-center text-sm text-muted-foreground">
-            <p>© 2024 Team Nemesis. Développé avec passion pour la communauté esport française.</p>
+            <p>© 2025 Team Nemesis. Développé avec passion pour la communauté esport française.</p>
             <p className="mt-2">Version 1.0.0 - Janvier 2024</p>
           </div>
         </div>
