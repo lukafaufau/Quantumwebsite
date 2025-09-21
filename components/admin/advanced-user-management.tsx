@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Users, UserPlus, Edit, Trash2, Ban, Shield, Search, Download, Eye, Crown, Zap } from "lucide-react"
+import { Users, UserPlus, Edit, Trash2, Ban, Shield, Search, Download, Eye, Crown, Zap, EyeOff, Copy, Key } from "lucide-react"
 
 export function AdvancedUserManagement() {
   const [users, setUsers] = useState<User[]>([])
@@ -42,6 +42,7 @@ export function AdvancedUserManagement() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [showPasswords, setShowPasswords] = useState<{[key: number]: boolean}>({})
 
   useEffect(() => {
     loadUsers()
@@ -86,44 +87,118 @@ export function AdvancedUserManagement() {
     setFilteredUsers(filtered)
   }
 
+  const generateRandomPassword = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
+    let password = ''
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return password
+  }
+
   const handleCreateUser = async (userData: Partial<User>) => {
+    if (!userData.username || !userData.email || !userData.discord_id) {
+      alert("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+
+    // Générer un mot de passe si non fourni
+    if (!userData.password) {
+      userData.password = generateRandomPassword()
+    }
+
     try {
-      await AdminAPI.createUser(userData)
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création")
+      }
+      
       await loadUsers()
       setIsCreateDialogOpen(false)
+      alert(`Utilisateur créé avec succès!\nMot de passe: ${userData.password}`)
     } catch (error) {
       console.error("Erreur lors de la création:", error)
+      alert("Erreur lors de la création de l'utilisateur")
     }
   }
 
   const handleUpdateUser = async (userData: Partial<User>) => {
     if (!selectedUser) return
+    
     try {
-      await AdminAPI.updateUser(selectedUser.id, userData)
+      const response = await fetch(`/api/users/${selectedUser.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour")
+      }
+      
       await loadUsers()
       setIsEditDialogOpen(false)
       setSelectedUser(null)
+      alert("Utilisateur mis à jour avec succès!")
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
+      alert("Erreur lors de la mise à jour de l'utilisateur")
     }
   }
 
   const handleDeleteUser = async (userId: number) => {
     try {
-      await AdminAPI.deleteUser(userId)
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "DELETE",
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression")
+      }
+      
       await loadUsers()
+      alert("Utilisateur supprimé avec succès!")
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)
+      alert("Erreur lors de la suppression de l'utilisateur")
     }
   }
 
   const handleBanUser = async (userId: number, reason: string) => {
     try {
-      await AdminAPI.banUser(userId, reason)
+      const response = await fetch(`/api/users/${userId}/ban`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason }),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors du bannissement")
+      }
+      
       await loadUsers()
+      alert("Utilisateur banni avec succès!")
     } catch (error) {
       console.error("Erreur lors du bannissement:", error)
+      alert("Erreur lors du bannissement de l'utilisateur")
     }
+  }
+
+  const togglePasswordVisibility = (userId: number) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [userId]: !prev[userId]
+    }))
+  }
+
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text)
+    alert(`${type} copié dans le presse-papiers!`)
   }
 
   const getRoleIcon = (role: string) => {
@@ -308,8 +383,8 @@ export function AdvancedUserManagement() {
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
                     {user.username.charAt(0).toUpperCase()}
                   </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-1">
                       <p className="font-medium text-white">{user.username}</p>
                       <Badge className={getRoleBadgeColor(user.role)}>
                         {getRoleIcon(user.role)}
@@ -317,8 +392,59 @@ export function AdvancedUserManagement() {
                       </Badge>
                       <Badge className={getStatusBadgeColor(user.status || "active")}>{user.status || "active"}</Badge>
                     </div>
-                    <p className="text-sm text-white/60">{user.email}</p>
-                    <p className="text-xs text-white/40">{user.discord_id}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-white/60">Email:</span>
+                        <span className="text-white">{user.email}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 hover:bg-white/10"
+                          onClick={() => copyToClipboard(user.email, "Email")}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-white/60">Discord:</span>
+                        <span className="text-white font-mono text-xs">{user.discord_id}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 hover:bg-white/10"
+                          onClick={() => copyToClipboard(user.discord_id, "Discord ID")}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-white/60">Mot de passe:</span>
+                        <span className="text-white font-mono text-xs">
+                          {showPasswords[user.id] ? user.password : "••••••••"}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 hover:bg-white/10"
+                          onClick={() => togglePasswordVisibility(user.id)}
+                        >
+                          {showPasswords[user.id] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 hover:bg-white/10"
+                          onClick={() => copyToClipboard(user.password, "Mot de passe")}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    {user.created_at && (
+                      <p className="text-xs text-white/40 mt-1">
+                        Créé le {new Date(user.created_at).toLocaleDateString("fr-FR")} - ID: #{user.id}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -371,6 +497,7 @@ export function AdvancedUserManagement() {
                         variant="outline"
                         size="sm"
                         className="border-red-500/20 text-red-400 hover:bg-red-500/10 bg-transparent"
+                        disabled={user.role === "admin" || user.role === "developer"}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -446,11 +573,13 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
     username: "",
     email: "",
     discord_id: "",
+    password: "",
     role: "player" as User["role"],
     status: "active" as User["status"],
     bio: "",
     games: [] as string[],
   })
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     if (initialData) {
@@ -458,6 +587,7 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
         username: initialData.username || "",
         email: initialData.email || "",
         discord_id: initialData.discord_id || "",
+        password: initialData.password || "",
         role: initialData.role || "player",
         status: initialData.status || "active",
         bio: initialData.bio || "",
@@ -468,6 +598,7 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
         username: "",
         email: "",
         discord_id: "",
+        password: "",
         role: "player",
         status: "active",
         bio: "",
@@ -476,6 +607,15 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
     }
   }, [initialData, open])
 
+  const generatePassword = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
+    let password = ''
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    setFormData({ ...formData, password })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(formData)
@@ -483,42 +623,44 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-black border-white/20 text-white max-w-md">
+      <DialogContent className="bg-black border-white/20 text-white max-w-2xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="text-white/60">
             {initialData ? "Modifiez les informations de l'utilisateur" : "Créez un nouveau compte utilisateur"}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="username" className="text-white">
-              Nom d'utilisateur
-            </Label>
-            <Input
-              id="username"
-              value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="bg-white/5 border-white/20 text-white"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email" className="text-white">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="bg-white/5 border-white/20 text-white"
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="username" className="text-white">
+                Nom d'utilisateur *
+              </Label>
+              <Input
+                id="username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="bg-white/5 border-white/20 text-white"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="email" className="text-white">
+                Email *
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="bg-white/5 border-white/20 text-white"
+                required
+              />
+            </div>
           </div>
           <div>
             <Label htmlFor="discord_id" className="text-white">
-              Discord ID
+              Discord ID *
             </Label>
             <Input
               id="discord_id"
@@ -530,41 +672,78 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
             />
           </div>
           <div>
-            <Label htmlFor="role" className="text-white">
-              Rôle
+            <Label htmlFor="password" className="text-white">
+              Mot de passe {!initialData && "*"}
             </Label>
-            <Select
-              value={formData.role}
-              onValueChange={(value: User["role"]) => setFormData({ ...formData, role: value })}
-            >
-              <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-black border-white/20">
-                <SelectItem value="player">Joueur</SelectItem>
-                <SelectItem value="staff">Staff</SelectItem>
-                <SelectItem value="developer">Développeur</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex space-x-2">
+              <div className="relative flex-1">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="bg-white/5 border-white/20 text-white pr-10"
+                  required={!initialData}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-white/10"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={generatePassword}
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                <Key className="h-4 w-4 mr-1" />
+                Générer
+              </Button>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="status" className="text-white">
-              Statut
-            </Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value: User["status"]) => setFormData({ ...formData, status: value })}
-            >
-              <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-black border-white/20">
-                <SelectItem value="active">Actif</SelectItem>
-                <SelectItem value="pending">En attente</SelectItem>
-                <SelectItem value="banned">Banni</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="role" className="text-white">
+                Rôle
+              </Label>
+              <Select
+                value={formData.role}
+                onValueChange={(value: User["role"]) => setFormData({ ...formData, role: value })}
+              >
+                <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-black border-white/20">
+                  <SelectItem value="player">Joueur</SelectItem>
+                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="developer">Développeur</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="status" className="text-white">
+                Statut
+              </Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value: User["status"]) => setFormData({ ...formData, status: value })}
+              >
+                <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-black border-white/20">
+                  <SelectItem value="active">Actif</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
+                  <SelectItem value="banned">Banni</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div>
             <Label htmlFor="bio" className="text-white">
@@ -576,22 +755,27 @@ function UserFormDialog({ open, onOpenChange, onSubmit, title, submitText, initi
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               className="bg-white/5 border-white/20 text-white"
               placeholder="Biographie de l'utilisateur..."
+              rows={3}
             />
           </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              Annuler
-            </Button>
-            <Button type="submit" className="bg-white text-black hover:bg-white/90">
-              {submitText}
-            </Button>
-          </DialogFooter>
         </form>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-white/20 text-white hover:bg-white/10"
+          >
+            Annuler
+          </Button>
+          <Button 
+            type="submit" 
+            className="bg-white text-black hover:bg-white/90"
+            onClick={handleSubmit}
+          >
+            {submitText}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

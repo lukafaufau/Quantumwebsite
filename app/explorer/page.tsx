@@ -60,7 +60,7 @@ export default function ExplorerPage() {
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-heading font-bold mb-4">Explorer Quantum</h1>
+            <h1 className="text-4xl font-heading font-bold mb-4">Explorer Nemesis</h1>
             <p className="text-lg text-muted-foreground">
               Découvrez les dernières actualités, tournois et opportunités de recrutement.
             </p>
@@ -177,7 +177,13 @@ export default function ExplorerPage() {
                     <CardContent>
                       <CardDescription className="text-base">{announcement.description}</CardDescription>
                       <div className="mt-4">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            alert(`${announcement.title}\n\nType: ${announcement.type}\nJeu: ${announcement.game || 'Général'}\nDate: ${new Date(announcement.date).toLocaleDateString('fr-FR')}\n\n${announcement.description}`)
+                          }}
+                        >
                           En savoir plus
                         </Button>
                       </div>

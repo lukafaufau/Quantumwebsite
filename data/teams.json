@@ -2,27 +2,55 @@
   "teams": [
     {
       "id": 1,
-      "name": "Quantum RL",
-      "captain": "Player1",
-      "members": ["Player1", "Player2", "Player3"],
+      "name": "L'équipe Epsilon",
+      "captain": "Epsilon",
+      "members": [
+        "Account"
+      ],
       "game": "Rocket League",
-      "description": "Équipe compétitive Rocket League visant le plus haut niveau"
+      "description": "Cette équipe est réservée aux meilleurs joueurs de la Nemesis, c'est-à-dire ceux ayant atteint le rang Super Sonic Legend !",
+      "status": "active",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:32:46.329Z"
     },
     {
       "id": 2,
-      "name": "Quantum Valorant",
-      "captain": "FragMaster",
-      "members": ["FragMaster", "SniperPro", "TacticalAce", "FlashKing", "SmokeGod"],
-      "game": "Valorant",
-      "description": "Formation tactique Valorant spécialisée dans les stratégies avancées"
+      "name": "L'équipe Mocha",
+      "captain": "Mocha",
+      "members": [
+        "Account"
+      ],
+      "game": "Rocket League",
+      "description": "Cette équipe peut être attribuée à des joueurs de tous rangs, mais elle est le plus souvent réservée aux Champions & Grand Champions.",
+      "status": "active",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:32:53.609Z"
     },
     {
       "id": 3,
-      "name": "Quantum CS2",
-      "captain": "HeadshotHero",
-      "members": ["HeadshotHero", "SprayControl", "ClutchMaster", "EntryFragger"],
-      "game": "Counter-Strike 2",
-      "description": "Équipe CS2 expérimentée avec de nombreuses victoires en tournoi"
+      "name": "L'équipe Gen",
+      "captain": "Gen",
+      "members": [
+        "Account"
+      ],
+      "game": "Rocket League",
+      "description": "Cette équipe peut être attribuée à des joueurs de tous rangs, mais elle est le plus souvent réservée aux Diamant & Champions.",
+      "status": "active",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:33:02.958Z"
+    },
+    {
+      "id": 4,
+      "name": "L'équipe Blast",
+      "captain": "Blast",
+      "members": [
+        "Account"
+      ],
+      "game": "Rocket League",
+      "description": "Cette équipe peut être attribuée à des joueurs de tous rangs.",
+      "status": "active",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:32:38.798Z"
     }
   ]
 }

@@ -1,0 +1,15 @@
+{
+  "announcements": [
+    {
+      "id": 3,
+      "title": "Tournoi CS2 à venir",
+      "description": "Inscription ouverte pour le prochain tournoi Counter-Strike 2. Préparez-vous !",
+      "type": "tournament",
+      "game": "Counter-Strike 2",
+      "author": "Admin",
+      "date": "2024-01-20T00:00:00.000Z",
+      "visible": true,
+      "priority": "high"
+    }
+  ]
+}

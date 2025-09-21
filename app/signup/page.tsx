@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
@@ -13,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, CheckCircle } from "lucide-react"
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -22,7 +20,8 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     discord_id: "",
-    role: "player" as "player" | "staff",
+    role: "player",
+    invite_code: "",
   })
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -47,18 +46,19 @@ export default function SignupPage() {
       return
     }
 
-    const success = await signup({
+    const result = await signup({
       username: formData.username,
       email: formData.email,
-      role: formData.role,
-      discord_id: formData.discord_id,
       password: formData.password,
+      discord_id: formData.discord_id,
+      role: formData.role,
+      invite_code: formData.invite_code || undefined,
     })
 
-    if (success) {
+    if (result.success) {
       router.push("/")
     } else {
-      setError("Erreur lors de la création du compte")
+      setError(result.error || "Erreur lors de la création du compte. Vérifiez que vos informations sont uniques.")
     }
 
     setIsLoading(false)
@@ -72,7 +72,7 @@ export default function SignupPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-heading">Inscription</CardTitle>
-            <CardDescription>Créez votre compte Quantum</CardDescription>
+            <CardDescription>Créez votre compte Nemesis</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,19 +113,14 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">Rôle</Label>
-                <Select
-                  value={formData.role}
-                  onValueChange={(value: "player" | "staff") => setFormData({ ...formData, role: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="player">Joueur</SelectItem>
-                    <SelectItem value="staff">Staff</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="invite_code">Code d'invitation (optionnel)</Label>
+                <Input
+                  id="invite_code"
+                  type="text"
+                  value={formData.invite_code}
+                  onChange={(e) => setFormData({ ...formData, invite_code: e.target.value })}
+                  placeholder="Code d'invitation"
+                />
               </div>
 
               <div className="space-y-2">

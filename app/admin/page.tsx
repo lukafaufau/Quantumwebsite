@@ -12,12 +12,19 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AdvancedUserManagement } from "@/components/admin/advanced-user-management"
+import { TeamManagement } from "@/components/admin/team-management"
+import { ApplicationManagement } from "@/components/admin/application-management"
+import { AnnouncementManagement } from "@/components/admin/announcement-management"
+import { InviteCodeManagement } from "@/components/admin/invite-code-management"
+import { SystemMonitoring } from "@/components/admin/system-monitoring"
+import { SecurityManagement } from "@/components/admin/security-management"
 import {
   Shield,
   Users,
   UserPlus,
   Trophy,
   Megaphone,
+  Ticket,
   CheckCircle,
   AlertTriangle,
   Server,
@@ -32,6 +39,8 @@ import {
   BarChart3,
   PieChart,
   LineChart,
+  Monitor,
+  Lock,
 } from "lucide-react"
 
 export default function AdminPage() {
@@ -110,7 +119,7 @@ export default function AdminPage() {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-5xl font-heading font-bold text-glow">QUANTUM ADMIN</h1>
+                <h1 className="text-5xl font-heading font-bold text-glow">NEMESIS ADMIN</h1>
                 <p className="text-white/60 text-lg">Tableau de bord administrateur avancé</p>
               </div>
             </div>
@@ -298,7 +307,7 @@ export default function AdminPage() {
 
           {/* Onglets de gestion */}
           <Tabs defaultValue="users" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 bg-white/10 border-white/20">
+            <TabsList className="grid w-full grid-cols-9 bg-white/10 border-white/20">
               <TabsTrigger
                 value="users"
                 className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
@@ -341,6 +350,27 @@ export default function AdminPage() {
                 <Server className="h-4 w-4 mr-2" />
                 Système
               </TabsTrigger>
+              <TabsTrigger
+                value="invites"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Ticket className="h-4 w-4 mr-2" />
+                Invitations
+              </TabsTrigger>
+              <TabsTrigger
+                value="monitoring"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Monitor className="h-4 w-4 mr-2" />
+                Monitoring
+              </TabsTrigger>
+              <TabsTrigger
+                value="security"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Sécurité
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="users" className="space-y-6">
@@ -348,78 +378,15 @@ export default function AdminPage() {
             </TabsContent>
 
             <TabsContent value="teams" className="space-y-6">
-              <Card className="bg-black border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Trophy className="h-5 w-5" />
-                    <span>Gestion des équipes</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">
-                    Administrez toutes les équipes de la plateforme
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Trophy className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Gestion des équipes</h3>
-                    <p className="text-white/60 mb-6">Module de gestion avancée des équipes en développement</p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <Trophy className="h-4 w-4 mr-2" />
-                      Bientôt disponible
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <TeamManagement />
             </TabsContent>
 
             <TabsContent value="applications" className="space-y-6">
-              <Card className="bg-black/50 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <UserPlus className="h-5 w-5" />
-                    <span>Gestion des candidatures</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">Examinez et gérez toutes les candidatures</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <UserPlus className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Candidatures</h3>
-                    <p className="text-white/60 mb-6">
-                      {stats?.applications?.pending || 0} candidatures en attente de traitement
-                    </p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Traiter les candidatures
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <ApplicationManagement />
             </TabsContent>
 
             <TabsContent value="announcements" className="space-y-6">
-              <Card className="bg-black/50 border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Megaphone className="h-5 w-5" />
-                    <span>Gestion des annonces</span>
-                  </CardTitle>
-                  <CardDescription className="text-white/60">
-                    Créez et gérez toutes les annonces de la plateforme
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Megaphone className="h-16 w-16 text-white/20 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Annonces</h3>
-                    <p className="text-white/60 mb-6">{stats?.announcements?.total || 0} annonces publiées</p>
-                    <Button className="bg-white text-black hover:bg-white/90">
-                      <Megaphone className="h-4 w-4 mr-2" />
-                      Nouvelle annonce
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <AnnouncementManagement />
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
@@ -571,6 +538,18 @@ export default function AdminPage() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="invites" className="space-y-6">
+              <InviteCodeManagement />
+            </TabsContent>
+
+            <TabsContent value="monitoring" className="space-y-6">
+              <SystemMonitoring />
+            </TabsContent>
+
+            <TabsContent value="security" className="space-y-6">
+              <SecurityManagement />
             </TabsContent>
           </Tabs>
         </div>

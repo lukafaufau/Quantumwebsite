@@ -28,12 +28,17 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    const success = await login(username, password)
+    try {
+      const success = await login(username, password)
 
-    if (success) {
-      router.push("/")
-    } else {
-      setError("Nom d'utilisateur ou mot de passe incorrect")
+      if (success) {
+        router.push("/")
+      } else {
+        setError("Nom d'utilisateur ou mot de passe incorrect")
+      }
+    } catch (error) {
+      console.error('Erreur de connexion:', error)
+      setError("Erreur de connexion. Veuillez réessayer.")
     }
 
     setIsLoading(false)
@@ -47,7 +52,7 @@ export default function LoginPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-heading">Connexion</CardTitle>
-            <CardDescription>Connectez-vous à votre compte Quantum</CardDescription>
+            <CardDescription>Connectez-vous à votre compte Nemesis</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,12 +97,6 @@ export default function LoginPage() {
               <Link href="/signup" className="text-primary hover:underline">
                 S'inscrire
               </Link>
-            </div>
-
-            <div className="mt-4 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
-              <p className="font-medium mb-1">Comptes de test :</p>
-              <p>Admin: Wayzze / password</p>
-              <p>Dev: 16k / password</p>
             </div>
           </CardContent>
         </Card>

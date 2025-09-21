@@ -1,20 +1,29 @@
 {
   "users": [
     {
-      "id": 1,
-      "username": "Wayzze",
-      "email": "wayzze@quantum.gg",
-      "password": "hashed_password",
+      "username": "acc.wayzze",
+      "email": "acc.wayzze@gmail.com",
+      "password": "G7r$9vQw!2pLzX@f",
+      "discord_id": "wayzze",
       "role": "admin",
-      "discord_id": "Wayzze#0001"
+      "status": "active",
+      "id": 1,
+      "created_at": "2025-09-21T14:30:56.672Z",
+      "ban_reason": "Banni par l'administrateur",
+      "banned_at": "2025-09-21T14:42:53.693Z",
+      "updated_at": "2025-09-21T14:43:13.321Z",
+      "bio": "",
+      "games": []
     },
     {
-      "id": 2,
-      "username": "16k",
-      "email": "16k@quantum.gg",
-      "password": "hashed_password",
+      "username": "acc.16k",
+      "email": "acc.16k@gmail.com",
+      "password": "mP8#yW4!bQz7$KxF",
+      "discord_id": "",
       "role": "developer",
-      "discord_id": "16k#0002"
+      "status": "active",
+      "id": 1,
+      "created_at": "2025-09-21T14:30:56.672Z"
     }
   ]
 }

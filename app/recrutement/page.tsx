@@ -82,11 +82,11 @@ export default function RecruitmentPage() {
         setSubmitted(true)
       } else {
         console.error("Failed to submit application:", result.error)
-        // In real app, show error message to user
+        alert("Erreur lors de l'envoi de la candidature: " + (result.error || "Erreur inconnue"))
       }
     } catch (error) {
       console.error("Error submitting application:", error)
-      // In real app, show error message to user
+      alert("Erreur de connexion lors de l'envoi de la candidature")
     }
 
     setIsSubmitting(false)
@@ -257,7 +257,7 @@ export default function RecruitmentPage() {
                       <Label htmlFor="message">Message de motivation</Label>
                       <Textarea
                         id="message"
-                        placeholder="Expliquez pourquoi vous souhaitez rejoindre Quantum et ce que vous pouvez apporter à l'équipe"
+                        placeholder="Expliquez pourquoi vous souhaitez rejoindre Nemesis et ce que vous pouvez apporter à l'équipe"
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         required
@@ -354,7 +354,12 @@ export default function RecruitmentPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-3">Des questions sur le processus de recrutement ?</p>
-                  <Button variant="outline" size="sm" className="w-full bg-transparent">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full bg-transparent"
+                    onClick={() => alert("Pour obtenir de l'aide, contactez l'équipe sur Discord ou par email")}
+                  >
                     Contacter le staff
                   </Button>
                 </CardContent>

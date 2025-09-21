@@ -1,8 +1,11 @@
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Crown, Code, Heart } from "lucide-react"
+"use client";
+
+import React from "react"; // ← obligatoire pour App Router
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Crown, Code, Heart } from "lucide-react";
 
 export default function CreditsPage() {
   return (
@@ -90,12 +93,12 @@ export default function CreditsPage() {
 
           <div className="mt-12 text-center text-sm text-muted-foreground">
             <p>© 2024 Quantum Esports. Développé avec passion pour la communauté esport française.</p>
-            <p className="mt-2">Version 1.0.0 - Janvier 2024</p>
+            <p className="mt-2">Version 1.0.0 - Septembre 2025</p>
           </div>
         </div>
       </main>
 
       <Footer />
     </div>
-  )
+  );
 }

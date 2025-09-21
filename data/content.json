@@ -2,13 +2,13 @@
   "pages": {
     "home": {
       "hero": {
-        "title": "Bienvenue sur Quantum",
+        "title": "",
         "subtitle": "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
-        "cta_primary": "Rejoindre Quantum",
+        "cta_primary": "Rejoindre Nemesis",
         "cta_secondary": "Voir les équipes"
       },
       "features": {
-        "title": "Pourquoi choisir Quantum ?",
+        "title": "Pourquoi choisir Nemesis ?",
         "subtitle": "Découvrez tous les avantages de notre plateforme esport",
         "items": [
           {
@@ -30,10 +30,22 @@
         ]
       },
       "stats": [
-        { "value": "3+", "label": "Équipes actives" },
-        { "value": "15+", "label": "Joueurs inscrits" },
-        { "value": "6", "label": "Jeux supportés" },
-        { "value": "24/7", "label": "Support communauté" }
+        {
+          "value": "3+",
+          "label": "Équipes actives"
+        },
+        {
+          "value": "15+",
+          "label": "Joueurs inscrits"
+        },
+        {
+          "value": "6",
+          "label": "Jeux supportés"
+        },
+        {
+          "value": "24/7",
+          "label": "Support communauté"
+        }
       ],
       "cta_final": {
         "title": "Prêt à rejoindre l'élite esport ?",
@@ -42,12 +54,12 @@
       }
     },
     "explorer": {
-      "title": "Explorer Quantum",
+      "title": "Explorer Nemesis",
       "subtitle": "Découvrez les dernières actualités et statistiques de la communauté"
     },
     "equipes": {
       "title": "Nos Équipes",
-      "subtitle": "Découvrez toutes les équipes esport de Quantum"
+      "subtitle": "Découvrez toutes les équipes esport de Nemesis"
     },
     "joueurs": {
       "title": "Joueurs",
@@ -63,11 +75,11 @@
     },
     "admin": {
       "title": "Administration",
-      "subtitle": "Panneau d'administration Quantum"
+      "subtitle": "Panneau d'administration Nemesis"
     },
     "credits": {
       "title": "Crédits",
-      "subtitle": "L'équipe derrière Quantum"
+      "subtitle": "L'équipe derrière Nemesis"
     }
   }
 }

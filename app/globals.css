@@ -129,6 +129,9 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Éviter les problèmes de rendu sur Netlify */
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   h1,
@@ -149,6 +152,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Correction pour Netlify */
+    height: 100%;
   }
 
   ::selection {
@@ -169,6 +174,16 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-white/50;
+  }
+
+  /* Fix pour les dropdowns */
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
+
+  .dropdown-menu-content {
+    z-index: 9999;
+    position: relative;
   }
 }
 
