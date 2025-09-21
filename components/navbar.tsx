@@ -171,7 +171,7 @@ export function Navbar() {
                   className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4"
                 >
                   <Image src={LogoImage} alt="Logo" width={32} height={32} />
-                  <span>NEMESIS</span>
+                  <span></span>
                 </Link>
                 <div className="flex flex-col space-y-6 items-center">{NavLinks()}</div>
                 {!isAuthenticated && (
