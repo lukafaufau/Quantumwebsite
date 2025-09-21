@@ -14,8 +14,7 @@ import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
 
-// Si tu veux utiliser une URL externe, il faut l'autoriser dans next.config.js
-const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
+const LogoImage = "https://cdn.discordapp.com/attachments/1369328695742955574/1419277407566827613/Fichier_2.png"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -23,68 +22,20 @@ export function Navbar() {
 
   const NavLinks = () => (
     <>
-      <Link
-        href="/"
-        className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-        onClick={() => setIsOpen(false)}
-      >
-        Accueil
-      </Link>
-      <Link
-        href="/explorer"
-        className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-        onClick={() => setIsOpen(false)}
-      >
-        Explorer
-      </Link>
-      <Link
-        href="/equipes"
-        className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-        onClick={() => setIsOpen(false)}
-      >
-        Équipes
-      </Link>
-      <Link
-        href="/joueurs"
-        className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-        onClick={() => setIsOpen(false)}
-      >
-        Joueurs
-      </Link>
+      <Link href="/" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Accueil</Link>
+      <Link href="/explorer" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Explorer</Link>
+      <Link href="/equipes" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Équipes</Link>
+      <Link href="/joueurs" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Joueurs</Link>
       {isAuthenticated && (
         <>
-          <Link
-            href="/recrutement"
-            className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-            onClick={() => setIsOpen(false)}
-          >
-            Recrutement
-          </Link>
-          <Link
-            href="/profil"
-            className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-            onClick={() => setIsOpen(false)}
-          >
-            Profil
-          </Link>
+          <Link href="/recrutement" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Recrutement</Link>
+          <Link href="/profil" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Profil</Link>
           {(user?.role === "admin" || user?.role === "developer") && (
-            <Link
-              href="/admin"
-              className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in text-glow"
-              onClick={() => setIsOpen(false)}
-            >
-              Administration
-            </Link>
+            <Link href="/admin" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in text-glow" onClick={() => setIsOpen(false)}>Administration</Link>
           )}
         </>
       )}
-      <Link
-        href="/credits"
-        className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in"
-        onClick={() => setIsOpen(false)}
-      >
-        Crédits
-      </Link>
+      <Link href="/credits" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Crédits</Link>
     </>
   )
 
@@ -92,39 +43,30 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
       <div className="container flex h-16 items-center justify-between">
 
-        {/* Logo à gauche */}
-        <Link
-          href="/"
-          className="flex items-center space-x-2 text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 animate-glow"
-        >
-          <Image src={LogoImage} alt="Logo" width={32} height={32} />
-          <span className="text-glow">NEMESIS</span>
+        {/* Logo à gauche (image séparée du texte) */}
+        <Link href="/" className="flex items-center space-x-2">
+          <Image src={LogoImage} alt="Logo" width={40} height={40} className="animate-glow" />
+          <span className="text-2xl font-bold text-white font-heading animate-glow">NEMESIS</span>
         </Link>
 
-        {/* Navigation centrée */}
+        {/* Navigation centrée sur desktop */}
         <div className="hidden lg:flex items-center justify-center space-x-8">
           <NavLinks />
         </div>
 
         {/* Section utilisateur / login à droite */}
         <div className="flex items-center space-x-4">
+
+          {/* Desktop / Authenticated */}
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow"
-                >
+                <Button variant="ghost" size="sm" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow">
                   <User className="h-4 w-4" />
                   <span className="hidden sm:inline text-white">{user?.username}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                sideOffset={5}
-                className="w-48 bg-black border-white/20 animate-scale-in z-50"
-              >
+              <DropdownMenuContent align="end" sideOffset={5} className="w-48 bg-black border-white/20 animate-scale-in z-50">
                 <DropdownMenuItem asChild>
                   <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
                     <Settings className="mr-2 h-4 w-4" />
@@ -139,10 +81,7 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="flex items-center cursor-pointer text-white hover:bg-white/10"
-                >
+                <DropdownMenuItem onClick={logout} className="flex items-center cursor-pointer text-white hover:bg-white/10">
                   <LogOut className="mr-2 h-4 w-4" />
                   Déconnexion
                 </DropdownMenuItem>
@@ -150,21 +89,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="hidden sm:flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
-              >
-                <Link href="/login" className="text-white">
-                  Connexion
-                </Link>
+              <Button variant="ghost" size="sm" asChild className="hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                <Link href="/login" className="text-white">Connexion</Link>
               </Button>
-              <Button
-                size="sm"
-                asChild
-                className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
-              >
+              <Button size="sm" asChild className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow">
                 <Link href="/signup">Inscription</Link>
               </Button>
             </div>
@@ -173,48 +101,27 @@ export function Navbar() {
           {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
-              >
+              <Button variant="ghost" size="sm" className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <Menu className="h-5 w-5 text-white" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left">
               <div className="flex flex-col space-y-4 mt-8 text-center">
-                <Link
-                  href="/"
-                  className="text-2xl font-heading font-bold text-white mb-4 text-glow flex items-center justify-center space-x-2"
-                >
+                <Link href="/" className="flex items-center justify-center space-x-2 text-2xl font-bold text-white mb-4">
                   <Image src={LogoImage} alt="Logo" width={32} height={32} />
-                  <span>Nemesis</span>
+                  <span>NEMESIS</span>
                 </Link>
-
                 <div className="flex flex-col space-y-6 items-center">
                   <NavLinks />
                 </div>
 
                 {!isAuthenticated && (
                   <div className="flex flex-col space-y-2 pt-4 border-t border-white/20 items-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                      className="hover:bg-white/10 transition-all duration-300"
-                    >
-                      <Link href="/login" className="text-white">
-                        Connexion
-                      </Link>
+                    <Button variant="ghost" size="sm" asChild onClick={() => setIsOpen(false)} className="hover:bg-white/10 transition-all duration-300">
+                      <Link href="/login" className="text-white">Connexion</Link>
                     </Button>
-                    <Button
-                      size="sm"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                      className="bg-white text-black hover:bg-white/90 transition-all duration-300"
-                    >
+                    <Button size="sm" asChild onClick={() => setIsOpen(false)} className="bg-white text-black hover:bg-white/90 transition-all duration-300">
                       <Link href="/signup">Inscription</Link>
                     </Button>
                   </div>
