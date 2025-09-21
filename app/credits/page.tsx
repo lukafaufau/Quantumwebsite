@@ -89,13 +89,13 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          {/* Footer bas de page centré */}
+          {/* Footer bas de page centré correctement */}
           <div className="mt-12 py-6 w-full flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
-            <p>
+            <p className="mx-auto">
               Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur : <span className="text-white font-medium">16k</span>
             </p>
-            <p>© 2025 Nemesis Esports. Tous droits réservés.</p>
-            <p>Version 1.0.0</p>
+            <p className="mx-auto">© 2025 Nemesis Esports. Tous droits réservés.</p>
+            <p className="mx-auto">Version 1.0.0</p>
           </div>
         </div>
       </main>
