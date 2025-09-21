@@ -86,8 +86,11 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          {/* Bas de page */}
-          <div className="mt-10 text-center text-xs text-gray-400 space-y-1">
+          {/* Bas de page centré */}
+          <div className="mt-12 flex flex-col items-center text-center text-sm text-gray-400 space-y-1">
+            <p>
+              Chef de projet : <span className="text-white font-medium">Wayzze</span> | Développeur : <span className="text-white font-medium">16k</span>
+            </p>
             <p>© 2025 Team Nemesis. Développé avec passion pour la communauté esport française.</p>
             <p>Version 1.0.0 - Janvier 2025</p>
           </div>
