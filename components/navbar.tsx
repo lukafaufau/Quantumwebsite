@@ -35,7 +35,6 @@ export function Navbar() {
             : []),
         ]
       : []),
-    { href: "/profil", label: "Profil" },
     { href: "/credits", label: "Crédits" },
   ]
 
