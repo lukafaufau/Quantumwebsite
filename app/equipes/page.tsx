@@ -10,24 +10,25 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
-import { mockTeams, availableGames, getPlayersByTeam } from "@/lib/data"
+import { mockTeams, availableGames } from "@/lib/data"
 
 export default function TeamsPage() {
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
+  // Filtrage des équipes
   const filteredTeams = mockTeams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
       !searchTerm ||
       team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       team.captain.toLowerCase().includes(searchTerm.toLowerCase())
-
     return matchesGame && matchesSearch
   })
 
-  const renderMembers = (team: typeof mockTeams[number]) => {
-    return team.members.map((member) => {
+  // Fonction pour afficher les membres avec icônes
+  const renderMembers = (team: typeof mockTeams[number]) =>
+    team.members.map((member) => {
       const isCaptain = member === team.captain
       return (
         <Badge
@@ -35,12 +36,11 @@ export default function TeamsPage() {
           variant={isCaptain ? "secondary" : "outline"}
           className="flex items-center gap-1 text-xs"
         >
-          {isCaptain && <Crown className="h-3 w-3 text-yellow-400" />}
+          {isCaptain ? <Crown className="h-3 w-3 text-yellow-400" /> : <Users className="h-3 w-3 text-muted-foreground" />}
           {member}
         </Badge>
       )
     })
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -120,11 +120,13 @@ export default function TeamsPage() {
                         variant="outline"
                         size="sm"
                         className="flex-1 bg-transparent"
-                        onClick={() => {
+                        onClick={() =>
                           alert(
-                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${team.description || 'Aucune description'}`
+                            `Équipe: ${team.name}\nCapitaine: ${team.captain}\nJeu: ${team.game}\nMembres: ${team.members.length}\n\nDescription: ${
+                              team.description || "Aucune description"
+                            }`
                           )
-                        }}
+                        }
                       >
                         Voir détails
                       </Button>
