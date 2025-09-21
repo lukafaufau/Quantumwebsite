@@ -113,7 +113,7 @@ export default function AdminPage() {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-5xl font-heading font-bold text-glow">QUANTUM ADMIN</h1>
+                <h1 className="text-5xl font-heading font-bold text-glow">NEMESIS ADMIN</h1>
                 <p className="text-white/60 text-lg">Tableau de bord administrateur avancé</p>
               </div>
             </div>
