@@ -1,207 +1,103 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useAuth } from "@/hooks/use-auth"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
-import { useState } from "react"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Crown, Code, Heart } from "lucide-react";
 
-const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
-
-export function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth()
-  const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname() || "/"
-
-  const links = [
-    { href: "/", label: "Accueil" },
-    { href: "/explorer", label: "Explorer" },
-    { href: "/equipes", label: "Équipes" },
-    { href: "/joueurs", label: "Joueurs" },
-    ...(isAuthenticated
-      ? [
-          { href: "/recrutement", label: "Recrutement" },
-          { href: "/profil", label: "Profil" },
-          ...(user?.role === "admin" || user?.role === "developer"
-            ? [{ href: "/admin", label: "Administration" }]
-            : []),
-        ]
-      : []),
-    { href: "/credits", label: "Crédits" },
-  ]
-
-  const NavLinks = () =>
-    links.map((link) => {
-      const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
-      return (
-        <Link
-          key={link.href}
-          href={link.href}
-          onClick={() => setIsOpen(false)}
-          className={`
-            relative text-sm font-medium transition-all duration-300 transform hover:scale-105
-            ${isActive ? "text-white" : "text-gray-300 hover:text-white"}
-          `}
-        >
-          {link.label}
-          {isActive && (
-            <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-white rounded-sm animate-fade-in"></span>
-          )}
-        </Link>
-      )
-    })
-
+export default function CreditsPage() {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80">
-      <div className="container flex h-16 items-center justify-between px-3 lg:px-5">
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
 
-        {/* Logo + texte */}
-        <Link href="/" className="flex items-center space-x-4">
-          <Image
-            src={LogoImage}
-            alt="Logo"
-            width={28}
-            height={28}
-            className="transition-all duration-300 hover:scale-110"
-          />
-          <span className="text-2xl font-bold text-white font-heading transition-all duration-300">
-            NEMESIS
-          </span>
-        </Link>
+      <main className="flex-1 py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-heading font-bold mb-4">Crédits</h1>
+            <p className="text-lg text-muted-foreground">Les personnes qui ont rendu Quantum possible</p>
+          </div>
 
-        {/* Desktop nav */}
-        <div className="hidden lg:flex items-center space-x-8">{NavLinks()}</div>
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <Card className="text-center">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                  <Crown className="h-8 w-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">Wayzze</CardTitle>
+                <CardDescription className="text-lg">Chef de projet</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-center">
+                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                    Project Manager
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  Visionnaire et leader du projet Quantum. Responsable de la conception, de la stratégie et de la
+                  coordination de toutes les équipes.
+                </p>
+                <div className="text-sm text-muted-foreground">
+                  <p>Discord: Wayzze#0001</p>
+                  <p>Email: wayzze@quantum.gg</p>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Right section: user/login */}
-        <div className="flex items-center space-x-4">
-          {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                {/* Button doit propager correctement le clic */}
-                <button
-                  className="flex items-center space-x-2 bg-transparent border-none p-1 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
-                >
-                  <User className="h-5 w-5 text-white" />
-                  <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
-                </button>
-              </DropdownMenuTrigger>
+            <Card className="text-center">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                  <Code className="h-8 w-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">16k</CardTitle>
+                <CardDescription className="text-lg">Développeur</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-center">
+                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                    Full-Stack Developer
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  Architecte technique et développeur principal de la plateforme Quantum. Responsable du développement
+                  et de la maintenance de l'infrastructure.
+                </p>
+                <div className="text-sm text-muted-foreground">
+                  <p>Discord: 16k#0002</p>
+                  <p>Email: 16k@quantum.gg</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-              {/* forceMount garantit que le menu est monté */}
-              <DropdownMenuContent
-                align="end"
-                sideOffset={5}
-                forceMount
-                className="w-48 bg-black border-white/20 animate-scale-in z-50"
-              >
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/profil"
-                    className="flex items-center cursor-pointer text-white hover:bg-white/10"
-                  >
-                    <Settings className="mr-2 h-4 w-4" /> Profil
-                  </Link>
-                </DropdownMenuItem>
-                {(user?.role === "admin" || user?.role === "developer") && (
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href="/admin"
-                      className="flex items-center cursor-pointer text-white hover:bg-white/10"
-                    >
-                      <Shield className="mr-2 h-4 w-4" /> Administration
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="flex items-center cursor-pointer text-white hover:bg-white/10"
-                >
-                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="hidden sm:flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="hover:bg-white/10 transition-all duration-300 hover:scale-105"
-              >
-                <Link href="/login" className="text-white font-medium">
-                  Connexion
-                </Link>
-              </Button>
-              <Button
-                size="sm"
-                asChild
-                className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105"
-              >
-                <Link href="/signup">Inscription</Link>
-              </Button>
-            </div>
-          )}
-
-          {/* Mobile menu */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105"
-              >
-                <Menu className="h-6 w-6 text-white" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left"
-            >
-              <div className="flex flex-col space-y-6 mt-10 text-center">
-                <Link
-                  href="/"
-                  className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4"
-                >
-                  <Image src={LogoImage} alt="Logo" width={32} height={32} />
-                  <span>NEMESIS</span>
-                </Link>
-                <div className="flex flex-col space-y-6 items-center">{NavLinks()}</div>
-                {!isAuthenticated && (
-                  <div className="flex flex-col space-y-2 pt-6 border-t border-white/20 items-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                      className="hover:bg-white/10 transition-all duration-300"
-                    >
-                      <Link href="/login" className="text-white">
-                        Connexion
-                      </Link>
-                    </Button>
-                    <Button
-                      size="sm"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                      className="bg-white text-black hover:bg-white/90 transition-all duration-300"
-                    >
-                      <Link href="/signup">Inscription</Link>
-                    </Button>
-                  </div>
-                )}
+          <Card className="bg-card/50">
+            <CardContent className="py-8 text-center">
+              <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
+                <Heart className="h-8 w-8 text-primary" />
               </div>
-            </SheetContent>
-          </Sheet>
+              <h3 className="text-2xl font-heading font-bold mb-4">Merci à notre communauté</h3>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
+                Quantum n'existerait pas sans le soutien et la passion de notre communauté esport. Merci à tous les
+                joueurs, équipes et supporters qui font vivre cette plateforme.
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Badge variant="secondary">Joueurs</Badge>
+                <Badge variant="secondary">Équipes</Badge>
+                <Badge variant="secondary">Supporters</Badge>
+                <Badge variant="secondary">Partenaires</Badge>
+                <Badge variant="secondary">Communauté Discord</Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="mt-12 text-center text-sm text-muted-foreground">
+            <p>© 2024 Quantum Esports. Développé avec passion pour la communauté esport française.</p>
+            <p className="mt-2">Version 1.0.0 - Janvier 2024</p>
+          </div>
         </div>
-      </div>
-    </nav>
-  )
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
