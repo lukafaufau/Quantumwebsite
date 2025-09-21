@@ -16,6 +16,8 @@ import { TeamManagement } from "@/components/admin/team-management"
 import { ApplicationManagement } from "@/components/admin/application-management"
 import { AnnouncementManagement } from "@/components/admin/announcement-management"
 import { InviteCodeManagement } from "@/components/admin/invite-code-management"
+import { SystemMonitoring } from "@/components/admin/system-monitoring"
+import { SecurityManagement } from "@/components/admin/security-management"
 import {
   Shield,
   Users,
@@ -37,6 +39,8 @@ import {
   BarChart3,
   PieChart,
   LineChart,
+  Monitor,
+  Lock,
 } from "lucide-react"
 
 export default function AdminPage() {
@@ -303,7 +307,7 @@ export default function AdminPage() {
 
           {/* Onglets de gestion */}
           <Tabs defaultValue="users" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7 bg-white/10 border-white/20">
+            <TabsList className="grid w-full grid-cols-9 bg-white/10 border-white/20">
               <TabsTrigger
                 value="users"
                 className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
@@ -352,6 +356,20 @@ export default function AdminPage() {
               >
                 <Ticket className="h-4 w-4 mr-2" />
                 Invitations
+              </TabsTrigger>
+              <TabsTrigger
+                value="monitoring"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Monitor className="h-4 w-4 mr-2" />
+                Monitoring
+              </TabsTrigger>
+              <TabsTrigger
+                value="security"
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-black"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Sécurité
               </TabsTrigger>
             </TabsList>
 
@@ -524,6 +542,14 @@ export default function AdminPage() {
 
             <TabsContent value="invites" className="space-y-6">
               <InviteCodeManagement />
+            </TabsContent>
+
+            <TabsContent value="monitoring" className="space-y-6">
+              <SystemMonitoring />
+            </TabsContent>
+
+            <TabsContent value="security" className="space-y-6">
+              <SecurityManagement />
             </TabsContent>
           </Tabs>
         </div>
