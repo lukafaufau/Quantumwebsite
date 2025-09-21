@@ -1,122 +1,37 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs/promises";
 import path from "path";
 
 const TEAMS_FILE = path.join(process.cwd(), "data", "teams.json");
 
-interface Team {
-  id: number;
-  name: string;
-  captain: string;
-  members: string[];
-  game: string;
-  description?: string;
-  status: string;
-  created_at: string;
-  updated_at?: string;
-}
-
-// Assure que le fichier existe
-async function ensureDataFile() {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let teams = [];
   try {
-    await fs.access(TEAMS_FILE);
+    const file = await fs.readFile(TEAMS_FILE, "utf-8");
+    teams = JSON.parse(file);
   } catch {
-    await fs.mkdir(path.dirname(TEAMS_FILE), { recursive: true });
-    await fs.writeFile(TEAMS_FILE, JSON.stringify({ teams: [] }, null, 2));
-  }
-}
-
-// GET : récupérer toutes les équipes
-export async function GET() {
-  await ensureDataFile();
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teams = JSON.parse(data);
-  return NextResponse.json({ success: true, data: teams.teams || [] });
-}
-
-// POST : ajouter une nouvelle équipe
-export async function POST(request: NextRequest) {
-  await ensureDataFile();
-  const teamData = await request.json();
-
-  if (!teamData.name || !teamData.captain || !teamData.game) {
-    return NextResponse.json(
-      { success: false, error: "Name, captain and game are required" },
-      { status: 400 }
-    );
+    teams = [];
   }
 
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teams = JSON.parse(data);
-
-  const newId = teams.teams?.length
-    ? Math.max(...teams.teams.map((t: any) => t.id)) + 1
-    : 1;
-
-  const newTeam: Team = {
-    id: newId,
-    name: teamData.name,
-    captain: teamData.captain,
-    members: Array.isArray(teamData.members) ? teamData.members : [],
-    game: teamData.game,
-    description: teamData.description || "",
-    status: teamData.status || "active",
-    created_at: new Date().toISOString(),
-  };
-
-  if (!teams.teams) teams.teams = [];
-  teams.teams.push(newTeam);
-
-  await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-
-  return NextResponse.json({ success: true, data: newTeam });
-}
-
-// PUT : mettre à jour une équipe
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  await ensureDataFile();
-  const id = parseInt(params.id);
-  const updates = await request.json();
-
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teams = JSON.parse(data);
-
-  if (!teams.teams) teams.teams = [];
-
-  const teamIndex = teams.teams.findIndex((t: any) => t.id === id);
-  if (teamIndex === -1) {
-    return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
+  if (req.method === "GET") {
+    return res.status(200).json({ success: true, data: teams });
   }
 
-  teams.teams[teamIndex] = {
-    ...teams.teams[teamIndex],
-    ...updates,
-    updated_at: new Date().toISOString(),
-  };
+  if (req.method === "POST") {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ success: false, message: "Nom requis" });
 
-  await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-
-  return NextResponse.json({ success: true, data: teams.teams[teamIndex] });
-}
-
-// DELETE : supprimer une équipe
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  await ensureDataFile();
-  const id = parseInt(params.id);
-
-  const data = await fs.readFile(TEAMS_FILE, "utf8");
-  const teams = JSON.parse(data);
-
-  if (!teams.teams) teams.teams = [];
-
-  const initialLength = teams.teams.length;
-  teams.teams = teams.teams.filter((t: any) => t.id !== id);
-
-  if (teams.teams.length === initialLength) {
-    return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
+    const newTeam = {
+      id: Date.now(),
+      name,
+      active: true,
+      recruiting: false,
+    };
+    teams.push(newTeam);
+    await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
+    return res.status(201).json({ success: true, data: newTeam });
   }
 
-  await fs.writeFile(TEAMS_FILE, JSON.stringify(teams, null, 2));
-
-  return NextResponse.json({ success: true });
+  res.setHeader("Allow", ["GET", "POST"]);
+  res.status(405).end(`Method ${req.method} Not Allowed`);
 }
