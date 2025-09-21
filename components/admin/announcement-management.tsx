@@ -80,13 +80,19 @@ export function AnnouncementManagement() {
           ...newAnnouncement,
           date: new Date().toISOString(),
           author: "Admin",
+          visible: true,
+          priority: "medium",
         }),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchAnnouncements()
         setIsCreateDialogOpen(false)
         setNewAnnouncement({ title: "", description: "", type: "general", game: "" })
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la création de l'annonce")
       }
     } catch (error) {
       console.error("Erreur lors de la création:", error)
@@ -108,10 +114,14 @@ export function AnnouncementManagement() {
         body: JSON.stringify(editingAnnouncement),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchAnnouncements()
         setIsEditDialogOpen(false)
         setEditingAnnouncement(null)
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la mise à jour de l'annonce")
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
@@ -124,8 +134,12 @@ export function AnnouncementManagement() {
         method: "DELETE",
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchAnnouncements()
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la suppression de l'annonce")
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)

@@ -57,11 +57,19 @@ export function ApplicationManagement() {
       const response = await fetch(`/api/recruitment/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, reviewed_by: "Admin" }),
+        body: JSON.stringify({ 
+          status, 
+          reviewed_by: "Admin",
+          reviewed_at: new Date().toISOString()
+        }),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchApplications()
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la mise à jour de la candidature")
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)

@@ -79,13 +79,18 @@ export function InviteCodeManagement() {
           ...newCode,
           created_by: "Admin", // In real app, get from auth context
           expires_at: newCode.expires_at || undefined,
+          used_by: [],
         }),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchCodes()
         setIsCreateDialogOpen(false)
         setNewCode({ code: "", role: "player", max_uses: 1, expires_at: "" })
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la création du code")
       }
     } catch (error) {
       console.error("Erreur lors de la création:", error)
@@ -98,8 +103,12 @@ export function InviteCodeManagement() {
         method: "DELETE",
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchCodes()
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la suppression du code")
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)

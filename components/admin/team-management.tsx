@@ -86,13 +86,21 @@ export function TeamManagement() {
       const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newTeam),
+        body: JSON.stringify({
+          ...newTeam,
+          members: newTeam.members || [],
+          created_at: new Date().toISOString(),
+        }),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchTeams()
         setIsCreateDialogOpen(false)
         setNewTeam({ name: "", captain: "", members: [], game: "", description: "" })
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la création de l'équipe")
       }
     } catch (error) {
       console.error("Erreur lors de la création:", error)
@@ -108,16 +116,20 @@ export function TeamManagement() {
     if (!editingTeam) return
 
     try {
-      const response = await fetch("/api/teams", {
-        method: "PATCH",
+      const response = await fetch(`/api/teams/${editingTeam.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingTeam),
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchTeams()
         setIsEditDialogOpen(false)
         setEditingTeam(null)
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la mise à jour de l'équipe")
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error)
@@ -126,12 +138,16 @@ export function TeamManagement() {
 
   const handleDeleteTeam = async (teamId: number) => {
     try {
-      const response = await fetch(`/api/teams?id=${teamId}`, {
+      const response = await fetch(`/api/teams/${teamId}`, {
         method: "DELETE",
       })
 
-      if (response.ok) {
+      const result = await response.json()
+      if (result.success) {
         await fetchTeams()
+      } else {
+        console.error("Erreur:", result.error)
+        alert("Erreur lors de la suppression de l'équipe")
       }
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)

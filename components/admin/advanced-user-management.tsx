@@ -88,7 +88,16 @@ export function AdvancedUserManagement() {
 
   const handleCreateUser = async (userData: Partial<User>) => {
     try {
-      await AdminAPI.createUser(userData)
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création")
+      }
+      
       await loadUsers()
       setIsCreateDialogOpen(false)
     } catch (error) {
@@ -99,7 +108,16 @@ export function AdvancedUserManagement() {
   const handleUpdateUser = async (userData: Partial<User>) => {
     if (!selectedUser) return
     try {
-      await AdminAPI.updateUser(selectedUser.id, userData)
+      const response = await fetch(`/api/users/${selectedUser.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour")
+      }
+      
       await loadUsers()
       setIsEditDialogOpen(false)
       setSelectedUser(null)
@@ -110,7 +128,14 @@ export function AdvancedUserManagement() {
 
   const handleDeleteUser = async (userId: number) => {
     try {
-      await AdminAPI.deleteUser(userId)
+      const response = await fetch(`/api/users/${userId}`, {
+        method: "DELETE",
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression")
+      }
+      
       await loadUsers()
     } catch (error) {
       console.error("Erreur lors de la suppression:", error)
@@ -119,7 +144,16 @@ export function AdvancedUserManagement() {
 
   const handleBanUser = async (userId: number, reason: string) => {
     try {
-      await AdminAPI.banUser(userId, reason)
+      const response = await fetch(`/api/users/${userId}/ban`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason }),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors du bannissement")
+      }
+      
       await loadUsers()
     } catch (error) {
       console.error("Erreur lors du bannissement:", error)
