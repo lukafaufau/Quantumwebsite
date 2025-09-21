@@ -62,7 +62,7 @@ export default function CreditsPage() {
                 </p>
                 <div className="text-sm text-muted-foreground">
                   <p>Discord: 16k#0002</p>
-                  <p>Email: 16k@quantum.gg</p>
+                  <p>Email: 16k@Nemesis.gg</p>
                 </div>
               </CardContent>
             </Card>
