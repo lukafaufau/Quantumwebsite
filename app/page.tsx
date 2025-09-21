@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { Trophy, Users, Target, Zap, ArrowRight, Star, Edit } from "lucide-react"
+import { Trophy, Users, Target, Zap, ArrowRight, Star } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export default function HomePage() {
@@ -15,7 +15,7 @@ export default function HomePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [editableContent, setEditableContent] = useState<any>(null)
 
-  // Charger le contenu de l’API ou contenu par défaut
+  // Fetch content
   useEffect(() => {
     fetch("/api/content?page=home")
       .then(res => res.json())
@@ -27,7 +27,8 @@ export default function HomePage() {
         const defaultContent = {
           hero: {
             title: "NEMESIS",
-            subtitle: "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
+            subtitle:
+              "La plateforme communautaire esport française qui centralise la gestion des équipes, le recrutement et les annonces esport.",
             cta_primary: "Rejoindre Nemesis",
             cta_secondary: "Voir les équipes",
           },
@@ -63,7 +64,7 @@ export default function HomePage() {
     )
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <div className="min-h-screen flex flex-col bg-black text-white font-sans">
       <Navbar />
 
       <main className="flex-1">
@@ -72,10 +73,9 @@ export default function HomePage() {
           {(user?.role === "admin" || user?.role === "developer") && (
             <Button
               onClick={() => setIsEditing(!isEditing)}
-              className="fixed top-20 right-4 z-40 bg-white/10 hover:bg-white/20 border-white/20 animate-bounce-in"
+              className="fixed top-20 right-4 z-40 bg-white/10 hover:bg-white/20 border-white/20"
               size="sm"
             >
-              <Edit className="h-4 w-4 mr-2" />
               {isEditing ? "Annuler" : "Modifier"}
             </Button>
           )}
@@ -92,7 +92,7 @@ export default function HomePage() {
                       hero: { ...editableContent.hero, title: e.target.value },
                     })
                   }
-                  className="w-full text-4xl md:text-6xl lg:text-7xl font-heading font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
+                  className="w-full text-4xl md:text-6xl lg:text-7xl font-heading font-akira font-bold bg-transparent border-b border-white/20 text-center text-white placeholder-white/50"
                   placeholder="Titre principal"
                 />
                 <textarea
@@ -122,22 +122,23 @@ export default function HomePage() {
               </div>
             ) : (
               <>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight animate-slide-up">
-                  {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}
-                  <span className="text-white">{content.hero?.title}</span>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-akira font-bold mb-6 leading-tight">
+                  {isAuthenticated ? `Bienvenue, ${user?.username}` : ""}
+                  <span className="ml-2">{content.hero?.title}</span>
                 </h1>
-                <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed animate-slide-up">
+                <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
                   {content.hero?.subtitle}
                 </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-bounce-in">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Button
                     size="lg"
                     className="group bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow"
                     asChild
                   >
                     <Link href={isAuthenticated ? "/explorer" : "/signup"}>
-                      {isAuthenticated ? "Explorer Nemesis" : content.hero?.cta_primary}
+                      {isAuthenticated
+                        ? "Explorer Nemesis"
+                        : content.hero?.cta_primary || "Rejoindre Nemesis"}
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
@@ -147,7 +148,7 @@ export default function HomePage() {
                     asChild
                     className="border-white/20 text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 bg-transparent"
                   >
-                    <Link href="/equipes">{content.hero?.cta_secondary}</Link>
+                    <Link href="/equipes">{content.hero?.cta_secondary || "Voir les équipes"}</Link>
                   </Button>
                 </div>
               </>
@@ -158,13 +159,12 @@ export default function HomePage() {
         {/* Features Section */}
         <section className="py-16 px-4 bg-white/5 text-center">
           <div className="container mx-auto">
-            <div className="text-center mb-12 animate-slide-up">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-glow">
-                {content.features?.title}
-              </h2>
-              <p className="text-lg text-white/80 max-w-2xl mx-auto">{content.features?.subtitle}</p>
-            </div>
-
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-glow">
+              {content.features?.title}
+            </h2>
+            <p className="text-lg text-white/80 max-w-2xl mx-auto mb-12">
+              {content.features?.subtitle}
+            </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { icon: Trophy, title: "Équipes Pro", desc: "Rejoignez des équipes compétitives et participez aux tournois esport de haut niveau." },
@@ -172,15 +172,20 @@ export default function HomePage() {
                 { icon: Target, title: "Recrutement", desc: "Trouvez votre équipe idéale grâce à notre système de recrutement avancé." },
                 { icon: Zap, title: "Performance", desc: "Suivez vos statistiques et améliorez vos performances en continu." },
               ].map((feature, i) => (
-                <Card key={i} className="text-center group hover-lift bg-black/50 border-white/20 transition-all duration-500 animate-scale-in hover:border-glow">
+                <Card
+                  key={i}
+                  className="text-center bg-black/50 border-white/20 hover-lift transition-all duration-500"
+                >
                   <CardHeader>
-                    <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit group-hover:bg-white/20 transition-all duration-300 animate-float">
+                    <div className="mx-auto mb-4 p-3 bg-white/10 rounded-full w-fit">
                       <feature.icon className="h-8 w-8 text-white" />
                     </div>
-                    <CardTitle className="text-xl text-white text-glow">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base leading-relaxed text-white/80">{feature.desc}</CardDescription>
+                    <CardDescription className="text-base leading-relaxed text-white/80">
+                      {feature.desc}
+                    </CardDescription>
                   </CardContent>
                 </Card>
               ))}
@@ -190,37 +195,31 @@ export default function HomePage() {
 
         {/* Stats Section */}
         <section className="py-16 px-4 text-center">
-          <div className="container mx-auto">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-              {[
-                { value: "3+", label: "Équipes actives" },
-                { value: "15+", label: "Joueurs inscrits" },
-                { value: "6", label: "Jeux supportés" },
-                { value: "24/7", label: "Support communauté" },
-              ].map((stat, i) => (
-                <div key={i} className="space-y-2 animate-bounce-in hover-lift">
-                  <div className="text-4xl md:text-5xl font-heading font-bold text-white text-glow animate-pulse-slow">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-white/60 uppercase tracking-wide">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+          <div className="container mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { value: "3+", label: "Équipes actives" },
+              { value: "15+", label: "Joueurs inscrits" },
+              { value: "6", label: "Jeux supportés" },
+              { value: "24/7", label: "Support communauté" },
+            ].map((stat, i) => (
+              <div key={i} className="space-y-2">
+                <div className="text-4xl md:text-5xl font-heading font-bold text-white">{stat.value}</div>
+                <div className="text-sm text-white/60 uppercase tracking-wide">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* CTA Section */}
         {!isAuthenticated && (
           <section className="py-16 px-4 bg-white/5 text-center">
-            <div className="container mx-auto text-center max-w-3xl animate-fade-in">
-              <div className="flex justify-center mb-6">
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-white text-white animate-glow" />
-                  ))}
-                </div>
+            <div className="container mx-auto max-w-3xl">
+              <div className="flex justify-center mb-6 space-x-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 fill-white text-white animate-glow" />
+                ))}
               </div>
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-glow">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
                 Prêt à rejoindre l'élite esport ?
               </h2>
               <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto leading-relaxed">
