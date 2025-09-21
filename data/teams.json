@@ -31,15 +31,13 @@
       "name": "L'équipe Gen",
       "captain": "Gen",
       "members": [
-        "HeadshotHero",
-        "SprayControl",
-        "ClutchMaster",
-        "EntryFragger"
+        "Account"
       ],
       "game": "Rocket League",
       "description": "Cette équipe peut être attribuée à des joueurs de tous rangs, mais elle est le plus souvent réservée aux Diamant & Champions.",
       "status": "active",
-      "created_at": "2024-01-01T00:00:00.000Z"
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:33:02.958Z"
     },
     {
       "id": 4,
