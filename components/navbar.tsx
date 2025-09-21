@@ -88,6 +88,7 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
       <div className="container flex h-16 items-center justify-center">
         <div className="flex items-center justify-center space-x-8 w-full">
+
           <Link
             href="/"
             className="text-2xl font-heading font-bold text-white hover:text-white/80 transition-all duration-300 hover:scale-110 animate-glow flex items-center space-x-2"
@@ -102,7 +103,7 @@ export function Navbar() {
           </div>
 
           {/* User Section */}
-          <div className="flex items-center space-x-4 ml-auto">
+          <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
