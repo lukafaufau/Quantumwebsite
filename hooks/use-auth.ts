@@ -72,7 +72,7 @@ export const useAuth = create<AuthStore>()(
       },
     }),
     {
-      name: "quantum-auth",
+      name: "Nemesis-auth",
     },
   ),
 )
