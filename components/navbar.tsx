@@ -13,85 +13,105 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { User, LogOut, Settings, Menu, Shield } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 
 const LogoImage = "https://i.ibb.co/yFb8BdcK/sqdq.png"
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
-  const NavLinks = () => (
-    <>
-      <Link href="/" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Accueil</Link>
-      <Link href="/explorer" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Explorer</Link>
-      <Link href="/equipes" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Équipes</Link>
-      <Link href="/joueurs" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Joueurs</Link>
-      {isAuthenticated && (
-        <>
-          <Link href="/recrutement" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Recrutement</Link>
-          <Link href="/profil" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Profil</Link>
-          {(user?.role === "admin" || user?.role === "developer") && (
-            <Link href="/admin" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in text-glow" onClick={() => setIsOpen(false)}>Administration</Link>
-          )}
-        </>
-      )}
-      <Link href="/credits" className="text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105 focus:text-white animate-fade-in" onClick={() => setIsOpen(false)}>Crédits</Link>
-    </>
-  )
+  const NavLinks = () => {
+    const links = [
+      { href: "/", label: "Accueil" },
+      { href: "/explorer", label: "Explorer" },
+      { href: "/equipes", label: "Équipes" },
+      { href: "/joueurs", label: "Joueurs" },
+      ...(isAuthenticated
+        ? [
+            { href: "/recrutement", label: "Recrutement" },
+            { href: "/profil", label: "Profil" },
+            ...(user?.role === "admin" || user?.role === "developer" ? [{ href: "/admin", label: "Administration", special: true }] : []),
+          ]
+        : []),
+      { href: "/credits", label: "Crédits" },
+    ]
+
+    return links.map((link) => (
+      <Link
+        key={link.href}
+        href={link.href}
+        className={`text-sm font-medium transition-all duration-300 hover:text-white hover:scale-110 focus:text-white animate-fade-in
+          ${pathname === link.href ? "text-white underline underline-offset-4" : "text-gray-300" } 
+          ${link.special ? "text-glow" : ""}
+        `}
+        onClick={() => setIsOpen(false)}
+      >
+        {link.label}
+      </Link>
+    ))
+  }
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
       <div className="container flex h-16 items-center justify-between">
 
         {/* Logo + texte NEMESIS */}
-        <Link href="/" className="flex items-center pl-2 lg:pl-4">
-          <div className="flex items-center space-x-4">
-            <Image src={LogoImage} alt="Logo" width={32} height={32} />
-            <span className="text-2xl font-bold text-white font-heading">NEMESIS</span>
-          </div>
+        <Link href="/" className="flex items-center pl-3 lg:pl-5 group">
+          <Image
+            src={LogoImage}
+            alt="Logo"
+            width={32}
+            height={32}
+            className="transition-all duration-300 group-hover:scale-110"
+          />
+          <span className="ml-5 text-2xl font-bold text-white font-heading transition-all duration-300 group-hover:text-white/90">
+            NEMESIS
+          </span>
         </Link>
 
-        {/* Navigation centrée desktop */}
+        {/* Navigation desktop */}
         <div className="hidden lg:flex items-center justify-center space-x-8">
           <NavLinks />
         </div>
 
-        {/* Section utilisateur / login à droite */}
+        {/* Section utilisateur / login */}
         <div className="flex items-center space-x-4">
-
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow">
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline text-white">{user?.username}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300 hover:scale-105 border-glow"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="hidden sm:inline text-white font-medium">{user?.username}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={5} className="w-48 bg-black border-white/20 animate-scale-in z-50">
                 <DropdownMenuItem asChild>
                   <Link href="/profil" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Profil
+                    <Settings className="mr-2 h-4 w-4" /> Profil
                   </Link>
                 </DropdownMenuItem>
                 {(user?.role === "admin" || user?.role === "developer") && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                      <Shield className="mr-2 h-4 w-4" />
-                      Administration
+                      <Shield className="mr-2 h-4 w-4" /> Administration
                     </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={logout} className="flex items-center cursor-pointer text-white hover:bg-white/10">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Déconnexion
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="hidden sm:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild className="hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <Link href="/login" className="text-white">Connexion</Link>
+                <Link href="/login" className="text-white font-medium">Connexion</Link>
               </Button>
               <Button size="sm" asChild className="bg-white text-black hover:bg-white/90 transition-all duration-300 hover:scale-105 border-glow">
                 <Link href="/signup">Inscription</Link>
@@ -99,26 +119,24 @@ export function Navbar() {
             </div>
           )}
 
-          {/* Mobile menu */}
+          {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <Menu className="h-5 w-5 text-white" />
-                <span className="sr-only">Toggle menu</span>
+                <Menu className="h-6 w-6 text-white" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-black border-white/20 animate-slide-left">
-              <div className="flex flex-col space-y-4 mt-8 text-center">
-                <Link href="/" className="flex items-center justify-center space-x-2 text-2xl font-bold text-white mb-4">
+              <div className="flex flex-col space-y-6 mt-10 text-center">
+                <Link href="/" className="flex items-center justify-center space-x-3 text-2xl font-bold text-white mb-4">
                   <Image src={LogoImage} alt="Logo" width={32} height={32} />
                   <span>NEMESIS</span>
                 </Link>
                 <div className="flex flex-col space-y-6 items-center">
                   <NavLinks />
                 </div>
-
                 {!isAuthenticated && (
-                  <div className="flex flex-col space-y-2 pt-4 border-t border-white/20 items-center">
+                  <div className="flex flex-col space-y-2 pt-6 border-t border-white/20 items-center">
                     <Button variant="ghost" size="sm" asChild onClick={() => setIsOpen(false)} className="hover:bg-white/10 transition-all duration-300">
                       <Link href="/login" className="text-white">Connexion</Link>
                     </Button>
