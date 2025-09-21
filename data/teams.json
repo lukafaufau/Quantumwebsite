@@ -18,16 +18,13 @@
       "name": "L'équipe Mocha",
       "captain": "Mocha",
       "members": [
-        "FragMaster",
-        "SniperPro",
-        "TacticalAce",
-        "FlashKing",
-        "SmokeGod"
+        "Account"
       ],
       "game": "Rocket League",
       "description": "Cette équipe peut être attribuée à des joueurs de tous rangs, mais elle est le plus souvent réservée aux Champions & Grand Champions.",
       "status": "active",
-      "created_at": "2024-01-01T00:00:00.000Z"
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2025-09-21T20:32:53.609Z"
     },
     {
       "id": 3,
