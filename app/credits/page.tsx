@@ -75,7 +75,7 @@ export default function CreditsPage() {
               </div>
               <h3 className="text-2xl font-heading font-bold mb-4">Merci à notre communauté</h3>
               <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-                Quantum n'existerait pas sans le soutien et la passion de notre communauté esport. Merci à tous les
+                Nemesis n'existerait pas sans le soutien et la passion de notre communauté esport. Merci à tous les
                 joueurs, équipes et supporters qui font vivre cette plateforme.
               </p>
               <div className="flex flex-wrap justify-center gap-2">
