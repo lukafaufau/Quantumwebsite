@@ -43,13 +43,15 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80 animate-slide-down">
       <div className="container flex h-16 items-center justify-between">
 
-        {/* Logo à gauche (image séparée du texte) */}
-        <Link href="/" className="flex items-center space-x-2">
-          <Image src={LogoImage} alt="Logo" width={40} height={40} className="animate-glow" />
-          <span className="text-2xl font-bold text-white font-heading animate-glow">NEMESIS</span>
+        {/* Logo + Texte aligné */}
+        <Link href="/" className="flex items-center">
+          <div className="flex items-center space-x-2">
+            <Image src={LogoImage} alt="Logo" width={40} height={40} />
+            <span className="text-2xl font-bold text-white font-heading">NEMESIS</span>
+          </div>
         </Link>
 
-        {/* Navigation centrée sur desktop */}
+        {/* Navigation centrée desktop */}
         <div className="hidden lg:flex items-center justify-center space-x-8">
           <NavLinks />
         </div>
@@ -57,7 +59,6 @@ export function Navbar() {
         {/* Section utilisateur / login à droite */}
         <div className="flex items-center space-x-4">
 
-          {/* Desktop / Authenticated */}
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -98,7 +99,7 @@ export function Navbar() {
             </div>
           )}
 
-          {/* Mobile Navigation */}
+          {/* Mobile menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="lg:hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
