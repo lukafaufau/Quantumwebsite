@@ -9,6 +9,16 @@
       "status": "active",
       "id": 1,
       "created_at": "2025-09-21T14:30:56.672Z"
+    },
+    {
+      "username": "acc.16k",
+      "email": "acc.16k@gmail.com",
+      "password": "mP8#yW4!bQz7$KxF",
+      "discord_id": "",
+      "role": "admin",
+      "status": "active",
+      "id": 1,
+      "created_at": "2025-09-21T14:30:56.672Z"
     }
   ]
 }
