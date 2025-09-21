@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Users, Crown, Search, UserPlus, X, Calendar, Star, MessageCircle } from "lucide-react"
+import { Users, Crown, Search, UserPlus, X, Star, Calendar, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import {
   Dialog,
@@ -73,7 +73,7 @@ export default function TeamsPage() {
           <div className="mb-10 text-center">
             <h1 className="text-4xl font-heading font-bold mb-2">Équipes Nemesis</h1>
             <p className="text-lg text-gray-400">
-              Découvrez nos équipes compétitives, leurs classements et leurs exploits.
+              Découvrez toutes nos équipes, leurs membres et leurs statistiques.
             </p>
           </div>
 
@@ -121,13 +121,10 @@ export default function TeamsPage() {
                     className="bg-black border border-gray-700 hover:shadow-xl hover:scale-105 transition-transform duration-200"
                   >
                     <CardHeader className="flex flex-col gap-2">
+                      {/* Team Header */}
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-xl font-bold text-white">{team.name}</CardTitle>
-                        <Badge
-                          className={`${
-                            team.status === "open" ? "bg-green-600" : "bg-red-600"
-                          } text-white`}
-                        >
+                        <Badge className={`${team.status === "open" ? "bg-green-600" : "bg-red-600"} text-white`}>
                           {team.status === "open" ? "Ouvert" : "Fermé"}
                         </Badge>
                       </div>
@@ -138,16 +135,20 @@ export default function TeamsPage() {
                             <Star className="h-4 w-4 text-yellow-400" /> {team.rank}
                           </div>
                         )}
+                        {team.lastEvent && (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" /> {team.lastEvent}
+                          </div>
+                        )}
                       </div>
                     </CardHeader>
 
                     <CardContent className="space-y-3">
                       {team.description && (
-                        <CardDescription className="text-gray-400 line-clamp-2">
-                          {team.description}
-                        </CardDescription>
+                        <p className="text-gray-400 line-clamp-2">{team.description}</p>
                       )}
 
+                      {/* Members List */}
                       <div className="flex flex-wrap gap-2">
                         {allMembers.map((member, index) => (
                           <div
@@ -165,6 +166,7 @@ export default function TeamsPage() {
                         ))}
                       </div>
 
+                      {/* Action Buttons */}
                       <div className="flex gap-2 pt-3">
                         <Button
                           variant="outline"
@@ -191,33 +193,12 @@ export default function TeamsPage() {
               })}
             </div>
           )}
-
-          {/* Call to Action */}
-          <div className="mt-12 text-center">
-            <Card className="bg-black border border-gray-700">
-              <CardContent className="py-8">
-                <h3 className="text-2xl font-heading font-bold mb-4 text-white">
-                  Envie de rejoindre une équipe ?
-                </h3>
-                <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-                  Postulez dès maintenant pour intégrer l'une de nos équipes compétitives et participez aux plus
-                  grands tournois esport.
-                </p>
-                <Button
-                  size="lg"
-                  className="bg-white text-black hover:bg-gray-200 hover:text-black transition-colors"
-                >
-                  <Link href="/recrutement">Postuler maintenant</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </main>
 
       <Footer />
 
-      {/* Modal Détails */}
+      {/* Modal Details */}
       {currentTeam && (
         <Dialog open={openModal} onOpenChange={setOpenModal}>
           <DialogContent className="bg-black text-white rounded-xl max-w-lg w-full p-6 border border-gray-700">
