@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,33 +10,42 @@ import { Input } from "@/components/ui/input"
 import { Users, Crown, Search, UserPlus } from "lucide-react"
 import Link from "next/link"
 
-// Ici tu peux lister tes jeux disponibles
-const availableGames = ["League of Legends", "Valorant", "CS:GO", "Fortnite"]
+interface Team {
+  id: number
+  name: string
+  captain: string
+  members: string[]
+  game: string
+  description?: string
+  status: string
+  created_at: string
+}
+
+const availableGames = ["CS:GO", "Valorant", "League of Legends", "Fortnite"]
 
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<any[]>([])
+  const [teams, setTeams] = useState<Team[]>([])
   const [selectedGame, setSelectedGame] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // 🔄 Fonction pour récupérer les équipes depuis l'API
+  // Récupère les équipes depuis l'API
   const fetchTeams = async () => {
     try {
       const res = await fetch("/api/teams")
-      const json = await res.json()
-      if (json.success) setTeams(json.data)
+      const data = await res.json()
+      if (data.success) {
+        setTeams(data.data)
+      }
     } catch (err) {
-      console.error("Erreur fetch équipes :", err)
+      console.error("Erreur fetch teams:", err)
     }
   }
 
   useEffect(() => {
     fetchTeams()
-    // Tu peux aussi mettre un intervalle pour refresh automatique
-    const interval = setInterval(fetchTeams, 5000) // refresh toutes les 5s
-    return () => clearInterval(interval)
   }, [])
 
-  // Filtrage par jeu et recherche
+  // Filtrage
   const filteredTeams = teams.filter((team) => {
     const matchesGame = selectedGame === "all" || team.game === selectedGame
     const matchesSearch =
@@ -106,7 +115,7 @@ export default function TeamsPage() {
                       <div className="text-right text-sm text-muted-foreground">
                         <div className="flex items-center">
                           <Users className="h-4 w-4 mr-1" />
-                          {team.members?.length || 0}
+                          {team.members.length}
                         </div>
                       </div>
                     </div>
@@ -125,7 +134,7 @@ export default function TeamsPage() {
                       <div className="space-y-1">
                         <span className="text-sm font-medium">Membres:</span>
                         <div className="flex flex-wrap gap-1">
-                          {team.members?.map((member: string) => (
+                          {team.members.map((member) => (
                             <Badge key={member} variant="outline" className="text-xs">
                               {member}
                             </Badge>
