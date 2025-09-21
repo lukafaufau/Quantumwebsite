@@ -124,12 +124,13 @@ export default function HomePage() {
                 </div>
               ) : (
                 <>
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 text-balance leading-tight animate-slide-up">
-                    {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}
-                    <span className="text-white animate-glow">
-                      {content.hero?.title || "NEMESIS"}
-                    </span>
-                  </h1>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight animate-slide-up">
+              {isAuthenticated ? `Bienvenue, ${user?.username} sur ` : ""}
+              <span className="text-white">
+            {content.hero?.title || "NEMESIS"}
+            </span>
+            </h1>
+
 
                   <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto text-pretty leading-relaxed animate-slide-up">
                     {content.hero?.subtitle}
